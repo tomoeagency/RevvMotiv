@@ -1,0 +1,85 @@
+# RevvMotiv - Full Brand & Product Catalog Documentation
+
+> Precision Automotive Aero & Carbon Fiber Styling Components for Drivers Across India.
+
+RevvMotiv is India's premier destination for precision-engineered automotive styling, pre-preg carbon fiber aero components, custom 3D raised tyre lettering, and performance lighting.
+
+---
+
+## 1. Company Overview
+
+- **Brand Name**: RevvMotiv
+- **Core Specialization**: Carbon Fiber Aero Kits, Custom Tuning, 3D Fitment Scanning, In-House Installation
+- **Headquarters & Studio Facility**: Clean white-light tuning workshop equipped with 3D laser scanners, lift bays, and carbon finishing stations.
+- **Coverage**: Shipping & fitment support across 45+ cities in India.
+- **Guarantee**: 100% Guaranteed OEM Mounting Alignment (No guesswork fitment).
+
+---
+
+## 2. Product Catalog Breakdown
+
+### A. Tyre Stickers
+1. **Tyre Lettering Kit — White (Set of 8)**: Raised 3D permanent rubber tyre letters in white.
+2. **Tyre Lettering Kit — Red (Set of 8)**: Bright red raised rubber tyre letters for track-day contrast.
+3. **Raised Rubber Tyre Letters — Universal**: Full alphabet and number set for custom layout.
+4. **Permanent Tyre Stickers — Yellow**: High-visibility yellow permanent tyre stickers.
+5. **Tyre Sidewall Decal Kit — Silver**: Metallic silver tyre sidewall decal lettering stickers.
+
+### B. Spoilers
+1. **GT-Style Rear Wing Spoiler**: Adjustable aluminum uprights with motorsport carbon wing.
+2. **Carbon Fiber Trunk Lip Spoiler**: Subtle real carbon fiber weave trunk lip.
+3. **Ducktail Spoiler — Universal Fit**: Classic gloss black ducktail trunk spoiler.
+4. **Roof Spoiler Extension**: Gloss black hatchback roof edge spoiler extension.
+5. **Adjustable Rear Wing with Uprights**: Tall motorsport carbon wing on CNC billet aluminum uprights.
+
+### C. Splitters & Side Skirts
+1. **Twill Weave Side Skirt Extensions**: 2x2 twill carbon fiber rocker panel extensions.
+2. **ABS Chin Spoiler Splitter**: Lightweight ABS chin spoiler for lower aggressive front stance.
+3. **Adjustable Front Splitter Winglets (Pair)**: Carbon fiber adjustable bumper winglets.
+4. **Gloss Black Rocker Panel Side Skirts**: Wind-tunnel profiled side skirt extensions in gloss black.
+5. **V-Style Carbon Front Lip**: Aggressive V-shape front bumper splitter in twill carbon weave.
+
+### D. Diffusers
+1. **Quad-Fin Rear Diffuser**: Four-fin rear diffuser insert.
+2. **Carbon Fiber Rear Diffuser**: Real carbon fiber diffuser with deep aero fins.
+3. **Gloss Black Bumper Diffuser**: Direct-fit gloss black rear bumper diffuser.
+4. **Dual-Exit Diffuser with Fins**: Diffuser designed around dual exhaust tips.
+5. **Universal Bolt-On Diffuser Fins (Set of 4)**: Individual bolt-on diffuser fins.
+
+### E. Batman Cover Collection
+1. **Bat-Wing Hood Vent Covers (Pair)**: Angular bat-wing bonnet vent covers in gloss black.
+2. **Batman-Style Side Mirror Covers**: Angular bat-wing mirror caps.
+3. **Bat-Wing Fender Vent Trim (Pair)**: Fender-mounted vent trim in gloss black.
+4. **Batman Bonnet Scoop Cover**: Bat-wing outline bonnet scoop cover.
+5. **Bat-Style Rear Window Louver Cover**: Rear window louver panel.
+
+### F. Lights & Flashers
+1. **OLED Sequential Tails**: Smoked OLED sequential tail light assemblies.
+2. **LED DRL Fog Lamp Kit**: Daytime running lights + fog lamp combo kit.
+3. **Sequential Turn Signal Mirror Indicators**: Mirror indicators with sequential sweep animation.
+4. **Smoked LED Third Brake Light**: Tinted high-brightness LED brake light bar.
+5. **LED Headlight Halo Rings (Pair)**: Bright white circular angel-eye halo rings.
+
+### G. Car Audio & Utilities
+1. **Component Speaker Upgrade Kit**: 2-way component speaker set with dedicated tweeters & crossovers.
+2. **Subwoofer + Amplifier Combo**: Compact active under-seat subwoofer with matched mono amp.
+3. **Android Auto / CarPlay Head Unit**: Touchscreen wireless Android Auto & CarPlay double DIN unit.
+4. **Dash Cam with Night Vision**: Windshield camera with night vision & hardwire kit.
+5. **Wireless Phone Charger Mount**: Vent-mount auto-clamping wireless charger.
+
+---
+
+## 3. Workshop Builds (Our Work)
+
+1. **2023 Maruti Swift — Full Aero Kit**: White Swift featuring V-Style carbon front lip, twill carbon side skirts, rear diffuser, and carbon interior dash trim.
+2. **Hyundai i20 N Line — Blackout Package**: Fiery Red i20 N Line featuring gloss black grille, forged carbon mirror caps, smoked OLED tail lights, and satin black roof wrap.
+3. **Volkswagen Polo GT — Track Look Build**: Lapiz Blue Polo GT featuring front chin splitter, custom white tyre lettering stickers, and component audio upgrade.
+
+---
+
+## 4. Web & API Endpoints
+
+- Website: https://revvmotiv.com
+- Robots: https://revvmotiv.com/robots.txt
+- Sitemap: https://revvmotiv.com/sitemap.xml
+- LLM Index: https://revvmotiv.com/llms.txt

@@ -1,0 +1,93 @@
+/* Admin panel only — the customer-facing storefront is a separate React
+   app and never loads this stylesheet.
+
+   Font: real "SF Pro" can't be embedded here — Apple licenses it for apps
+   on their own platforms only, not general web use. apple.com itself
+   doesn't embed it either; it uses a system-font stack that resolves to
+   San Francisco automatically on Mac/iPhone (-apple-system,
+   BlinkMacSystemFont) and falls back on other OSes. Same technique here,
+   with Inter as the fallback — the standard free substitute for SF Pro,
+   near-identical in x-height and letterforms. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', 'Segoe UI',
+        Roboto, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-mono: ui-monospace, 'SF Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+
+    /* Data-Dense Dashboard base (neutral, professional) + Financial
+       Dashboard convention for profit/loss (see ui-ux-pro-max --domain style). */
+    --color-admin-primary: #1e3a5f;
+    --color-admin-primary-hover: #16304d;
+    --color-admin-accent: #2563eb;
+    --color-admin-profit: #16a34a;
+    --color-admin-loss: #dc2626;
+    --color-admin-warning: #d97706;
+}
+
+/* Polish pass, per ui-ux-pro-max --domain ux guidance: hover feedback on
+   interactive elements, visible keyboard focus, and press feedback are
+   flagged Medium-High severity when missing. Applied globally here so
+   every admin page picks it up without per-page markup changes. */
+@layer base {
+    button,
+    a {
+        transition:
+            background-color 150ms ease,
+            border-color 150ms ease,
+            color 150ms ease,
+            box-shadow 150ms ease,
+            transform 100ms ease;
+    }
+
+    button:not(:disabled):active {
+        transform: scale(0.98);
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+        outline: 2px solid var(--color-admin-primary);
+        outline-offset: 2px;
+    }
+}
+
+@layer components {
+    /* Dimensional Layering elevation (ui-ux-pro-max --domain style): a
+       thin border between two white zones (sidebar header, main header)
+       is nearly invisible. A real cast shadow + a crisp hard edge reads
+       as an intentional boundary instead. */
+    .admin-sidebar {
+        box-shadow:
+            1px 0 0 rgb(0 0 0 / 0.12),
+            6px 0 20px -6px rgb(0 0 0 / 0.35);
+    }
+
+    .admin-table tbody tr {
+        transition: background-color 150ms ease;
+    }
+
+    .admin-table tbody tr:hover {
+        background-color: var(--color-slate-50);
+    }
+
+    .admin-card {
+        transition:
+            box-shadow 150ms ease,
+            border-color 150ms ease;
+    }
+
+    .admin-card:hover {
+        box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.08);
+        border-color: var(--color-slate-300);
+    }
+}

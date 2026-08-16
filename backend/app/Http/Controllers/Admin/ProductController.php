@@ -1,0 +1,145 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ProductStoreRequest;
+use App\Http\Requests\Admin\ProductUpdateRequest;
+use App\Models\Category;
+use App\Models\Product;
+use App\Services\CloudinaryUploadService;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+use RuntimeException;
+
+class ProductController extends Controller
+{
+    // Note: methods below take the raw {product} id, NOT `Product $product`
+    // implicit binding — Product::resolveRouteBinding() restricts lookups
+    // to status=active for the storefront, which would 404 the admin trying
+    // to open a draft product. Resolving manually here keeps that storefront
+    // behavior untouched.
+    public function index(Request $request): View
+    {
+        $products = Product::query()
+            ->with('category')
+            ->when($request->filled('search'), fn ($q) => $q->where('title', 'like', '%'.$request->string('search').'%'))
+            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
+            ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->integer('category')))
+            ->orderByDesc('created_at')
+            ->paginate(15)
+            ->withQueryString();
+
+        $categories = Category::orderBy('name')->get();
+
+        return view('admin.products.index', compact('products', 'categories'));
+    }
+
+    public function create(): View
+    {
+        $categories = Category::orderBy('name')->get();
+
+        return view('admin.products.create', compact('categories'));
+    }
+
+    public function store(ProductStoreRequest $request, CloudinaryUploadService $uploader): RedirectResponse
+    {
+        $validated = $request->validated();
+
+        try {
+            $newImages = $uploader->uploadMany($request->file('images', []), 'revvmotiv/products');
+        } catch (RuntimeException $e) {
+            // A misconfigured/failed Cloudinary upload must not silently
+            // drop the rest of the form — surface it as a normal validation
+            // error and let the admin resubmit without re-typing everything.
+            return back()->withInput()->withErrors(['images' => 'Image upload failed: '.$e->getMessage()]);
+        }
+
+        $product = Product::create([
+            'title' => $validated['title'],
+            'slug' => ($validated['slug'] ?? null) ?: Str::slug($validated['title']),
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'cost_price' => $validated['cost_price'] ?? null,
+            'compare_at_price' => $validated['compare_at_price'] ?? null,
+            'stock' => $validated['stock'],
+            'category_id' => $validated['category_id'],
+            'fitment' => $validated['fitment'] ?? null,
+            'is_featured' => $request->boolean('is_featured'),
+            'featured_order' => $validated['featured_order'] ?? 0,
+            'status' => $validated['status'],
+            'images' => $newImages,
+        ]);
+
+        return redirect()->route('admin.products.index')->with('status', "Product \"{$product->title}\" created.");
+    }
+
+    public function edit(int $product): View
+    {
+        $product = Product::findOrFail($product);
+        $categories = Category::orderBy('name')->get();
+
+        return view('admin.products.edit', compact('product', 'categories'));
+    }
+
+    public function update(ProductUpdateRequest $request, int $product, CloudinaryUploadService $uploader): RedirectResponse
+    {
+        $product = Product::findOrFail($product);
+        $validated = $request->validated();
+
+        $images = collect($product->images ?? [])
+            ->reject(fn ($url) => in_array($url, $validated['remove_images'] ?? [], true))
+            ->values()
+            ->all();
+
+        try {
+            $newImages = $uploader->uploadMany($request->file('images', []), 'revvmotiv/products');
+        } catch (RuntimeException $e) {
+            // Same reasoning as store(): don't let an upload failure discard
+            // unrelated field edits (price, stock, status, ...) the admin
+            // already made on this same submit.
+            return back()->withInput()->withErrors(['images' => 'Image upload failed: '.$e->getMessage()]);
+        }
+
+        $images = [...$images, ...$newImages];
+
+        $product->update([
+            'title' => $validated['title'],
+            'slug' => ($validated['slug'] ?? null) ?: Str::slug($validated['title']),
+            'description' => $validated['description'] ?? null,
+            'price' => $validated['price'],
+            'cost_price' => $validated['cost_price'] ?? null,
+            'compare_at_price' => $validated['compare_at_price'] ?? null,
+            'stock' => $validated['stock'],
+            'category_id' => $validated['category_id'],
+            'fitment' => $validated['fitment'] ?? null,
+            'is_featured' => $request->boolean('is_featured'),
+            'featured_order' => $validated['featured_order'] ?? 0,
+            'status' => $validated['status'],
+            'images' => $images,
+        ]);
+
+        return redirect()->route('admin.products.index')->with('status', "Product \"{$product->title}\" updated.");
+    }
+
+    public function destroy(int $product): RedirectResponse
+    {
+        $product = Product::findOrFail($product);
+        $title = $product->title;
+
+        try {
+            $product->delete();
+        } catch (QueryException) {
+            // order_items.product_id has no cascade/null-on-delete — a
+            // product that's been ordered can't be hard-deleted without
+            // corrupting order history. Draft it out of the storefront instead.
+            return redirect()->route('admin.products.index')
+                ->with('status', "\"{$title}\" has past orders and can't be deleted — set its status to draft instead to hide it from the storefront.");
+        }
+
+        return redirect()->route('admin.products.index')->with('status', "Product \"{$title}\" deleted.");
+    }
+}

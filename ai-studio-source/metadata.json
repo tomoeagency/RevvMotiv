@@ -1,0 +1,6 @@
+{
+  "name": "RevvMotiv",
+  "description": "Car accessories brand landing page with Instagram Reels showcase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+*/node_modules/
+backend/vendor/
+
+# Next.js & Frontend build
+.next/
+*/.next/
+out/
+build/
+.vercel/
+
+# Environment files
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+frontend/.env*
+!frontend/.env.example
+
+# Laravel storage & cache
+backend/storage/*.key
+backend/storage/logs/
+backend/storage/framework/cache/
+backend/storage/framework/sessions/
+backend/storage/framework/views/
+backend/public/storage
+backend/public/build
+backend/public/hot
+
+# Logs and system files
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.claude/
+.gemini/

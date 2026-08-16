@@ -1,0 +1,175 @@
+"use client";
+
+import { useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
+import { Minus, Plus, Trash2, X } from "lucide-react";
+import { formatPrice } from "@/lib/api";
+import { useCart, MAX_CART_QUANTITY } from "@/lib/cart-context";
+import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
+import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
+
+export function CartDrawer() {
+  const {
+    items,
+    subtotal,
+    isDrawerOpen,
+    closeDrawer,
+    closeDrawerForNavigation,
+    updateQuantity,
+    removeItem,
+  } = useCart();
+
+  // Body scroll lock + Escape-to-close while the drawer is open — without
+  // the lock, the backdrop reads as decorative and the page underneath
+  // visibly scrolls with it, which feels broken even though the drawer
+  // itself is fixed-positioned.
+  useEffect(() => {
+    if (!isDrawerOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeDrawer();
+    }
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeydown);
+    };
+  }, [isDrawerOpen, closeDrawer]);
+
+  return (
+    <AnimatePresence>
+      {isDrawerOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeDrawer}
+            className="fixed inset-0 bg-canvas/80 backdrop-blur-md z-[55]"
+          />
+
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE_BRAND }}
+            className="fixed inset-y-0 right-0 z-[60] w-full sm:w-[420px] bg-canvas border-l border-hairline shadow-[0_0_60px_rgba(0,0,0,0.8)] flex flex-col"
+          >
+            <div className="flex items-center justify-between px-6 h-20 border-b border-hairline">
+              <span className="text-lg font-bold text-ink uppercase tracking-tight">
+                Your Cart
+              </span>
+              <button
+                onClick={closeDrawer}
+                aria-label="Close cart"
+                className="text-ink-muted hover:text-ink transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {items.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6 text-center">
+                <p className="text-sm text-ink-muted">Your cart is empty.</p>
+                <Link
+                  href="/shop"
+                  onClick={closeDrawerForNavigation}
+                  className="text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-red-500 pb-1"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
+            ) : (
+              <>
+                <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col gap-6">
+                  {items.map((item) => (
+                    <div key={item.productId} className="flex gap-4">
+                      <div className="relative w-20 h-20 flex-none bg-surface border border-hairline overflow-hidden">
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          sizes="80px"
+                          className="object-cover object-center"
+                        />
+                      </div>
+
+                      <div className="flex-1 flex flex-col justify-between min-w-0">
+                        <div className="flex items-start justify-between gap-2">
+                          <h3 className="text-sm font-bold text-ink leading-tight truncate">
+                            {item.title}
+                          </h3>
+                          <button
+                            onClick={() => removeItem(item.productId)}
+                            aria-label={`Remove ${item.title}`}
+                            className="text-ink-subtle hover:text-red-400 transition-colors flex-none"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center border border-hairline-strong">
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.productId, item.quantity - 1)
+                              }
+                              aria-label="Decrease quantity"
+                              className="w-7 h-7 flex items-center justify-center text-ink hover:bg-hover transition-colors"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-7 text-center text-xs font-bold text-ink">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() =>
+                                updateQuantity(item.productId, item.quantity + 1)
+                              }
+                              disabled={item.quantity >= MAX_CART_QUANTITY}
+                              aria-label="Increase quantity"
+                              className="w-7 h-7 flex items-center justify-center text-ink hover:bg-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                          <span className="text-sm font-bold text-ink-muted">
+                            {formatPrice(item.price * item.quantity)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="border-t border-hairline p-6 flex flex-col gap-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-ink-muted uppercase tracking-widest text-xs font-bold">
+                      Subtotal
+                    </span>
+                    <span className="text-ink font-bold text-lg">
+                      {formatPrice(subtotal)}
+                    </span>
+                  </div>
+                  <PrimaryCtaLink
+                    href="/checkout"
+                    onClick={closeDrawerForNavigation}
+                    className="w-full px-12 py-4 text-sm text-center"
+                  >
+                    Checkout
+                  </PrimaryCtaLink>
+                </div>
+              </>
+            )}
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}

@@ -1,0 +1,296 @@
+@import "tailwindcss";
+
+/* The site's actual theme toggle sets/removes [data-theme="light"] on
+   <html> — Tailwind's built-in `dark:` variant matches OS
+   prefers-color-scheme instead, which is unrelated and would silently
+   never (or incorrectly) fire against this toggle. `light:` is the
+   correct variant to reach for whenever a utility needs to differ
+   between this site's own dark (default) and light states. */
+@custom-variant light (&:where([data-theme="light"] *));
+
+@theme inline {
+  --font-tech: var(--font-orbitron);
+  --font-sans: var(--font-inter);
+
+  /* Semantic theme tokens, wired to the runtime CSS custom properties
+     below (not resolved at build time — `inline` keeps them live) so
+     [data-theme="light"] can swap every one of these at once. Brand
+     accents (blue/red gradient) and status colors (error/warning/success)
+     are intentionally NOT tokenized here — they stay constant across
+     themes, same as the automotive palette's fixed Accent/Destructive
+     columns; only background/text/border/hover surfaces adapt. */
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-hover: var(--hover);
+  --color-hover-strong: var(--hover-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-ink-faint: var(--ink-faint);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+}
+
+/* Design-system tokens (radius / motion / status color) — theme-independent,
+   defined once here so components reference a single source of truth
+   instead of hand-picking values per file. */
+:root {
+  /* Corner radius scale. Brand default is sharp (0) — matches the
+     carbon-fiber automotive aesthetic used by buttons, inputs, modals,
+     and the primary card types. --radius-md is reserved, unused today. */
+  --radius-sm: 0px;
+  --radius-md: 4px;
+  --radius-full: 9999px;
+
+  /* Brand CTA gradient — red bleeding to near-black (not the site's blue
+     accent) for a "blackout tuner" read, replacing the earlier red→blue
+     pairing. Tokenized (not just re-hardcoded in PrimaryCtaButton) since
+     a handful of other elements — the FAB, cart badge, route-progress
+     bar — share this exact gradient and would otherwise drift from it
+     again the same way the old red→blue values did. */
+  --brand-red: #c9182b;
+  --brand-black: #0a0a0a;
+
+  /* Primary CTA glow shadow — red-tinted to match the gradient above
+     (a blue glow around a red/black element read as mismatched). */
+  --cta-glow-rest: 0 0 28px rgba(201, 24, 43, 0.45);
+  --cta-glow-hover: 0 0 44px rgba(201, 24, 43, 0.7);
+
+  /* Motion timing, tiered by element weight rather than picked ad hoc
+     per component. */
+  --duration-micro: 150ms; /* hover states, small UI chrome: FABs, icons, badges */
+  --duration-base: 300ms; /* card entrances, drawers, modals, standard content blocks */
+  --duration-page: 600ms; /* page-level elements: navbar, hero paragraph, major section reveals */
+  --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Status colors, fixed across themes like the other brand accents. */
+  --color-success: #22c55e; /* green-500 */
+  --color-star-fill: #facc15; /* yellow-400 */
+}
+
+:root {
+  /* Dark theme (default — the original brand look, unchanged values). */
+  --canvas: #050505;
+  --surface: #0a0a0a;
+  /* Was #020202 — darker than canvas by only 3/255, imperceptible, so
+     every section meant to alternate against canvas (CategoryStrip,
+     ReelsSection, FeaturedReviews, About's section bands) rendered as
+     one continuous slab instead of a visibly distinct band. */
+  --surface-alt: #0d0d0d;
+  --hover: rgba(255, 255, 255, 0.05);
+  --hover-strong: rgba(255, 255, 255, 0.1);
+  --ink: #ffffff;
+  --ink-muted: #9ca3af; /* was text-gray-400/300 */
+  --ink-subtle: #6b7280; /* was text-gray-500/600 */
+  --ink-faint: rgba(255, 255, 255, 0.2); /* was text-white/20 */
+  --hairline: rgba(255, 255, 255, 0.1);
+  --hairline-strong: rgba(255, 255, 255, 0.2);
+  --grid-line: rgba(255, 255, 255, 0.03);
+
+  --chrome-stop-1: #ffffff;
+  --chrome-stop-2: #d1d5db;
+  --chrome-stop-3: #6b7280;
+  --chrome-stop-4: #111827;
+  --chrome-stop-5: #9ca3af;
+  --chrome-stop-6: #f3f4f6;
+
+  --carbon-base: #050505;
+  --carbon-weave: #080808;
+
+  /* Thin rim-light outline for flat raster assets (e.g. WheelSpinOverlay's
+     gif) whose own silhouette color can match the canvas closely enough in
+     one theme to lose its edge — a black tire on the near-black dark
+     canvas, for instance. --ink-faint exists for hairlines/dividers at a
+     much lower opacity; this needs to actually read as an edge. */
+  --raster-outline: rgba(255, 255, 255, 0.55);
+}
+
+/* Automotive/dealership-derived light palette (not an inverted dark theme):
+   a soft near-white canvas rather than stark #fff, deep slate ink rather
+   than pure black, brand red/blue accents held constant. */
+:root[data-theme="light"] {
+  --canvas: #f8fafc;
+  --surface: #ffffff;
+  --surface-alt: #f1f5f9;
+  --hover: rgba(15, 23, 42, 0.04);
+  --hover-strong: rgba(15, 23, 42, 0.08);
+  --ink: #0f172a;
+  --ink-muted: #475569;
+  --ink-subtle: #64748b;
+  --ink-faint: rgba(15, 23, 42, 0.25);
+  --hairline: rgba(15, 23, 42, 0.1);
+  --hairline-strong: rgba(15, 23, 42, 0.18);
+  --grid-line: rgba(15, 23, 42, 0.04);
+
+  /* Chrome text needs a darker sheen to read against a light surface —
+     the dark-mode gradient (white-heavy) would nearly disappear here. */
+  --chrome-stop-1: #1e293b;
+  --chrome-stop-2: #475569;
+  --chrome-stop-3: #94a3b8;
+  --chrome-stop-4: #0f172a;
+  --chrome-stop-5: #64748b;
+  --chrome-stop-6: #334155;
+
+  --carbon-base: #f8fafc;
+  --carbon-weave: #eef2f6;
+
+  --raster-outline: rgba(15, 23, 42, 0.32);
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; filter: blur(0px) drop-shadow(0 0 6px #3b82f6); }
+  50% { opacity: 1; filter: blur(0px) drop-shadow(0 0 18px #3b82f6) drop-shadow(0 0 40px #3b82f680); }
+}
+.animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
+
+@keyframes shimmer-x {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+.shimmer-card {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.06) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: none;
+}
+.shimmer-card:hover::after {
+  animation: shimmer-x 0.7s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInDown { animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.bg-carbon {
+  background-color: var(--carbon-base);
+  background-image:
+    linear-gradient(45deg, var(--carbon-weave) 25%, transparent 25%, transparent 75%, var(--carbon-weave) 75%, var(--carbon-weave)),
+    linear-gradient(45deg, var(--carbon-weave) 25%, transparent 25%, transparent 75%, var(--carbon-weave) 75%, var(--carbon-weave));
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+.text-chrome {
+  background: linear-gradient(
+    180deg,
+    var(--chrome-stop-1) 0%,
+    var(--chrome-stop-2) 40%,
+    var(--chrome-stop-3) 48%,
+    var(--chrome-stop-4) 50%,
+    var(--chrome-stop-5) 60%,
+    var(--chrome-stop-6) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Gradient text for large/bold brand-accent emphasis (headline spans,
+   stat numbers) — NOT for small text (badges, labels, hover states):
+   at small sizes a 2-stop gradient just reads as a color blob, and on the
+   dark canvas the --brand-black tail would fade close to invisible if the
+   glyphs aren't bold/large enough to carry it visually. Small accents
+   should stay solid var(--brand-red) instead — see design-token notes in
+   PrimaryCtaButton.tsx for the token pairing. */
+.text-gradient-brand {
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-black));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide the browser's own page scrollbar site-wide — scrolling itself
+   still works, just without the visible track/thumb chrome. */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Wherever the brand red-black gradient is used as a solid background
+   (buttons, badges, icon fills), this makes it "flow" on hover instead
+   of sitting static — an oversized 3-stop gradient sweeps across via
+   background-position rather than animating opacity/color directly,
+   which is what actually reads as motion instead of a flat color swap. */
+.brand-gradient-flow {
+  background-image: linear-gradient(
+    90deg,
+    var(--brand-red),
+    var(--brand-black),
+    var(--brand-red)
+  );
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  transition: background-position 0.6s var(--ease-brand, ease);
+}
+.brand-gradient-flow:hover {
+  background-position: 100% 0%;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes marquee-track {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation-name: marquee-track;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
+@keyframes route-progress-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(0.9); }
+}
+.animate-route-progress {
+  animation: route-progress-fill 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes textShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.animate-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--ink-subtle) 0%,
+    var(--ink) 50%,
+    var(--ink-subtle) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: textShimmer 3.5s ease-in-out infinite;
+}
+
+
