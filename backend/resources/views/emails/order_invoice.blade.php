@@ -255,7 +255,7 @@
 </head>
 <body>
   <div class="print-bar no-print">
-    <span style="font-size: 12px; color: #64748b;">Official Tax Invoice Document</span>
+    <span style="font-size: 12px; color: #64748b;">Tax Invoice</span>
     <button onclick="window.print()" class="print-btn">
       🖨️ Print / Save as PDF
     </button>
