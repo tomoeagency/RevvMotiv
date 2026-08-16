@@ -12,23 +12,24 @@
     }
     @page {
       size: A4 portrait;
-      margin: 12mm 12mm 12mm 12mm;
+      margin: 8mm;
     }
     @media print {
       html, body {
         background: #ffffff !important;
         padding: 0 !important;
         margin: 0 !important;
-        font-size: 10pt !important;
         width: 100% !important;
+        font-size: 10pt !important;
       }
       .invoice-container {
         box-shadow: none !important;
         border: none !important;
-        padding: 0 !important;
-        margin: 0 !important;
+        padding: 12mm 14mm !important;
+        margin: 0 auto !important;
         max-width: 100% !important;
         width: 100% !important;
+        box-sizing: border-box !important;
       }
       .no-print {
         display: none !important;
@@ -49,13 +50,14 @@
       -webkit-font-smoothing: antialiased;
     }
     .invoice-container {
-      max-width: 760px;
+      max-width: 740px;
       margin: 0 auto;
       background: #ffffff;
       border: 1px solid #cbd5e1;
       border-radius: 4px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       padding: 32px 36px;
+      box-sizing: border-box;
     }
     .header-table {
       width: 100%;
@@ -64,9 +66,9 @@
       margin-bottom: 20px;
     }
     .logo-cell {
-      width: 55%;
+      width: 52%;
       vertical-align: top;
-      padding-right: 15px;
+      padding-right: 12px;
     }
     .logo-title {
       font-size: 22px;
