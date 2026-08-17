@@ -49,10 +49,10 @@ export function TransformationSection() {
                 <Gauge className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
-                    Functional Aerodynamic Downforce
+                    Front Carbon Splitter & Winglets
                   </div>
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    CFD-tested front lips and rear diffusers add up to 45kg of high-speed downforce.
+                    Track-inspired carbon fiber front lip splitter with side winglets for aggressive low-slung road presence.
                   </div>
                 </div>
               </div>
@@ -61,10 +61,10 @@ export function TransformationSection() {
                 <Sparkles className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
-                    Pre-Preg Autoclaved Carbon Weave
+                    Forged Alloys & 3D Tyre Lettering
                   </div>
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    Ultra-lightweight 2x2 twill carbon fiber with deep high-gloss UV coat finish.
+                    Satin black multi-spoke forged performance wheels with permanent raised white RevvMotiv rubber tyre decals.
                   </div>
                 </div>
               </div>
@@ -73,10 +73,10 @@ export function TransformationSection() {
                 <CheckCircle2 className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
-                    Zero-Gap OEM Fitment Guarantee
+                    Piano Black De-Chrome & Roof Wrap
                   </div>
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    Direct bolt-on mounting to original factory bumper and fender clip points.
+                    Complete front grille blackout, smoked badge styling, side skirt extensions, and dual-tone gloss black roof.
                   </div>
                 </div>
               </div>
