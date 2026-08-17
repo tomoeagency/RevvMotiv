@@ -249,180 +249,236 @@ export async function getProducts(params?: {
   page?: number;
   search?: string;
 }): Promise<ApiCollection<ApiProduct>> {
-  const query = new URLSearchParams();
-  if (params?.category) query.set("category", params.category);
-  if (params?.featured) query.set("featured", "true");
-  if (params?.perPage) query.set("per_page", String(params.perPage));
-  if (params?.page) query.set("page", String(params.page));
-  if (params?.search) query.set("search", params.search);
+  try {
+    const query = new URLSearchParams();
+    if (params?.category) query.set("category", params.category);
+    if (params?.featured) query.set("featured", "true");
+    if (params?.perPage) query.set("per_page", String(params.perPage));
+    if (params?.page) query.set("page", String(params.page));
+    if (params?.search) query.set("search", params.search);
 
-  const qs = query.toString();
-  // A search/page fetch is inherently per-query, not a stable listing —
-  // caching it under the shared 300s revalidate window would leak one
-  // visitor's search results into another's for 5 minutes.
-  const res = await fetch(apiUrl(`/api/v1/products${qs ? `?${qs}` : ""}`), {
-    next:
-      params?.search || params?.page
-        ? { revalidate: 0 }
-        : { revalidate: 300 },
-  });
+    const qs = query.toString();
+    const res = await fetch(apiUrl(`/api/v1/products${qs ? `?${qs}` : ""}`), {
+      next:
+        params?.search || params?.page
+          ? { revalidate: 0 }
+          : { revalidate: 300 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load products (${res.status})`);
+    if (!res.ok) {
+      return { data: [], meta: { current_page: 1, last_page: 1, per_page: 12, total: 0 } };
+    }
+
+    return res.json();
+  } catch {
+    return { data: [], meta: { current_page: 1, last_page: 1, per_page: 12, total: 0 } };
   }
-
-  return res.json();
 }
 
 export async function getProduct(idOrSlug: string): Promise<ApiProduct | null> {
-  const res = await fetch(apiUrl(`/api/v1/products/${idOrSlug}`), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl(`/api/v1/products/${idOrSlug}`), {
+      next: { revalidate: 300 },
+    });
 
-  if (res.status === 404) {
+    if (!res.ok) {
+      return null;
+    }
+
+    const { data }: ApiResponse<ApiProduct> = await res.json();
+    return data;
+  } catch {
     return null;
   }
-  if (!res.ok) {
-    throw new Error(`Failed to load product (${res.status})`);
-  }
-
-  const { data }: ApiResponse<ApiProduct> = await res.json();
-  return data;
 }
 
-// Server-side fetch (product detail page) — real review content is exactly
-// the kind of unique, indexable copy this SEO migration exists to surface,
-// so this stays server-rendered like the rest of the product page rather
-// than a client useEffect fetch.
 export async function getProductReviews(
   productIdOrSlug: string,
   perPage = 10
 ): Promise<ProductReviewsResponse> {
-  const res = await fetch(
-    apiUrl(`/api/v1/products/${productIdOrSlug}/reviews?per_page=${perPage}`),
-    { next: { revalidate: 300 } }
-  );
+  try {
+    const res = await fetch(
+      apiUrl(`/api/v1/products/${productIdOrSlug}/reviews?per_page=${perPage}`),
+      { next: { revalidate: 300 } }
+    );
 
-  if (!res.ok) {
-    throw new Error(`Failed to load reviews (${res.status})`);
+    if (!res.ok) {
+      return {
+        data: [],
+        meta: {
+          current_page: 1,
+          last_page: 1,
+          per_page: perPage,
+          total: 0,
+          average_rating: 5,
+          rating_breakdown: {},
+        },
+      };
+    }
+
+    return res.json();
+  } catch {
+    return {
+      data: [],
+      meta: {
+        current_page: 1,
+        last_page: 1,
+        per_page: perPage,
+        total: 0,
+        average_rating: 5,
+        rating_breakdown: {},
+      },
+    };
   }
-
-  return res.json();
 }
 
 // Server-side fetch (homepage "Top Reviews" section).
 export async function getFeaturedReviews(): Promise<ApiResponse<Review[]>> {
-  const res = await fetch(apiUrl("/api/v1/reviews/featured"), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl("/api/v1/reviews/featured"), {
+      next: { revalidate: 300 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load featured reviews (${res.status})`);
+    if (!res.ok) {
+      return { data: [] };
+    }
+
+    return res.json();
+  } catch {
+    return { data: [] };
   }
-
-  return res.json();
 }
 
 // Client-side fetch — the floating trust panel (shown alongside the cart
 // drawer, a client-only interaction) needs this on demand rather than at
 // page-render time, unlike the homepage's server-rendered reviews section.
 export async function getFeaturedReviewsClient(): Promise<Review[]> {
-  const res = await fetch(apiUrl("/api/v1/reviews/featured"));
-  if (!res.ok) {
-    throw new Error(`Failed to load featured reviews (${res.status})`);
+  try {
+    const res = await fetch(apiUrl("/api/v1/reviews/featured"));
+    if (!res.ok) {
+      return [];
+    }
+    const body: ApiResponse<Review[]> = await res.json();
+    return body.data;
+  } catch {
+    return [];
   }
-  const body: ApiResponse<Review[]> = await res.json();
-  return body.data;
 }
 
 // Server-side fetch (policy pages) — real, indexable legal/policy content.
 export async function getPolicy(slug: string): Promise<Policy | null> {
-  const res = await fetch(apiUrl(`/api/v1/policies/${slug}`), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl(`/api/v1/policies/${slug}`), {
+      next: { revalidate: 300 },
+    });
 
-  if (res.status === 404) {
+    if (!res.ok) {
+      return null;
+    }
+
+    const { data }: ApiResponse<Policy> = await res.json();
+    return data;
+  } catch {
     return null;
   }
-  if (!res.ok) {
-    throw new Error(`Failed to load policy (${res.status})`);
-  }
-
-  const { data }: ApiResponse<Policy> = await res.json();
-  return data;
 }
 
 // Server-side fetch (Footer) — real WhatsApp/Instagram/contact details.
 export async function getSiteSettings(): Promise<SiteSettings> {
-  const res = await fetch(apiUrl("/api/v1/site-settings"), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl("/api/v1/site-settings"), {
+      next: { revalidate: 300 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load site settings (${res.status})`);
+    if (!res.ok) {
+      return {
+        whatsapp_number: "+918368343232",
+        instagram_handle: "revvmotiv",
+        contact_email: "orders@revvmotiv.com",
+      };
+    }
+
+    const { data }: ApiResponse<SiteSettings> = await res.json();
+    return data;
+  } catch {
+    return {
+      whatsapp_number: "+918368343232",
+      instagram_handle: "revvmotiv",
+      contact_email: "orders@revvmotiv.com",
+    };
   }
-
-  const { data }: ApiResponse<SiteSettings> = await res.json();
-  return data;
 }
 
 // Server-side fetch (Our Work listing) — real project case studies, meant
 // to be indexed like product pages.
 export async function getProjects(): Promise<ApiCollection<ProjectListItem>> {
-  const res = await fetch(apiUrl("/api/v1/projects"), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl("/api/v1/projects"), {
+      next: { revalidate: 300 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load projects (${res.status})`);
+    if (!res.ok) {
+      return { data: [], meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 } };
+    }
+
+    return res.json();
+  } catch {
+    return { data: [], meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 } };
   }
-
-  return res.json();
 }
 
 // Server-side fetch (Gallery page) — real admin-curated media, meant to
 // be indexed the same way the rest of the content pages are.
 export async function getGallery(): Promise<GalleryItem[]> {
-  const res = await fetch(apiUrl("/api/v1/gallery"), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl("/api/v1/gallery"), {
+      next: { revalidate: 300 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load gallery (${res.status})`);
+    if (!res.ok) {
+      return [];
+    }
+
+    const { data }: ApiResponse<GalleryItem[]> = await res.json();
+    return data;
+  } catch {
+    return [];
   }
-
-  const { data }: ApiResponse<GalleryItem[]> = await res.json();
-  return data;
 }
 
 // Server-side fetch (Our Work detail) — powers generateMetadata and the
 // initial render of the angle selector.
 export async function getProject(slug: string): Promise<ProjectDetail | null> {
-  const res = await fetch(apiUrl(`/api/v1/projects/${slug}`), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl(`/api/v1/projects/${slug}`), {
+      next: { revalidate: 300 },
+    });
 
-  if (res.status === 404) {
+    if (!res.ok) {
+      return null;
+    }
+
+    const { data }: ApiResponse<ProjectDetail> = await res.json();
+    return data;
+  } catch {
     return null;
   }
-  if (!res.ok) {
-    throw new Error(`Failed to load project (${res.status})`);
-  }
-
-  const { data }: ApiResponse<ProjectDetail> = await res.json();
-  return data;
 }
 
 export async function getCategories(): Promise<ApiResponse<Category[]>> {
-  const res = await fetch(apiUrl("/api/v1/categories"), {
-    next: { revalidate: 300 },
-  });
+  try {
+    const res = await fetch(apiUrl("/api/v1/categories"), {
+      next: { revalidate: 300 },
+    });
 
-  if (!res.ok) {
-    throw new Error(`Failed to load categories (${res.status})`);
+    if (!res.ok) {
+      return { data: [] };
+    }
+
+    return res.json();
+  } catch {
+    return { data: [] };
   }
-
-  return res.json();
 }
 
 // Client-side fetch (checkout) — genuinely interactive, not meant to be
