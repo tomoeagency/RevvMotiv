@@ -26,18 +26,27 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
-    // TODO: remove once product/hero images come from the real backend/CDN —
-    // Unsplash is only used for ai-studio-source placeholder data.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
       {
-        // Review photos/videos (and eventually product media) come from
-        // Cloudinary per the backend's media-storage convention.
         protocol: "https",
         hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "api.revvmotiv.com",
+      },
+      {
+        protocol: "http",
+        hostname: "3xe.b8b.mytemp.website",
+      },
+      {
+        protocol: "https",
+        hostname: "3xe.b8b.mytemp.website",
       },
     ],
   },
