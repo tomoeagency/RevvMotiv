@@ -8,7 +8,32 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/checkout", "/cart", "/order-confirmation/"],
+        disallow: [
+          "/admin/",
+          "/api/",
+          "/checkout",
+          "/cart",
+          "/order-confirmation/",
+        ],
+      },
+      {
+        userAgent: [
+          "GPTBot",
+          "ChatGPT-User",
+          "PerplexityBot",
+          "ClaudeBot",
+          "anthropic-ai",
+          "Google-Extended",
+          "Applebot-Extended",
+        ],
+        allow: ["/", "/llms.txt", "/llms-full.txt"],
+        disallow: [
+          "/admin/",
+          "/api/",
+          "/checkout",
+          "/cart",
+          "/order-confirmation/",
+        ],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
