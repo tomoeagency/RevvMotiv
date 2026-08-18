@@ -52,10 +52,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${inter.variable} h-full antialiased`}
+      className={`${orbitron.variable} ${inter.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-carbon font-sans text-ink">
+      <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink">
         <Script id="theme-init" strategy="beforeInteractive">
           {`try {
             if (localStorage.getItem("revvmotiv-theme") === "light") {
