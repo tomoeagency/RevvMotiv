@@ -50,6 +50,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "http",
+        hostname: "api.revvmotiv.com",
+      },
+      {
+        protocol: "http",
         hostname: "3xe.b8b.mytemp.website",
       },
       {
