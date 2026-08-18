@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShieldCheck } from "lucide-react";
@@ -5,12 +8,16 @@ import type { Review } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
 
 function ReviewCard({ review }: { review: Review }) {
+  const photoUrl = review.media_urls && Array.isArray(review.media_urls) && review.media_urls.length > 0
+    ? review.media_urls[0]
+    : null;
+
   return (
     <div className="group/card relative z-0 hover:z-20 flex-none w-[300px] bg-surface border border-hairline overflow-hidden rounded-2xl flex flex-col shadow-lg transition-all duration-500 ease-[var(--ease-brand)] hover:scale-[1.04] hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/15 hover:border-red-500/40">
-      {review.media_urls[0] && (
+      {photoUrl && (
         <div className="relative w-full h-[280px] bg-surface-alt overflow-hidden">
           <Image
-            src={review.media_urls[0]}
+            src={photoUrl}
             alt={`Photo from ${review.customer_name}'s review`}
             fill
             sizes="300px"
@@ -45,8 +52,21 @@ function ReviewCard({ review }: { review: Review }) {
   );
 }
 
-export function FeaturedReviews({ reviews }: { reviews: Review[] }) {
-  if (reviews.length === 0) return null;
+export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Review[] }) {
+  const [reviews, setReviews] = useState<Review[]>(initialReviews || []);
+
+  useEffect(() => {
+    fetch("/api/v1/reviews/featured")
+      .then((res) => (res.ok ? res.json() : { data: [] }))
+      .then((body) => {
+        if (body.data && Array.isArray(body.data) && body.data.length > 0) {
+          setReviews(body.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  if (!reviews || reviews.length === 0) return null;
   const canLoop = reviews.length >= 4;
 
   return (
