@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         source: "/api/:path*",
         destination: "http://api.revvmotiv.com/api/:path*",
       },
+      {
+        source: "/uploads/:path*",
+        destination: "http://api.revvmotiv.com/uploads/:path*",
+      },
     ];
   },
   async redirects() {

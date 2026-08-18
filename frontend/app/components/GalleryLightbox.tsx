@@ -98,7 +98,7 @@ export function GalleryLightbox({
             {item.media_type === "video" ? (
               // eslint-disable-next-line jsx-a11y/media-has-caption
               <video
-                src={item.media_url}
+                src={item.media_url.replace(/^https?:\/\/api\.revvmotiv\.com/, '')}
                 controls
                 autoPlay
                 className="max-w-full max-h-[75vh] bg-black rounded-xl"
@@ -111,7 +111,7 @@ export function GalleryLightbox({
               // pipeline just for this.
               // eslint-disable-next-line @next/next/no-img-element
               <img
-                src={item.media_url}
+                src={item.media_url.replace(/^https?:\/\/api\.revvmotiv\.com/, '')}
                 alt={item.caption ?? ""}
                 className="max-w-full max-h-[75vh] object-contain rounded-xl"
               />
