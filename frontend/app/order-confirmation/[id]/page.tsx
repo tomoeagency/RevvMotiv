@@ -211,7 +211,7 @@ function OrderStatus({
                 <span className="text-ink-muted">Invoice sent to email</span>
                 <span className="text-ink-subtle">·</span>
                 <a
-                  href={`http://127.0.0.1:8000/api/v1/orders/${order.id}/invoice`}
+                  href={`/api/v1/orders/${order.id}/invoice`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors cursor-pointer"
@@ -233,13 +233,13 @@ function OrderStatus({
           <div className="grid grid-cols-3 gap-3">
             <div className="border-l-2 border-red-500 pl-2">
               <span className="text-[9px] font-black text-red-500 uppercase tracking-widest block">
-                01. QA
+                01. Quality Check
               </span>
               <span className="text-[11px] font-bold text-ink uppercase block leading-tight">
-                Workshop Pre-fit
+                Workshop Inspection
               </span>
               <p className="text-[10px] text-ink-muted leading-tight mt-0.5">
-                Laser finish check
+                Alignment & finish check
               </p>
             </div>
             <div className="border-l-2 border-hairline-strong pl-2">
@@ -247,10 +247,10 @@ function OrderStatus({
                 02. Dispatch
               </span>
               <span className="text-[11px] font-bold text-ink uppercase block leading-tight">
-                Express Cargo
+                Secure Packaging
               </span>
               <p className="text-[10px] text-ink-muted leading-tight mt-0.5">
-                Crated & tracked
+                Corner-padded & tracked
               </p>
             </div>
             <div className="border-l-2 border-hairline-strong pl-2">
@@ -258,10 +258,10 @@ function OrderStatus({
                 03. Delivery
               </span>
               <span className="text-[11px] font-bold text-ink uppercase block leading-tight">
-                COD Handover
+                Doorstep Delivery
               </span>
               <p className="text-[10px] text-ink-muted leading-tight mt-0.5">
-                Pay {formatPrice(order.remaining_amount)}
+                Inspect parcel condition
               </p>
             </div>
           </div>

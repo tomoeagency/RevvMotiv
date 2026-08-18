@@ -8,85 +8,85 @@ import { ArrowRight, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
 const PLATFORMS = [
   {
     id: "verna",
-    name: "Hyundai Verna (2019)",
-    tagline: "Stealth Shadow Carbon Edition",
+    name: "Hyundai Verna",
+    tagline: "Stealth Blackout Styling Kit",
     image: "/images/projects/verna_cover.webp",
-    badge: "Sedan Aero",
+    badge: "Sedan Styling",
     parts: [
       "Front Carbon Lip Splitter",
-      "De-Chromed Cascading Grille",
-      "Quad-Fin Diffuser + Quad Tips",
-      "Forged Alloys + 3D Tyre Stickers",
+      "De-Chromed Front Grille",
+      "Quad-Fin Rear Diffuser",
+      "Satin Black Alloy Styling",
     ],
     link: "/work/2019-hyundai-verna-stealth-aero-edition",
   },
   {
     id: "sonet",
-    name: "Kia Sonet GT-Line (2025)",
-    tagline: "Wide Aero & Carbon Package",
+    name: "Kia Sonet",
+    tagline: "GT-Line Aero Styling Kit",
     image: "/images/projects/sonet_cover.webp",
     badge: "Compact SUV",
     parts: [
-      "Carbon Splitter with Aero Winglets",
-      "Floating Gloss Black Roof Wrap",
+      "Front Splitter with Winglets",
+      "Dual-Tone Roof Styling",
       "Rally Roof Wing Spoiler",
-      "Deep Multi-Fin Rear Diffuser",
+      "Deep-Fin Rear Diffuser",
     ],
     link: "/work/2025-kia-sonet-gt-line-aero-package",
   },
   {
     id: "tiago",
-    name: "Tata Tiago (2023)",
-    tagline: "JTP-Inspired Track Hatch Build",
+    name: "Tata Tiago",
+    tagline: "Street Sport Aero Package",
     image: "/images/projects/tiago_cover.webp",
-    badge: "Hot Hatch",
+    badge: "Hatchback",
     parts: [
-      "High-Downforce Splitter + Struts",
-      "Carbon Fiber Rally Roof Wing",
-      "Center Dual-Exit Diffuser",
-      "Motorsport Alloys + White Letters",
+      "Front Lip Splitter + Tie Rods",
+      "Sport Roof Spoiler Wing",
+      "Dual-Exit Rear Diffuser",
+      "Custom White Tyre Lettering",
     ],
     link: "/work/2023-tata-tiago-jtp-track-look-build",
   },
   {
     id: "swift",
-    name: "Maruti Suzuki Swift (2023)",
-    tagline: "Track Look Aero & Interior Kit",
+    name: "Maruti Suzuki Swift",
+    tagline: "Full Street Aero Kit",
     image: "/images/projects/swift_cover.png",
-    badge: "Tuner Hatch",
+    badge: "Hatchback",
     parts: [
-      "V-Style Carbon Front Lip",
+      "V-Style Front Bumper Lip",
       "Side Skirt Extensions",
       "Quad-Fin Rear Diffuser",
-      "Custom 3D Tyre Lettering",
+      "Raised Tyre Lettering",
     ],
     link: "/work/2023-maruti-swift-full-aero-kit",
   },
   {
     id: "i20",
     name: "Hyundai i20 / N Line",
-    tagline: "Fiery Blackout Aero Package",
+    tagline: "Blackout Performance Styling",
     image: "/images/projects/i20_cover.png",
-    badge: "N-Line Turbo",
+    badge: "Hot Hatch",
     parts: [
-      "Gloss Black Grille Surround",
-      "Forged Carbon Mirror Caps",
-      "Sequential OLED Tail Lights",
-      "Satin Black Roof Wrap",
+      "Gloss Black Grille Trim",
+      "Carbon Finish Mirror Covers",
+      "Sequential LED Tail Lights",
+      "Roof Blackout Styling",
     ],
     link: "/work/hyundai-i20-n-line-blackout-package",
   },
   {
     id: "polo",
     name: "Volkswagen Polo GT",
-    tagline: "GT Track Performance Build",
+    tagline: "GT Street Styling Build",
     image: "/images/projects/polo_cover.png",
-    badge: "Euro Spec",
+    badge: "Euro Hatch",
     parts: [
       "GT Rear Wing Spoiler",
-      "ABS Front Chin Splitter",
-      "White Cut Tyre Lettering",
-      "Sound Stage Audio Upgrade",
+      "Front Chin Lip Splitter",
+      "Permanent Tyre Stickers",
+      "Upgraded Audio Stage",
     ],
     link: "/work/volkswagen-polo-gt-track-look-build",
   },
@@ -152,13 +152,13 @@ export function PlatformSelectorSection() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-black uppercase tracking-widest mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            Vehicle Tuner Platforms
+            Popular Indian Cars
           </div>
           <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-ink">
-            Select Your Platform
+            Choose Your Car
           </h2>
           <p className="text-sm text-ink-muted max-w-lg mt-2 font-medium">
-            Explore precision-engineered aerodynamic packages tailored for popular Indian and global chassis.
+            Explore custom aerodynamic and styling packages made for popular Indian hatchbacks, sedans, and SUVs.
           </p>
         </div>
 

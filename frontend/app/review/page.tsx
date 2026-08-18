@@ -22,18 +22,18 @@ import type { ApiProduct } from "@/lib/api";
 const HIGHLIGHTS = [
   {
     icon: Award,
-    title: "Official Garage Spotlight",
-    desc: "Approved builds are featured on our website showcase and official Instagram page.",
+    title: "Workshop Build Showcase",
+    desc: "Approved customer build photos are featured on our website showcase and official Instagram page.",
   },
   {
     icon: ShieldCheck,
-    title: "100% Genuine Fitment Reviews",
-    desc: "Real feedback from actual Indian drivers helps our engineering team refine aero precision.",
+    title: "Authentic Driver Feedback",
+    desc: "Real feedback from car owners helps fellow enthusiasts choose the right fitment.",
   },
   {
     icon: Flame,
-    title: "Earn Garage Cred & Exclusive Perks",
-    desc: "Top documented builds receive early access to upcoming carbon parts & trackday invites.",
+    title: "Community Feature",
+    desc: "Get your car documented with high-definition photos and credited across our social channels.",
   },
 ];
 

@@ -313,9 +313,9 @@
         <td class="logo-cell">
           <h1 class="logo-title">REVV<span>MOTIV</span></h1>
           <div class="company-info">
-            <strong>RevvMotiv Performance & Styling Garage</strong><br>
+            <strong>RevvMotiv Automotive Garages</strong><br>
             New Delhi, Delhi 110001, India<br>
-            Email: orders@revvmotiv.com | Tel: +91 83683 43232<br>
+            Email: support@revvmotiv.com | Tel: +91 83683 43232<br>
             GSTIN / Reg: 07AAACR9988M1ZP
           </div>
         </td>

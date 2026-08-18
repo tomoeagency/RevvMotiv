@@ -9,6 +9,7 @@ import { formatPrice } from "@/lib/api";
 import { useCart, MAX_CART_QUANTITY } from "@/lib/cart-context";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
+import { useLenis } from "@/app/components/SmoothScrollProvider";
 
 export function CartDrawer() {
   const {
@@ -21,26 +22,30 @@ export function CartDrawer() {
     removeItem,
   } = useCart();
 
-  // Body scroll lock + Escape-to-close while the drawer is open — without
-  // the lock, the backdrop reads as decorative and the page underneath
-  // visibly scrolls with it, which feels broken even though the drawer
-  // itself is fixed-positioned.
-  useEffect(() => {
-    if (!isDrawerOpen) return;
+  const lenis = useLenis();
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+  // Pause Lenis smooth scroll while drawer is open, resume when it closes.
+  // Using lenis.stop()/start() instead of body.overflow so the Lenis RAF
+  // loop stays intact and scroll resumes cleanly without getting stuck.
+  useEffect(() => {
+    if (isDrawerOpen) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
 
     function handleKeydown(e: KeyboardEvent) {
       if (e.key === "Escape") closeDrawer();
     }
-    document.addEventListener("keydown", handleKeydown);
+
+    if (isDrawerOpen) {
+      document.addEventListener("keydown", handleKeydown);
+    }
 
     return () => {
-      document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", handleKeydown);
     };
-  }, [isDrawerOpen, closeDrawer]);
+  }, [isDrawerOpen, closeDrawer, lenis]);
 
   return (
     <AnimatePresence>
@@ -77,12 +82,13 @@ export function CartDrawer() {
             {items.length === 0 ? (
               <div className="flex-1 flex flex-col items-center justify-center gap-4 px-6 text-center">
                 <p className="text-sm text-ink-muted">Your cart is empty.</p>
+                <p className="text-xs text-ink-subtle max-w-xs">Explore our catalog to find custom styling parts for your car.</p>
                 <Link
                   href="/shop"
                   onClick={closeDrawerForNavigation}
                   className="text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-red-500 pb-1"
                 >
-                  Continue Shopping
+                  Browse Catalog
                 </Link>
               </div>
             ) : (

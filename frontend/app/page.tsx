@@ -32,8 +32,8 @@ export default async function Home() {
       <FeaturedReviews reviews={featuredReviews} />
       <ReelsSection />
       <ClosingCta
-        heading="Ready to Build Your Car?"
-        body="Browse our carbon aero catalog or speak directly with our master technicians for fitment advice."
+        heading="Ready to Upgrade Your Car's Look?"
+        body="Browse our styling catalog or speak directly with our workshop team for fitment advice."
       />
     </>
   );

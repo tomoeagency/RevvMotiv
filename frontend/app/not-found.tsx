@@ -21,22 +21,22 @@ export default function NotFound() {
         <div className="flex flex-col items-start text-left order-2 lg:order-1">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 font-bold text-xs uppercase tracking-widest mb-6">
             <AlertCircle className="w-4 h-4" />
-            Violation Detected
+            Page Not Found
           </div>
           
           <h1 className="text-5xl sm:text-7xl lg:text-[80px] font-black uppercase tracking-tighter text-ink leading-[0.9] drop-shadow-2xl mb-6">
             404 <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-red-700 to-black dark:to-zinc-800">
-              Busted!
+              Off Track
             </span>
           </h1>
           
           <p className="text-xl sm:text-2xl text-ink-muted font-bold tracking-tight mb-4">
-            Woop Woop! You took a wrong turn.
+            Looks like you took a wrong turn.
           </p>
           
           <p className="text-base text-ink-subtle leading-relaxed max-w-xl mb-10">
-            The page you are looking for has been pulled over for speeding, or it simply doesn't exist anymore. Time to turn the car around and get back on the track.
+            The page or component you are looking for has been moved, renamed, or is currently unavailable in our garage. Let's get you back on the road.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -45,14 +45,14 @@ export default function NotFound() {
               className="group relative flex items-center justify-center gap-3 px-8 py-4 bg-ink text-canvas font-bold uppercase tracking-widest text-sm rounded hover:scale-105 transition-transform shadow-xl"
             >
               <Home className="w-5 h-5" />
-              Return to Base
+              Back to Home
             </Link>
             <Link 
               href="/shop"
               className="group relative flex items-center justify-center gap-3 px-8 py-4 border border-hairline-strong text-ink font-bold uppercase tracking-widest text-sm rounded hover:bg-hover transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              Check the Garage
+              Browse Shop
             </Link>
           </div>
         </div>

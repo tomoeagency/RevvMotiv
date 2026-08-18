@@ -8,57 +8,57 @@ import { ClosingCta } from "@/app/components/ClosingCta";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 export const metadata: Metadata = {
-  title: "About Us — RevvMotiv | Precision Automotive Aero & Carbon Fiber",
+  title: "About Us — RevvMotiv | Custom Car Styling & Aero Workshop",
   description:
-    "RevvMotiv designs, sources, and installs carbon fiber styling and aerodynamic components for drivers across India who expect more than stock.",
+    "Learn about RevvMotiv — an Indian automotive styling workshop dedicated to precision-fit carbon fiber parts, aerodynamic splitters, and custom exterior upgrades.",
 };
 
 const PILLARS = [
   {
     number: "01",
     icon: Cpu,
-    title: "3D Laser Scan Fitment",
-    body: "Every splitter, diffuser, and spoiler is molded from 1:1 3D laser chassis scans of original vehicles to guarantee exact OEM mounting alignment.",
+    title: "1:1 Vehicle Fitment",
+    body: "Every splitter, diffuser, and spoiler is designed around factory bumper lines so that parts mount cleanly on OEM points without cutting.",
   },
   {
     number: "02",
     icon: ShieldCheck,
-    title: "Pre-Preg Carbon Fiber",
-    body: "Vacuum autoclaved 2x2 twill and forged carbon composite weave engineered for ultra-lightweight rigidity and deep UV clear-coat protection.",
+    title: "Durable Materials",
+    body: "High-grade real carbon weave and impact-resistant ABS polymers, finished with deep UV-protective clear coats that withstand Indian heat and road dust.",
   },
   {
     number: "03",
     icon: Wrench,
-    title: "In-House Master Fitting",
-    body: "We don't drop-ship. Every build component is inspected, pre-fitted, and installed inside our own clean studio workshop by certified technicians.",
+    title: "In-House Quality Check",
+    body: "We inspect every part for finish and alignment before it is packaged and dispatched, ensuring you get exactly what you ordered.",
   },
   {
     number: "04",
     icon: Gauge,
-    title: "Track & Street Tested",
-    body: "Aerodynamically profiled for genuine high-speed downforce and built tough enough to withstand daily Indian road conditions.",
+    title: "Safe Pan-India Shipping",
+    body: "Every order is packaged with heavy-duty corner protection and dispatched via trusted courier partners with live tracking updates.",
   },
 ] as const;
 
 const METRICS = [
-  { value: "1,500+", label: "Custom Builds Fitted" },
-  { value: "100%", label: "OEM Fitment Guarantee" },
-  { value: "45+", label: "Cities Served Nationwide" },
-  { value: "4.9/5", label: "Driver Rating" },
+  { value: "100%", label: "Fitment Guarantee" },
+  { value: "Direct", label: "Bolt-On Mounting" },
+  { value: "Pan-India", label: "Tracked Delivery" },
+  { value: "Expert", label: "WhatsApp Support" },
 ] as const;
 
-const LEADERSHIP = [
+const WORKSHOP_HIGHLIGHTS = [
   {
-    name: "Vikramaditya Roy",
-    role: "Chief Aerodynamicist & Lead Architect",
-    bio: "Former motorsport vehicle dynamics engineer with 10+ years specializing in carbon fiber composite airflow modeling and downforce optimization.",
-    image: "/images/about/founder_vikram.png",
+    title: "The Workshop Build Team",
+    role: "Crafting & Assembly",
+    bio: "Our hands-on workshop team specializes in exterior styling, composite finishing, and custom car transformations for popular Indian platforms.",
+    image: "/images/about/workshop.png",
   },
   {
-    name: "Kabir Sharma",
-    role: "Head of Composite Engineering & 3D Fitment",
-    bio: "Pioneer in 1:1 3D chassis laser scanning and autoclaved pre-preg carbon manufacturing, ensuring zero-gap OEM mounting on every customer build.",
-    image: "/images/about/founder_kabir.png",
+    title: "Technical Fitment Desk",
+    role: "Consultation & Support",
+    bio: "Got questions on bumper compatibility, ground clearance, or installation? Our technicians guide you one-on-one before you place an order.",
+    image: "/images/about/fitting.png",
   },
 ] as const;
 
@@ -74,25 +74,28 @@ export default async function AboutPage() {
         <div className="relative max-w-screen-2xl mx-auto px-6 py-12 md:py-16">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7">
+              <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
+                Our Garage Story
+              </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
-                Born for the track. <br />
-                <span className="text-red-500">Engineered for the street.</span>
+                Built for enthusiasts. <br />
+                <span className="text-red-500">Made for Indian streets.</span>
               </h1>
               <p className="text-ink-muted text-base md:text-lg max-w-2xl leading-relaxed mb-8">
-                RevvMotiv was founded by motorsport enthusiasts to bring true precision aero, carbon fiber styling, and track-tested performance components to India&apos;s tuning culture — designed, sourced, and fitted in-house.
+                RevvMotiv was founded by passionate car enthusiasts to bring clean styling, precision-fit aerodynamic splitters, and quality carbon accessories to India&apos;s tuning community — without the guesswork or poor fitment.
               </p>
               <div className="flex flex-wrap gap-4">
                 <PrimaryCtaLink
-                  href="/work"
+                  href="/shop"
                   className="px-8 py-3.5 text-xs inline-flex items-center justify-center"
                 >
-                  Explore Our Work
+                  Browse Catalog
                 </PrimaryCtaLink>
                 <Link
-                  href="/products"
+                  href="/work"
                   className="px-8 py-3.5 bg-surface hover:bg-surface-alt border border-hairline text-ink font-bold text-xs uppercase tracking-widest rounded transition-colors inline-flex items-center justify-center"
                 >
-                  Shop Catalog
+                  View Builds
                 </Link>
               </div>
             </div>
@@ -101,7 +104,7 @@ export default async function AboutPage() {
               <div className="relative aspect-[4/3] rounded-lg border border-hairline bg-surface overflow-hidden shadow-2xl">
                 <Image
                   src="/images/about/hero.png"
-                  alt="RevvMotiv clean white studio workshop"
+                  alt="RevvMotiv workshop tuning bay"
                   fill
                   priority
                   sizes="(min-width: 1024px) 40vw, 100vw"
@@ -110,9 +113,9 @@ export default async function AboutPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                 <div className="absolute bottom-4 left-4 right-4 p-3 bg-black/60 backdrop-blur border border-white/10 rounded text-xs text-white">
                   <span className="font-bold text-red-500 uppercase tracking-wider block mb-0.5">
-                    RevvMotiv HQ Workshop
+                    RevvMotiv Workshop
                   </span>
-                  Clean white-light studio tuning bay & fitting center.
+                  Custom styling, fitment checks, and quality inspections.
                 </div>
               </div>
             </div>
@@ -120,12 +123,12 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* 2. Key Impact Metrics Band */}
+      {/* 2. Key Standards Band */}
       <section className="border-b border-hairline bg-surface-alt py-12">
         <div className="max-w-screen-2xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {METRICS.map((metric) => (
             <div key={metric.label} className="p-4">
-              <div className="text-3xl md:text-5xl font-black text-ink tracking-tight mb-1">
+              <div className="text-2xl md:text-4xl font-black text-ink tracking-tight mb-1">
                 {metric.value}
               </div>
               <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
@@ -136,13 +139,13 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* 3. Our Story & Engineering Craftsmanship */}
+      {/* 3. Our Craftsmanship */}
       <section className="max-w-screen-2xl mx-auto px-6 py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="relative aspect-[4/3] rounded-lg border border-hairline bg-surface overflow-hidden">
             <Image
               src="/images/about/workshop.png"
-              alt="Master technician inspecting carbon splitter with 3D scanner"
+              alt="Quality check on carbon splitter"
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
               className="object-cover object-center"
@@ -150,57 +153,57 @@ export default async function AboutPage() {
           </div>
           <div>
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
-              Engineering Craftsmanship
+              Our Craft & Approach
             </span>
             <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight mb-6">
-              No stock renders. <br /> No guesswork fitment.
+              Tested fitment. <br /> Zero guesswork.
             </h2>
             <p className="text-ink-muted text-base md:text-lg leading-relaxed mb-6">
-              We build and fit performance-styling parts — splitters, diffusers, spoilers, lighting, and interior tech — for drivers across India who want their car to look and sound as sharp as it drives. Every product on this site comes through our own hands before it ships or gets installed.
+              We design and curate exterior styling parts — splitters, diffusers, spoilers, and lighting — for drivers who want their cars to look sharper and stand out. Every part in our store is checked against factory bumper dimensions for proper mounting.
             </p>
             <p className="text-ink-muted text-base md:text-lg leading-relaxed mb-8">
-              Unlike generic drop-shippers who use stock renders, everything documented on our site represents real customer builds fitted directly inside our workshop with millimeter precision.
+              We believe in honest craftsmanship. What you see documented on our website represents real customer builds, photographed and fitted directly on Indian cars.
             </p>
             <div className="flex items-center gap-6 border-t border-hairline pt-6">
               <div>
-                <div className="text-sm font-bold text-ink uppercase">Nationwide Express</div>
-                <div className="text-xs text-ink-muted">Inspected & tracked from garage to door</div>
+                <div className="text-sm font-bold text-ink uppercase">Pan-India Delivery</div>
+                <div className="text-xs text-ink-muted">Carefully packed & tracked to your door</div>
               </div>
               <div className="h-8 w-px bg-hairline" />
               <div>
-                <div className="text-sm font-bold text-ink uppercase">Master Technicians</div>
-                <div className="text-xs text-ink-muted">Fitted by experienced automotive builders</div>
+                <div className="text-sm font-bold text-ink uppercase">WhatsApp Advice</div>
+                <div className="text-xs text-ink-muted">Confirm compatibility before you order</div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Leadership & Master Architects Section */}
+      {/* 4. The Workshop Team */}
       <section className="border-t border-hairline bg-surface-alt py-24">
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
-              Leadership & Master Architects
+              Behind The Scenes
             </span>
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-4">
-              The Engineering Minds
+              The RevvMotiv Team
             </h2>
             <p className="text-ink-muted text-sm md:text-base">
-              Combining motorsport aerodynamics with 3D laser precision to set a new benchmark for Indian automotive tuning.
+              Dedicated car enthusiasts and technicians focused on bringing clean automotive styling to your driveway.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-            {LEADERSHIP.map((person) => (
+          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+            {WORKSHOP_HIGHLIGHTS.map((team) => (
               <div
-                key={person.name}
+                key={team.title}
                 className="group border border-hairline bg-surface rounded-lg overflow-hidden hover:border-red-500/40 transition-all duration-500"
               >
                 <div className="relative aspect-[4/3] bg-carbon overflow-hidden">
                   <Image
-                    src={person.image}
-                    alt={person.name}
+                    src={team.image}
+                    alt={team.title}
                     fill
                     sizes="(min-width: 768px) 50vw, 100vw"
                     className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
@@ -208,16 +211,16 @@ export default async function AboutPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                   <div className="absolute bottom-4 left-6 right-6">
                     <h3 className="text-xl font-black text-white uppercase tracking-tight mb-1">
-                      {person.name}
+                      {team.title}
                     </h3>
                     <div className="text-xs font-bold text-red-500 uppercase tracking-widest">
-                      {person.role}
+                      {team.role}
                     </div>
                   </div>
                 </div>
                 <div className="p-6">
                   <p className="text-sm text-ink-muted leading-relaxed">
-                    {person.bio}
+                    {team.bio}
                   </p>
                 </div>
               </div>
@@ -226,18 +229,18 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* 5. The 4 Pillars of Excellence */}
+      {/* 5. The 4 Quality Standards */}
       <section className="border-t border-b border-hairline bg-canvas py-24">
         <div className="max-w-screen-2xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
-              Why Drivers Choose Us
+              Why Choose Us
             </span>
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-4">
-              The 4 Pillars of Excellence
+              Our 4 Quality Standards
             </h2>
             <p className="text-ink-muted text-sm md:text-base">
-              From raw carbon weave selection to final torque check on the lift, we enforce strict standards across every component.
+              From material selection to packaging and fitment checks, we maintain strict standards for every product.
             </p>
           </div>
 

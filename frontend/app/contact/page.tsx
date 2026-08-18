@@ -24,14 +24,14 @@ export default async function ContactPage() {
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7">
               <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
-                Direct Technical Support
+                Workshop Support & Consultation
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
                 Get In Touch. <br />
                 <span className="text-red-500">Plan Your Build.</span>
               </h1>
               <p className="text-ink-muted text-base md:text-lg leading-relaxed max-w-2xl">
-                Product questions, 3D fitment advice, order tracking, or a custom carbon fiber aero build — our master technicians are here to help you get the exact fitment right.
+                Have questions about vehicle compatibility, custom styling, or order tracking? Our workshop team is here to help you get the exact fitment for your car.
               </p>
             </div>
 
@@ -63,10 +63,10 @@ export default async function ContactPage() {
         {/* Left Column: Direct Channels & Help Topics */}
         <div>
           <h2 className="text-2xl font-black uppercase tracking-tight mb-4">
-            Direct Channels
+            Direct Support Channels
           </h2>
           <p className="text-sm text-ink-muted leading-relaxed mb-8">
-            Connect directly with our workshop team via WhatsApp, email, or Instagram for instant response during business hours.
+            Connect directly with our workshop team via WhatsApp, email, or Instagram. We are active Monday to Saturday, 10:00 AM – 7:00 PM IST.
           </p>
 
           <div className="flex flex-col gap-4 mb-10">
@@ -158,7 +158,7 @@ export default async function ContactPage() {
               Send an Enquiry
             </h3>
             <p className="text-xs text-ink-muted">
-              Fill out your details below and our team will get back to you within 24 business hours.
+              Fill out your details below and our team will get back to you within 24–48 business hours.
             </p>
           </div>
           <ContactForm />

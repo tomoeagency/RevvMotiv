@@ -24,14 +24,14 @@ export default async function GalleryPage() {
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7">
               <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
-                Media & Installation Clips
+                Media & Installation Feed
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
                 Build Gallery & <br />
-                <span className="text-red-500">Workshop Footage.</span>
+                <span className="text-red-500">Installation Media.</span>
               </h1>
               <p className="text-ink-muted text-base md:text-lg leading-relaxed max-w-2xl">
-                Real installation clips, carbon fiber fitting video documentation, and customer build showcases recorded directly inside our studio facility. No stock renders — what you see here is genuine customer work.
+                Watch installation clips, review build photos, and explore customer transformations. Real customer cars with genuine fitment.
               </p>
             </div>
 

@@ -1,9 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import Lenis from "lenis";
 
+interface LenisContextValue {
+  stop: () => void;
+  start: () => void;
+}
+
+const LenisContext = createContext<LenisContextValue>({
+  stop: () => {},
+  start: () => {},
+});
+
+export function useLenis() {
+  return useContext(LenisContext);
+}
+
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<Lenis | null>(null);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -22,6 +38,8 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       touchMultiplier: 1.5,
     });
 
+    lenisRef.current = lenis;
+
     let animationFrameId: number;
 
     function raf(time: number) {
@@ -34,8 +52,18 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     return () => {
       cancelAnimationFrame(animationFrameId);
       lenis.destroy();
+      lenisRef.current = null;
     };
   }, []);
 
-  return <>{children}</>;
+  const ctx: LenisContextValue = {
+    stop: () => lenisRef.current?.stop(),
+    start: () => lenisRef.current?.start(),
+  };
+
+  return (
+    <LenisContext.Provider value={ctx}>
+      {children}
+    </LenisContext.Provider>
+  );
 }

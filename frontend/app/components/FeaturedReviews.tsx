@@ -129,17 +129,17 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
         <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Verified Driver Feedback
+              <Sparkles className="w-3.5 h-3.5" /> Customer Feedback
             </span>
             <h2 className="text-3xl md:text-4xl font-black text-ink uppercase tracking-tight">
-              Top Customer Reviews
+              What Drivers Are Saying
             </h2>
             <p className="text-sm text-ink-muted mt-1.5">
-              Real builds, real fitment feedback from RevvMotiv drivers across India. Hover over any card to expand full review.
+              Real feedback and installation photos from car owners across India.
             </p>
           </div>
           <div className="text-xs text-ink-muted font-medium">
-            Over <span className="text-ink font-bold">100+</span> custom carbon & aero fitments delivered
+            Tested & delivered to drivers across India
           </div>
         </div>
 

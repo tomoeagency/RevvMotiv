@@ -33,9 +33,9 @@ export const metadata: Metadata = {
   // Twitter image URLs against localhost:3000 regardless of where the site
   // is actually deployed.
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://revvmotiv.com"),
-  title: "RevvMotiv — Precision Automotive Styling & Performance Parts",
+  title: "RevvMotiv — Custom Car Styling & Aero Parts in India",
   description:
-    "India's premier destination for high-quality, precision-engineered automotive styling and performance accessories.",
+    "Explore custom splitters, diffusers, spoilers, and styling accessories designed for popular Indian cars. Guaranteed fitment, premium finish, and Pan-India delivery.",
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },

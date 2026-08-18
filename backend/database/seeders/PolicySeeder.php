@@ -68,23 +68,24 @@ class PolicySeeder extends Seeder
                 'slug' => 'contact-information',
                 'title' => 'Contact Us',
                 'content' => <<<'MD'
-                    We're here to help with anything related to your order or our products.
+                    We are here to help with anything related to your order, fitment advice, or styling consultation.
 
-                    **Email:** revvmotiv@gmail.com
+                    **Email:** support@revvmotiv.com
+                    **WhatsApp:** +91 83683 43232
                     **Instagram:** @revvmotiv
 
-                    We typically respond within 24-48 business hours.
+                    **Support Hours:** Monday to Saturday, 10:00 AM – 7:00 PM IST  
+                    We typically respond within 24–48 business hours.
 
                     ## What we can help with
 
-                    - Product questions and fitment advice
-                    - Order status and updates
-                    - Shipping and tracking queries
-                    - Returns and exchanges
-                    - Installation guidance
-                    - Warranty support
+                    - Vehicle fitment and compatibility verification
+                    - Order status and live courier tracking
+                    - Product finish and material details
+                    - Installation and mounting guidance
+                    - Safe unboxing, claims, and warranty assistance
 
-                    Reach out any time — we're happy to help.
+                    Feel free to reach out — our team is glad to help.
                     MD,
             ],
             [
@@ -202,11 +203,11 @@ class PolicySeeder extends Seeder
 
                     ## Your Rights
 
-                    You have the right to access, correct, or request deletion of your personal information. To exercise any of these rights, contact us at revvmotiv@gmail.com.
+                    You have the right to access, correct, or request deletion of your personal information. To exercise any of these rights, contact us at support@revvmotiv.com.
 
                     ## Contact Us
 
-                    If you have any questions about this privacy policy or how we handle your data, reach out to us at revvmotiv@gmail.com.
+                    If you have any questions about this privacy policy or how we handle your data, reach out to us at support@revvmotiv.com.
                     MD,
             ],
         ];

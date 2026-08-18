@@ -47,11 +47,11 @@ export async function Footer() {
               </div>
             </Link>
             <p className="text-sm text-ink-muted leading-relaxed max-w-sm mb-8 font-medium">
-              Precision-engineered aerodynamic styling and performance components. Built for drivers who demand absolute perfection, from street to circuit.
+              Custom aerodynamic styling and exterior accessories designed for popular Indian cars. Tested fitment, durable finish, and Pan-India delivery.
             </p>
             <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-hairline-strong bg-hover text-[10px] font-bold uppercase tracking-widest text-ink-subtle">
               <Flag className="w-3.5 h-3.5 text-red-500" />
-              <span>Track Standard Certified</span>
+              <span>Tested for Indian Roads</span>
             </div>
           </div>
 
@@ -160,7 +160,7 @@ export async function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-hairline flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest">
-            &copy; {new Date().getFullYear()} RevvMotiv Automotive Styling Ltd.
+            &copy; {new Date().getFullYear()} RevvMotiv Automotive Garages. All rights reserved.
           </p>
 
           {/* Tomoe Creation Agency Watermark */}

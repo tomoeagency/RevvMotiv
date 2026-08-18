@@ -11,24 +11,24 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Our Work — Customer Builds & Workshop Fitting | RevvMotiv",
   description:
-    "Real customer builds fitted by RevvMotiv — carbon fiber styling, aero kits, and finish work documented angle by angle across customer cars.",
+    "Real customer builds styled by RevvMotiv — carbon splitters, custom aero kits, and finish work documented across popular Indian cars.",
 };
 
 const STANDARDS = [
   {
     icon: Cpu,
-    title: "1:1 3D Laser Alignment",
-    body: "Chassis alignment and mounting points verified before component installation.",
+    title: "Direct Vehicle Fitment",
+    body: "Chassis and factory bumper mounting points verified before installation.",
   },
   {
     icon: Wrench,
-    title: "In-House Master Fitting",
-    body: "Zero drop-shipping. Installed directly in our clean white-light studio workshop.",
+    title: "Workshop Quality Check",
+    body: "Every part is inspected, test-fitted, and carefully prepared before dispatch.",
   },
   {
     icon: Camera,
-    title: "Documented Angle-by-Angle",
-    body: "Every single build is photographed across 14 exterior and interior angles.",
+    title: "Multi-Angle Documentation",
+    body: "Builds photographed from multiple exterior and interior angles to show real fitment.",
   },
 ] as const;
 
@@ -44,14 +44,14 @@ export default async function WorkPage() {
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7">
               <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
-                Studio Build Showcase
+                Customer Build Showcase
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
                 Customer Builds. <br />
-                <span className="text-red-500">In-House Fitting.</span>
+                <span className="text-red-500">Real Street Styling.</span>
               </h1>
               <p className="text-ink-muted text-base md:text-lg leading-relaxed max-w-2xl">
-                Explore real customer projects fitted directly inside our workshop across Maruti Suzuki, Hyundai N Line, and Volkswagen platforms. Every build is 3D laser aligned, hand-finished, and documented angle by angle.
+                Explore customer cars fitted with our custom aerodynamic splitters, diffusers, and carbon styling packages across Maruti Suzuki, Hyundai, and Volkswagen platforms.
               </p>
             </div>
 

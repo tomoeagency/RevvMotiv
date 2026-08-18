@@ -11,18 +11,18 @@ import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 const HERO_SLIDES = [
   {
     image: "/hero-1-ai.png",
-    caption: "Aero-Optimized Profile",
-    headline: ["Engineered to Perform.", "Built to Turn Heads."],
+    caption: "Custom Street Styling",
+    headline: ["Crafted for the Street.", "Designed to Stand Out."],
   },
   {
     image: "/hero-2-ai.png",
-    caption: "Track-Tested Build",
-    headline: ["Proven on the Circuit.", "Built to Hold the Line."],
+    caption: "Durable & Road-Ready",
+    headline: ["Built Tough.", "Engineered for Indian Roads."],
   },
   {
     image: "/hero-3-ai.png",
-    caption: "Precision Fit & Finish",
-    headline: ["Cut to Exact Tolerance.", "Built to Vanish Into the Body."],
+    caption: "Guaranteed 1:1 Fitment",
+    headline: ["Precision Molded.", "Direct Factory Bolt-On."],
   },
 ];
 
@@ -147,7 +147,7 @@ export function Hero() {
               href="/work"
               className="text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-white/40 hover:border-red-500 pb-1"
             >
-              See Real Installs →
+              View Workshop Builds
             </Link>
           </motion.div>
         </div>

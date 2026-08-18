@@ -10,49 +10,49 @@ const STEPS = [
     id: "scan",
     number: "01",
     icon: Cpu,
-    title: "1:1 3D Laser Chassis Scan",
-    badge: "Millimeter Precision",
+    title: "3D Vehicle Chassis Mapping",
+    badge: "Precision Alignment",
     description:
-      "Every splitter, diffuser, and spoiler begins with a high-density 3D laser scan of the original factory chassis. We capture exact bolt holes and bumper contours so there is zero guesswork during mounting.",
+      "Every splitter, diffuser, and spoiler is designed around factory bumper contours and OEM mounting holes for clean, direct installation with no guesswork.",
     image: "/images/fitment/fitment_step1.webp",
-    stat: "0.1mm Tolerance",
-    subStat: "Factory Points Matched",
+    stat: "1:1 Factory Alignment",
+    subStat: "Original Mounting Points",
   },
   {
     id: "material",
     number: "02",
     icon: ShieldCheck,
-    title: "Pre-Preg Carbon Autoclave",
-    badge: "Vacuum Baked Rigidity",
+    title: "Durable Composite Crafting",
+    badge: "Built for Daily Driving",
     description:
-      "Formed using high-modulus 2x2 twill and forged carbon composite weave, vacuum-pressurized in autoclaves to eliminate micro-voids, and clear-coated for deep UV protection.",
+      "Crafted with high-grade carbon weave and impact-resistant ABS polymers, coated with a deep UV-resistant clear finish that protects against Indian sun and weathering.",
     image: "/images/fitment/fitment_step2.webp",
-    stat: "40% Lighter Than ABS",
-    subStat: "Aerospace Resin Matrix",
+    stat: "UV-Resistant Clear Coat",
+    subStat: "High-Strength ABS & Carbon",
   },
   {
     id: "aero",
     number: "03",
     icon: Wind,
-    title: "Downforce & Aero Profiling",
-    badge: "Track Tested",
+    title: "Street & Highway Aero Styling",
+    badge: "Refined Stance",
     description:
-      "Aero profiles are CFD simulated to generate functional downforce and direct smooth underbody airflow without creating excessive drag on daily Indian highways.",
+      "Profiled to enhance road presence and smooth underbody airflow, giving your car a clean, grounded look without creating excessive drag on daily commutes.",
     image: "/images/fitment/fitment_step3.webp",
-    stat: "+45kg Downforce @ 120km/h",
-    subStat: "CFD Wind-Tunnel Mapped",
+    stat: "Ground-Hugging Stance",
+    subStat: "Smooth Underbody Airflow",
   },
   {
     id: "fit",
     number: "04",
     icon: Wrench,
-    title: "White-Light Studio Fitting",
-    badge: "Master Technicians",
+    title: "Workshop Quality Inspection",
+    badge: "100% Fitment Check",
     description:
-      "Installed directly inside our clean studio workshop. Certified master technicians perform final alignment checks, torque-spec fastening, and multi-angle photo documentation.",
+      "Every component is individually inspected for finish, alignment, and packaging integrity before careful dispatch from our Delhi workshop.",
     image: "/images/fitment/fitment_step4.webp",
-    stat: "100% OEM Fit Guarantee",
-    subStat: "Torque-Spec Fastened",
+    stat: "100% Fitment Check",
+    subStat: "Inspected Before Dispatch",
   },
 ] as const;
 
@@ -110,10 +110,10 @@ export function FitmentProcessSection() {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest mb-3">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                Scroll Driven Precision Architecture
+                Engineered for Exact Fitment
               </div>
               <h2 className="text-2xl sm:text-3xl md:text-5xl font-black uppercase tracking-tight text-ink">
-                The 4-Step Fitment Process
+                Our 4-Step Quality & Fitment Process
               </h2>
             </div>
 

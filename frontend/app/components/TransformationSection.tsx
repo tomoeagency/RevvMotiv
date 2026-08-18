@@ -34,14 +34,14 @@ export function TransformationSection() {
           {/* Left Column — Copy & Spec Highlights */}
           <div className="lg:col-span-6">
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
-              The RevvMotiv Difference
+              The Visual Difference
             </span>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-[0.95] mb-6">
               Stock Factory vs. <br />
-              <span className="text-red-500">RevvMotiv Tuned.</span>
+              <span className="text-red-500">RevvMotiv Styling.</span>
             </h2>
             <p className="text-ink-muted text-base leading-relaxed mb-8">
-              Slide to compare the transformation from stock commuter OEM spec to a track-profiled aggressive street build with 1:1 carbon fiber aero fitment and race-stance lowering.
+              Slide to see how our aero packages transform stock commuter cars into clean, road-commanding street builds with direct-fit splitters and styling accents.
             </p>
 
             <div className="space-y-4 mb-8">
@@ -49,10 +49,10 @@ export function TransformationSection() {
                 <Gauge className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
-                    Front Carbon Splitter & Winglets
+                    Front Carbon Splitters & Winglets
                   </div>
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    Track-inspired carbon fiber front lip splitter with side winglets for aggressive low-slung road presence.
+                    Low-slung front lip splitters designed to give your car a wider, more aggressive street presence.
                   </div>
                 </div>
               </div>
@@ -61,10 +61,10 @@ export function TransformationSection() {
                 <Sparkles className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
-                    Forged Alloys & 3D Tyre Lettering
+                    Durable Wheel & Tyre Styling
                   </div>
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    Satin black multi-spoke forged performance wheels with permanent raised white RevvMotiv rubber tyre decals.
+                    Permanent raised tyre lettering decals and dark alloy finishes tailored for popular Indian hatchbacks and sedans.
                   </div>
                 </div>
               </div>
@@ -73,17 +73,17 @@ export function TransformationSection() {
                 <CheckCircle2 className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
-                    Piano Black De-Chrome & Roof Wrap
+                    Gloss Black De-Chrome & Rear Diffusers
                   </div>
                   <div className="text-xs text-ink-muted leading-relaxed">
-                    Complete front grille blackout, smoked badge styling, side skirt extensions, and dual-tone gloss black roof.
+                    Clean front grille blackout kits, side skirt extensions, and finned rear diffusers for a balanced 360-degree look.
                   </div>
                 </div>
               </div>
             </div>
 
             <PrimaryCtaLink href="/work" className="px-8 py-3.5 text-xs inline-flex items-center gap-2">
-              <span>Explore Real Customer Builds</span>
+              <span>View Workshop Builds</span>
             </PrimaryCtaLink>
           </div>
 

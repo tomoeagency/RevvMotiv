@@ -117,16 +117,16 @@ export function ConsultantModal() {
             <div className="p-6">
               {status === "success" ? (
                 <div className="flex flex-col items-center text-center gap-3 py-4">
-                  <CheckCircle2 className="w-10 h-10 text-red-400" />
+                  <CheckCircle2 className="w-10 h-10 text-red-500" />
                   <p className="text-sm font-bold text-ink uppercase tracking-widest">
                     Request Received
                   </p>
                   <p className="text-sm text-ink-muted leading-relaxed">
-                    Our team will reach out to you shortly.
+                    Our workshop team will call you back shortly.
                   </p>
                   <button
                     onClick={close}
-                    className="mt-2 text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-[var(--brand-red)] pb-1"
+                    className="mt-2 text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-red-500 pb-1"
                   >
                     Close
                   </button>
@@ -134,8 +134,7 @@ export function ConsultantModal() {
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   <p className="text-xs text-ink-muted leading-relaxed">
-                    Leave your number and our team will call you back to
-                    help you pick the right parts for your build.
+                    Enter your contact details and our team will call you to confirm fitment and recommend the right parts for your car.
                   </p>
 
                   <WidgetField
@@ -145,7 +144,7 @@ export function ConsultantModal() {
                     error={errors.name}
                   />
                   <WidgetField
-                    label="Phone Number"
+                    label="Mobile Number"
                     type="tel"
                     value={form.phone}
                     onChange={(v) => setForm((f) => ({ ...f, phone: v }))}
@@ -174,7 +173,7 @@ export function ConsultantModal() {
                     onClick={close}
                     className="block text-center text-[11px] font-bold text-ink-subtle hover:text-ink-muted uppercase tracking-widest transition-colors"
                   >
-                    Have more to share? Visit our Contact page →
+                    Have custom build questions? Contact us
                   </Link>
                 </form>
               )}
