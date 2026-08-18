@@ -28,12 +28,12 @@ function ReviewCard({
     .toUpperCase();
 
   return (
-    <div className="group/card relative z-0 hover:z-30 flex-none w-[360px] h-[290px] bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.03] hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
+    <div className="group/card relative z-0 hover:z-30 flex-none w-[370px] sm:w-[400px] h-[330px] bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.02] hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
       {/* Background ambient red glow on hover */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
       {/* 1. Header: Stars + Verified Badge + Quote Mark */}
-      <div className="flex items-center justify-between flex-none mb-2">
+      <div className="flex items-center justify-between flex-none mb-3">
         <div className="flex items-center gap-2">
           <StarRating rating={review.rating} />
           {review.verified_purchase && (
@@ -46,9 +46,9 @@ function ReviewCard({
         <Quote className="w-6 h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors" />
       </div>
 
-      {/* 2. Review Comment Text */}
-      <div className="flex-1 flex items-center py-1">
-        <p className="text-xs sm:text-sm text-ink-muted group-hover/card:text-ink leading-relaxed font-normal line-clamp-4 transition-colors duration-200">
+      {/* 2. Full Review Comment Text (100% Unclipped & Complete) */}
+      <div className="flex-1 flex items-start py-1">
+        <p className="text-[13px] sm:text-sm text-ink-muted group-hover/card:text-ink leading-relaxed font-normal transition-colors duration-200">
           &ldquo;{review.comment}&rdquo;
         </p>
       </div>
