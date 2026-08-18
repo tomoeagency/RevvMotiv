@@ -74,13 +74,7 @@ export default async function GalleryPage() {
           </p>
         </div>
 
-        {items.length === 0 ? (
-          <p className="text-sm text-ink-muted py-12 text-center">
-            No gallery items published yet — check back soon.
-          </p>
-        ) : (
-          <GalleryGrid items={items} />
-        )}
+        <GalleryGrid items={items} />
       </section>
 
       {/* 3. Closing CTA */}

@@ -1,19 +1,46 @@
 "use client";
 
-import { useState } from "react";
-import { Play } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Play, Loader2 } from "lucide-react";
 import type { GalleryItem } from "@/lib/api";
 import { GalleryLightbox } from "@/app/components/GalleryLightbox";
 
-export function GalleryGrid({ items }: { items: GalleryItem[] }) {
+export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }) {
+  const [items, setItems] = useState<GalleryItem[]>(propItems);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState(propItems.length === 0);
+
+  useEffect(() => {
+    fetch("/api/v1/gallery")
+      .then((res) => (res.ok ? res.json() : { data: [] }))
+      .then((body) => {
+        if (body.data && Array.isArray(body.data)) {
+          setItems(body.data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading && items.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-20 text-ink-muted gap-2">
+        <Loader2 className="w-5 h-5 animate-spin text-red-500" />
+        <span className="text-sm font-medium">Loading workshop footage...</span>
+      </div>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <p className="text-sm text-ink-muted py-12 text-center">
+        No gallery items published yet — check back soon.
+      </p>
+    );
+  }
 
   return (
     <>
-      {/* CSS-columns masonry, same technique as the homepage's "From Our
-          Garage" bento fix — thumbnails only change via transform (scale)
-          on hover, never height, so there's no risk of the column
-          -rebalance/hover-thrash bug that hit the trust panel. */}
       <div className="columns-2 sm:columns-3 lg:columns-4 gap-4">
         {items.map((item, i) => (
           <button
