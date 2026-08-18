@@ -35,12 +35,12 @@
   .ambient-spot-left {
     position: fixed;
     top: 50%;
-    left: 20%;
+    left: 22%;
     transform: translate(-50%, -50%);
-    width: 650px;
-    height: 650px;
+    width: 600px;
+    height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(34, 64, 94, 0.12) 0%, rgba(201, 24, 43, 0.05) 45%, rgba(34, 64, 94, 0) 75%);
+    background: radial-gradient(circle, rgba(34, 64, 94, 0.10) 0%, rgba(201, 24, 43, 0.04) 45%, rgba(34, 64, 94, 0) 75%);
     filter: blur(80px);
     pointer-events: none;
   }
@@ -48,16 +48,16 @@
   .ambient-spot-right {
     position: fixed;
     bottom: -10%;
-    right: 5%;
-    width: 600px;
-    height: 600px;
+    right: 8%;
+    width: 550px;
+    height: 550px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(201, 24, 43, 0.06) 0%, rgba(201, 24, 43, 0) 70%);
+    background: radial-gradient(circle, rgba(201, 24, 43, 0.05) 0%, rgba(34, 64, 94, 0.05) 50%, rgba(34, 64, 94, 0) 75%);
     filter: blur(90px);
     pointer-events: none;
   }
 
-  /* Fullscreen Split Layout (No card container) */
+  /* Fullscreen Split Layout */
   .fullscreen-container {
     width: 100vw;
     height: 100vh;
@@ -66,9 +66,9 @@
     align-items: center;
     position: relative;
     z-index: 10;
-    max-width: 1400px;
+    max-width: 1360px;
     margin: 0 auto;
-    padding: 0 60px;
+    padding: 0 64px;
   }
 
   /* ============ LEFT HALF: INTERACTIVE CHARACTER ============ */
@@ -83,29 +83,29 @@
   }
 
   .char-stage {
-    width: 320px;
-    height: 320px;
+    width: 240px;
+    height: 240px;
     display: flex;
     align-items: center;
     justify-content: center;
-    perspective: 1200px;
+    perspective: 1000px;
     cursor: grab;
   }
   .char-stage:active { cursor: grabbing; }
 
   .float-container {
-    width: 320px;
-    height: 320px;
+    width: 240px;
+    height: 240px;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: gentleFloat 5.5s ease-in-out infinite;
+    animation: gentleFloat 6s ease-in-out infinite;
     will-change: transform;
   }
 
   @keyframes gentleFloat {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50%      { transform: translateY(-16px) rotate(1.2deg); }
+    0%, 100% { transform: translateY(0px); }
+    50%      { transform: translateY(-9px); }
   }
 
   .shake-layer {
@@ -119,8 +119,8 @@
 
   .tilt-layer {
     position: relative;
-    width: 280px;
-    height: 280px;
+    width: 220px;
+    height: 220px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,31 +130,31 @@
 
   .mark-shadow {
     position: absolute;
-    bottom: -22px;
-    width: 180px;
-    height: 26px;
+    bottom: -16px;
+    width: 140px;
+    height: 20px;
     border-radius: 50%;
-    background: rgba(34, 64, 94, 0.18);
-    filter: blur(14px);
-    transform: translateZ(-50px);
+    background: rgba(34, 64, 94, 0.16);
+    filter: blur(10px);
+    transform: translateZ(-40px);
   }
 
   .ambient-glow {
     position: absolute;
-    width: 280px;
-    height: 280px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(34,64,94,0.16) 0%, rgba(201,24,43,0.06) 45%, rgba(34,64,94,0) 75%);
-    filter: blur(14px);
+    background: radial-gradient(circle, rgba(34,64,94,0.12) 0%, rgba(201,24,43,0.04) 40%, rgba(34,64,94,0) 72%);
+    filter: blur(10px);
   }
 
   .mark-svg {
     position: relative;
-    width: 240px;
-    height: 240px;
-    filter: drop-shadow(0 18px 28px rgba(34, 64, 94, 0.25));
+    width: 190px;
+    height: 190px;
+    filter: drop-shadow(0 14px 22px rgba(34, 64, 94, 0.22));
     will-change: transform;
-    transition: transform 0.08s ease-out;
+    transition: transform 0.1s ease-out;
   }
 
   .eye {
@@ -165,19 +165,19 @@
   }
 
   .status-text {
-    height: 26px;
-    font-size: 0.85rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
+    height: 24px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     color: rgba(26, 42, 56, 0.45);
-    margin-top: 14px;
+    margin-top: 10px;
     text-align: center;
-    transition: all 0.2s ease;
+    transition: color 0.2s ease;
     text-transform: uppercase;
   }
-  .status-text.caps { color: #C97A1B; text-shadow: 0 0 10px rgba(201, 122, 27, 0.3); }
-  .status-text.error { color: #C9182B; text-shadow: 0 0 10px rgba(201, 24, 43, 0.3); }
-  .status-text.success { color: #2E7D4F; text-shadow: 0 0 10px rgba(46, 125, 79, 0.3); }
+  .status-text.caps { color: #C97A1B; }
+  .status-text.error { color: #C9182B; }
+  .status-text.success { color: #2E7D4F; }
 
   /* ============ RIGHT HALF: FORM CONSOLE ============ */
 
@@ -185,48 +185,48 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-left: 40px;
-    max-width: 480px;
+    padding-left: 48px;
+    max-width: 460px;
     width: 100%;
   }
 
   .logo-header {
-    margin-bottom: 24px;
+    margin-bottom: 22px;
   }
 
   .revv-logo-img {
-    height: 34px;
+    height: 32px;
     width: auto;
     object-fit: contain;
   }
 
   h1 {
-    font-size: 2.1rem;
+    font-size: 1.95rem;
     font-weight: 900;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.03em;
     color: #1A2A38;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .subtitle {
-    font-size: 0.95rem;
-    color: rgba(26, 42, 56, 0.6);
-    margin-bottom: 30px;
+    font-size: 0.9rem;
+    color: rgba(26, 42, 56, 0.55);
+    margin-bottom: 26px;
     font-weight: 500;
   }
 
   .field {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
   label {
     display: block;
-    font-size: 0.76rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: rgba(26, 42, 56, 0.7);
-    margin-bottom: 8px;
+    color: rgba(26, 42, 56, 0.65);
+    margin-bottom: 7px;
   }
 
   .input-wrap {
@@ -239,68 +239,68 @@
   input[type="password"],
   input[type="text"].pw {
     width: 100%;
-    padding: 14px 18px;
-    font-size: 0.98rem;
+    padding: 13px 16px;
+    font-size: 0.95rem;
     font-family: inherit;
     color: #1A2A38;
     background: #FFFFFF;
-    border: 1.8px solid rgba(34, 64, 94, 0.18);
-    border-radius: 14px;
+    border: 1.6px solid rgba(34, 64, 94, 0.18);
+    border-radius: 12px;
     outline: none;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 2px 6px rgba(34, 64, 94, 0.04);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    box-shadow: 0 2px 4px rgba(34, 64, 94, 0.03);
   }
 
   input:focus {
     background: #FFFFFF;
     border-color: #22405E;
-    box-shadow: 0 0 0 4px rgba(34, 64, 94, 0.14);
+    box-shadow: 0 0 0 3.5px rgba(34, 64, 94, 0.12);
   }
 
   .field.field-error input {
     border-color: #C9182B;
-    background: #FFF8F8;
-    box-shadow: 0 0 0 4px rgba(201, 24, 43, 0.14);
+    background: #FFF9F9;
+    box-shadow: 0 0 0 3.5px rgba(201, 24, 43, 0.12);
   }
 
   .toggle-pw {
     position: absolute;
-    right: 10px;
+    right: 8px;
     background: none;
     border: none;
-    padding: 8px;
+    padding: 6px;
     cursor: pointer;
     color: rgba(26, 42, 56, 0.45);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
-    transition: all 0.15s ease;
+    border-radius: 6px;
+    transition: color 0.15s ease, background-color 0.15s ease;
   }
-  .toggle-pw:hover { color: #22405E; background: rgba(34,64,94,0.08); }
-  .toggle-pw svg { width: 22px; height: 22px; }
+  .toggle-pw:hover { color: #22405E; background: rgba(34,64,94,0.06); }
+  .toggle-pw svg { width: 20px; height: 20px; }
 
   .caps-warning {
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     color: #C97A1B;
-    margin-top: 6px;
-    min-height: 16px;
-    font-weight: 800;
+    margin-top: 5px;
+    min-height: 15px;
+    font-weight: 700;
   }
 
   .options-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
-    font-size: 0.85rem;
+    margin-bottom: 22px;
+    font-size: 0.82rem;
   }
 
   .remember-wrap {
     display: flex;
     align-items: center;
-    gap: 9px;
-    color: rgba(26, 42, 56, 0.8);
+    gap: 8px;
+    color: rgba(26, 42, 56, 0.75);
     cursor: pointer;
     font-weight: 600;
     user-select: none;
@@ -308,66 +308,65 @@
 
   .remember-wrap input[type="checkbox"] {
     accent-color: #22405E;
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
     border-radius: 4px;
     cursor: pointer;
   }
 
   button.submit {
     width: 100%;
-    padding: 15px;
+    padding: 14px;
     font-family: inherit;
-    font-size: 0.98rem;
+    font-size: 0.95rem;
     font-weight: 800;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: #FFFFFF;
     background: linear-gradient(135deg, #22405E 0%, #162C42 100%);
     border: none;
-    border-radius: 14px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 8px 24px rgba(34, 64, 94, 0.3);
+    transition: transform 0.08s ease, background 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 6px 18px rgba(34, 64, 94, 0.28);
   }
   button.submit:hover { 
     background: linear-gradient(135deg, #1A324A 0%, #0F1E2E 100%);
-    box-shadow: 0 12px 30px rgba(34, 64, 94, 0.4);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(34, 64, 94, 0.36);
   }
-  button.submit:active { transform: translateY(1px) scale(0.99); }
+  button.submit:active { transform: scale(0.98); }
 
   .form-message {
     text-align: center;
-    font-size: 0.85rem;
-    font-weight: 800;
-    margin-top: 16px;
-    min-height: 22px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-top: 14px;
+    min-height: 20px;
   }
   .form-message.error { color: #C9182B; }
   .form-message.success { color: #2E7D4F; }
 
   /* Unified Brand Footer */
   .brand-credit-footer {
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     color: rgba(26, 42, 56, 0.5);
-    margin-top: 26px;
+    margin-top: 24px;
     font-weight: 600;
     display: flex;
     align-items: center;
     gap: 8px;
-    border-top: 1px solid rgba(34, 64, 94, 0.1);
-    padding-top: 18px;
+    border-top: 1px solid rgba(34, 64, 94, 0.08);
+    padding-top: 16px;
   }
 
   .brand-credit-footer strong {
     color: #22405E;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   .brand-credit-footer span.red {
     color: #C9182B;
-    font-weight: 800;
+    font-weight: 700;
   }
 
   @media (max-width: 900px) {
@@ -375,7 +374,7 @@
     .fullscreen-container {
       grid-template-columns: 1fr;
       padding: 40px 24px;
-      gap: 32px;
+      gap: 28px;
     }
     .form-section { padding-left: 0; max-width: 100%; }
     .character-section { height: auto; }
@@ -531,31 +530,31 @@
   const formMessage = document.getElementById('formMessage');
   const loginForm = document.getElementById('loginForm');
 
-  /* ===================== amplified prominent physics ===================== */
-  const RANGE_SKEW_X = 40;  // Amplified for dramatic gaze shift
-  const RANGE_SKEW_Y = 30;  // Amplified for dramatic vertical tilt
-  const RANGE_SCALE  = 0.48; // Pronounced pupil morphing
+  /* ===================== refined smooth physics ===================== */
+  const RANGE_SKEW_X = 26;
+  const RANGE_SKEW_Y = 18;
+  const RANGE_SCALE  = 0.25;
 
   function applyEyeTransform(el, x, y, opts) {
     opts = opts || {};
-    const squint = opts.squint || 0;   // 0..1 sharp narrowing (error/guarded)
-    const alert  = opts.alert  || 0;   // 0..1 dramatic widening (caps-lock)
-    const pop    = opts.pop    || 0;   // transient uniform scale bump (success/poke)
+    const squint = opts.squint || 0;   // 0..1 narrows eye (error / concerned)
+    const alert  = opts.alert  || 0;   // 0..1 widens eye (caps-lock alert)
+    const pop    = opts.pop    || 0;   // transient scale bump (success / poke)
 
     const skewX = x * RANGE_SKEW_X;
-    const skewY = y * RANGE_SKEW_Y * 0.8;
+    const skewY = y * RANGE_SKEW_Y * 0.75;
 
-    let scaleX = 1 + x * RANGE_SCALE * 0.95 - Math.abs(y) * RANGE_SCALE * 0.55;
-    let scaleY = 1 - y * RANGE_SCALE + Math.abs(x) * RANGE_SCALE * 0.45;
+    let scaleX = 1 + x * RANGE_SCALE * 0.85 - Math.abs(y) * RANGE_SCALE * 0.48;
+    let scaleY = 1 - y * RANGE_SCALE + Math.abs(x) * RANGE_SCALE * 0.38;
 
-    scaleY *= (1 - squint * 0.75);
-    scaleY *= (1 + alert * 0.5);
-    scaleX *= (1 + alert * 0.25);
+    scaleY *= (1 - squint * 0.58);
+    scaleY *= (1 + alert * 0.3);
+    scaleX *= (1 + alert * 0.12);
     scaleX *= (1 + pop);
     scaleY *= (1 + pop);
 
-    scaleX = Math.max(0.35, Math.min(1.6, scaleX));
-    scaleY = Math.max(0.35, Math.min(1.6, scaleY));
+    scaleX = Math.max(0.48, Math.min(1.38, scaleX));
+    scaleY = Math.max(0.48, Math.min(1.38, scaleY));
 
     el.style.transform =
       `skewX(${skewX.toFixed(2)}deg) skewY(${skewY.toFixed(2)}deg) ` +
@@ -574,14 +573,14 @@
   let popUntil = 0;
   let pokeUntil = 0;
 
-  // Highly prominent poses
+  // Refined natural poses
   const POSES = {
     idle:            { x: 0,     y: 0,     squint: 0,    alert: 0 },
-    email:           { x: 0.05,  y: 0.95,  squint: 0,    alert: 0 },     // Looks way down into the email input
-    passwordShow:    { x: 0.95,  y: 0.68,  squint: 0.15, alert: 0.2 },   // Looks directly & curiously at the password
-    passwordHide:    { x: -1.3,  y: -0.65, squint: 0.72, alert: 0 },     // Dramatic head turn away + eye squint
-    capsAlert:       { x: 0,     y: -0.9,  squint: 0,    alert: 1.4 },   // Wide eyes alert + jumps up
-    error:           { x: 0,     y: 0.15,  squint: 0.9,  alert: 0 },     // Furious squint
+    email:           { x: 0,     y: 0.68,  squint: 0,    alert: 0 },
+    passwordShow:    { x: 0.58,  y: 0.58,  squint: 0.18, alert: 0 },
+    passwordHide:    { x: -0.88, y: -0.32, squint: 0,    alert: 0 },
+    capsAlert:       { x: 0,     y: -0.58, squint: 0,    alert: 0.88 },
+    error:           { x: 0,     y: 0.1,   squint: 0.65, alert: 0 },
     success:         { x: 0,     y: 0,     squint: 0,    alert: 0 }
   };
 
@@ -595,14 +594,14 @@
     return null; // idle — ambient mouse gaze
   }
 
-  /* ===================== typing rhythm reactivity (strong visible jitter) ===================== */
+  /* ===================== typing rhythm reactivity (subtle live feel) ===================== */
   let jitterX = 0, jitterY = 0;
   function pulseJitter() {
-    jitterX += (Math.random() - 0.5) * 1.4;
-    jitterY += (Math.random() - 0.5) * 0.85;
+    jitterX += (Math.random() - 0.5) * 0.42;
+    jitterY += (Math.random() - 0.5) * 0.24;
   }
 
-  /* ===================== continuous 60fps render loop ===================== */
+  /* ===================== continuous smooth render loop ===================== */
   let curX = 0, curY = 0, curSquint = 0, curAlert = 0;
   let mouseX = 0, mouseY = 0;
 
@@ -616,38 +615,38 @@
       targetSquint = mode.squint; targetAlert = mode.alert;
     } else {
       // idle: ambient cursor-follow with smooth breathing inertia
-      targetX = mouseX * 0.85; targetY = mouseY * 0.85;
+      targetX = mouseX * 0.55; targetY = mouseY * 0.55;
       targetSquint = 0; targetAlert = 0;
     }
 
     // decay typing rhythm jitter
-    jitterX *= 0.76; jitterY *= 0.76;
+    jitterX *= 0.82; jitterY *= 0.82;
 
-    curX += (targetX + jitterX - curX) * 0.18;
-    curY += (targetY + jitterY - curY) * 0.18;
-    curSquint += (targetSquint - curSquint) * 0.2;
-    curAlert += (targetAlert - curAlert) * 0.2;
+    curX += (targetX + jitterX - curX) * 0.15;
+    curY += (targetY + jitterY - curY) * 0.15;
+    curSquint += (targetSquint - curSquint) * 0.18;
+    curAlert += (targetAlert - curAlert) * 0.18;
 
     // success or poke scale pop
     let markScale = 1;
     if (now < popUntil) {
       const t = 1 - (popUntil - now) / 550;
-      markScale = 1 + Math.sin(t * Math.PI) * 0.24;
+      markScale = 1 + Math.sin(t * Math.PI) * 0.14;
     } else if (now < pokeUntil) {
       const t = 1 - (pokeUntil - now) / 380;
-      markScale = 1 - Math.sin(t * Math.PI) * 0.18;
+      markScale = 1 - Math.sin(t * Math.PI) * 0.10;
     }
 
-    // violent error shake
+    // error shake
     let shakeX = 0;
     if (now < shakeUntil) {
-      const t = 1 - (shakeUntil - now) / 480;
-      shakeX = Math.sin(t * 44) * 20 * (1 - t);
+      const t = 1 - (shakeUntil - now) / 420;
+      shakeX = Math.sin(t * 34) * 8 * (1 - t);
     }
 
-    // 3D perspective rotation (up to 24 degrees)
-    const tiltX = -curY * 24;
-    const tiltY = curX * 24;
+    // 3D perspective rotation
+    const tiltX = -curY * 15;
+    const tiltY = curX * 15;
     tiltLayer.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
     shakeLayer.style.transform = `translateX(${shakeX.toFixed(2)}px)`;
     markSvg.style.transform = `scale(${markScale.toFixed(3)})`;
@@ -726,18 +725,18 @@
 
   function triggerError(fieldEl, message) {
     const now = performance.now();
-    errorUntil = now + 1800;
-    shakeUntil = now + 480;
+    errorUntil = now + 1600;
+    shakeUntil = now + 420;
     if (fieldEl) fieldEl.classList.add('field-error');
     formMessage.textContent = message;
     formMessage.className = 'form-message error';
     setStatus(message, 'error');
-    if (fieldEl) setTimeout(() => fieldEl.classList.remove('field-error'), 1800);
+    if (fieldEl) setTimeout(() => fieldEl.classList.remove('field-error'), 1600);
   }
 
   function triggerSuccess(message) {
     const now = performance.now();
-    successUntil = now + 2200;
+    successUntil = now + 1800;
     popUntil = now + 550;
     formMessage.textContent = message;
     formMessage.className = 'form-message success';
