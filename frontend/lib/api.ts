@@ -336,7 +336,7 @@ export async function getProductReviews(
 export async function getFeaturedReviews(): Promise<ApiResponse<Review[]>> {
   try {
     const res = await fetch(apiUrl("/api/v1/reviews/featured"), {
-      next: { revalidate: 300 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
