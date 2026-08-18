@@ -32,7 +32,7 @@
                             <span>↗</span>
                         </a>
                     </td>
-                    <td class="px-4 py-3 text-xs text-slate-500 font-medium">{{ $lead->created_at->format('d M Y, H:i') }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500 font-medium whitespace-nowrap">{{ $lead->created_at->timezone('Asia/Kolkata')->format('d M Y, H:i') }}</td>
                 </tr>
             @endforeach
         </x-admin.data-table>
@@ -62,7 +62,7 @@
                     <td class="px-4 py-3 text-xs font-mono text-slate-700">{{ $enquiry->phone }}</td>
                     <td class="px-4 py-3 text-xs font-mono text-slate-600">{{ $enquiry->email ?? '—' }}</td>
                     <td class="px-4 py-3 max-w-sm truncate text-xs text-slate-700" title="{{ $enquiry->message }}">{{ $enquiry->message }}</td>
-                    <td class="px-4 py-3 text-xs text-slate-500 font-medium whitespace-nowrap">{{ $enquiry->created_at->format('d M Y, H:i') }}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500 font-medium whitespace-nowrap">{{ $enquiry->created_at->timezone('Asia/Kolkata')->format('d M Y, H:i') }}</td>
                 </tr>
             @endforeach
         </x-admin.data-table>

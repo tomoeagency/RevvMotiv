@@ -81,8 +81,8 @@
                 </td>
 
                 <!-- Date Placed -->
-                <td class="px-4 py-3 text-xs text-slate-500 font-medium">
-                    {{ $order->created_at->format('d M Y, H:i') }}
+                <td class="px-4 py-3 text-xs text-slate-500 font-medium whitespace-nowrap">
+                    {{ $order->created_at->timezone('Asia/Kolkata')->format('d M Y, H:i') }}
                 </td>
 
                 <!-- Action Links -->

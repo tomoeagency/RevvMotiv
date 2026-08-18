@@ -19,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Enforce application timezone globally to Indian Standard Time (Asia/Kolkata)
+        date_default_timezone_set('Asia/Kolkata');
+
         // Safety guard: prevent accidental deployment of test credentials to production
         if ($this->app->environment('production')) {
             $keyId = (string) config('services.razorpay.key_id');

@@ -9,13 +9,14 @@
             <!-- Left: Welcome & Brand Greeting -->
             <div class="space-y-2">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-semibold font-mono text-slate-400" id="liveClock">{{ now()->format('l, d F Y · H:i') }} IST</span>
+                    <span class="text-xs font-semibold font-mono text-slate-400" id="liveClock">{{ now('Asia/Kolkata')->format('l, d F Y · H:i') }} IST</span>
                 </div>
 
                 <div>
                     @php
-                        $hour = (int) now()->format('H');
-                        $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
+                        $nowIst = now('Asia/Kolkata');
+                        $hour = (int) $nowIst->format('H');
+                        $greeting = $hour < 5 ? 'Good evening' : ($hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening'));
                         $userName = auth()->user()->name ?? 'Administrator';
                     @endphp
                     <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
