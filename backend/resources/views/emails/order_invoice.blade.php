@@ -313,10 +313,9 @@
         <td class="logo-cell">
           <h1 class="logo-title">REVV<span>MOTIV</span></h1>
           <div class="company-info">
-            <strong>RevvMotiv Automotive Garages</strong><br>
-            New Delhi, Delhi 110001, India<br>
-            Email: support@revvmotiv.com | Tel: +91 83683 43232<br>
-            GSTIN / Reg: 07AAACR9988M1ZP
+            <strong>RevvMotiv</strong><br>
+            Site-5, Kasna, Greater Noida, Uttar Pradesh, India<br>
+            Email: support@revvmotiv.com | Tel: +91 83683 43232
           </div>
         </td>
         <td class="invoice-title-cell">
@@ -433,7 +432,7 @@
     </table>
 
     <div class="footer-note">
-      This is a digitally generated Tax Invoice issued by RevvMotiv Automotive Garages. Valid for all warranty and tax purposes.
+      This is a digitally generated invoice issued by RevvMotiv. Valid for all warranty and customer records.
     </div>
   </div>
 </body>

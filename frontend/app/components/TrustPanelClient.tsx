@@ -45,39 +45,6 @@ function getTypeOrder(pathname: string): Array<"review" | "work" | "contact" | "
   return ["work", "reel", "review", "contact"];
 }
 
-const FALLBACK_REVIEWS: Review[] = [
-  {
-    id: 1,
-    product_id: 1,
-    customer_name: "Aman Singhania",
-    rating: 5,
-    comment: "Flawless 1:1 OEM fitment on my Polo GT. Real pre-preg carbon weave quality is unmatched in India.",
-    media_urls: [],
-    verified_purchase: true,
-    created_at: "2026-08-01T12:00:00Z",
-  },
-  {
-    id: 2,
-    product_id: 2,
-    customer_name: "Rahul Mehra",
-    rating: 5,
-    comment: "Ordered the front splitter + rear diffuser combo. High speed stability is genuinely noticeable on track.",
-    media_urls: [],
-    verified_purchase: true,
-    created_at: "2026-08-03T12:00:00Z",
-  },
-  {
-    id: 3,
-    product_id: 3,
-    customer_name: "Vikramaditya C.",
-    rating: 5,
-    comment: "Master technician support via WhatsApp made installation super smooth. Highly recommended.",
-    media_urls: [],
-    verified_purchase: true,
-    created_at: "2026-08-05T12:00:00Z",
-  },
-];
-
 export function TrustPanelClient({
   whatsappDigits,
   workPhoto,
@@ -88,7 +55,7 @@ export function TrustPanelClient({
   const rawPathname = usePathname();
   const { isDrawerOpen } = useCart();
   const { open: openConsultant } = useConsultant();
-  const [reviews, setReviews] = useState<Review[]>(FALLBACK_REVIEWS);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   // Opening the cart now changes the URL to /cart (see cart-context.tsx),
   // which makes usePathname() report "/cart" instead of whatever page the
@@ -108,7 +75,7 @@ export function TrustPanelClient({
         }
       })
       .catch(() => {
-        if (!cancelled) setReviews(FALLBACK_REVIEWS);
+        if (!cancelled) setReviews([]);
       });
     return () => {
       cancelled = true;

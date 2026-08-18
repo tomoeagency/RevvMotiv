@@ -60,18 +60,49 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    {
+      url: `${baseUrl}/policies/terms-of-service`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/policies/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/policies/legal-notice`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
   ];
 
-  // Dynamic Product routes
+  // Dynamic Product routes with complete pagination
   let productRoutes: MetadataRoute.Sitemap = [];
   try {
-    const { data: products } = await getProducts();
-    productRoutes = products.map((product) => ({
-      url: `${baseUrl}/products/${product.slug}`,
-      lastModified: new Date(product.created_at || Date.now()),
-      changeFrequency: "weekly",
-      priority: 0.8,
-    }));
+    let page = 1;
+    let hasMore = true;
+    while (hasMore) {
+      const res = await getProducts({ page, perPage: 50 });
+      if (res.data && res.data.length > 0) {
+        for (const product of res.data) {
+          productRoutes.push({
+            url: `${baseUrl}/products/${product.slug}`,
+            lastModified: new Date(product.created_at || Date.now()),
+            changeFrequency: "weekly",
+            priority: 0.8,
+          });
+        }
+      }
+      if (page >= (res.meta?.last_page || 1) || res.data.length === 0) {
+        hasMore = false;
+      } else {
+        page++;
+      }
+    }
   } catch (error) {
     console.error("Failed to fetch products for sitemap:", error);
   }

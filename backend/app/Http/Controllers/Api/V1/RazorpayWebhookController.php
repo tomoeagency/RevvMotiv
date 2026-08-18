@@ -55,9 +55,8 @@ class RazorpayWebhookController extends Controller
             return response()->json(['status' => 'ignored']);
         }
 
-        // Idempotency
-        if ($order->razorpay_payment_id === $razorpayPaymentId
-            && in_array($order->payment_status, ['advance_paid', 'fully_paid'], true)) {
+        // Complete Idempotency: any repeated webhook for an already confirmed order is a no-op
+        if (in_array($order->payment_status, ['advance_paid', 'fully_paid'], true)) {
             return response()->json(['status' => 'already_processed']);
         }
 
@@ -68,6 +67,11 @@ class RazorpayWebhookController extends Controller
                 'razorpay_payment_id' => $razorpayPaymentId,
                 'payment_status' => 'failed',
             ]);
+
+            // Rollback reserved single-use coupon slot on failure
+            if ($order->coupon_id) {
+                \App\Models\Coupon::where('id', $order->coupon_id)->decrement('times_used');
+            }
         } else {
             Log::info('Unhandled Razorpay webhook event', ['event' => $event]);
         }

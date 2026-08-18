@@ -1,3 +1,5 @@
+import { FALLBACK_CATEGORIES } from "@/lib/constants";
+
 // Central client for the Laravel backend — see
 // .claude/skills/api-integration/SKILL.md for the fetch pattern and
 // response-shape contract this file implements.
@@ -32,6 +34,7 @@ export interface ApiProduct {
 
 export interface ApiOrder {
   id: number;
+  access_token?: string;
   total_amount: number; // post-discount — the amount the advance % is applied to
   advance_amount: number;
   remaining_amount: number;
@@ -142,6 +145,7 @@ export interface SiteSettings {
   whatsapp_number: string;
   instagram_handle: string;
   contact_email: string;
+  razorpay_advance_percent?: number;
 }
 
 export interface ProjectListItem {
@@ -627,16 +631,7 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
   return fallback ?? null;
 }
 
-const DEFAULT_CATEGORIES: Category[] = [
-  { id: 1, name: "Batman Cover", slug: "batman-cover" },
-  { id: 2, name: "Car Audio & Utilities", slug: "car-audio-utilities" },
-  { id: 3, name: "Combo", slug: "combo" },
-  { id: 4, name: "Diffusers", slug: "diffusers" },
-  { id: 5, name: "Lights & Flashers", slug: "lights-flashers" },
-  { id: 6, name: "Splitters/Side Skirts", slug: "splitters-side-skirts" },
-  { id: 7, name: "Spoilers", slug: "spoilers" },
-  { id: 8, name: "Tyre Stickers", slug: "tyre-stickers" },
-];
+const DEFAULT_CATEGORIES: Category[] = [...FALLBACK_CATEGORIES];
 
 export async function getCategories(): Promise<ApiResponse<Category[]>> {
   try {
@@ -716,8 +711,9 @@ export async function previewCoupon(payload: {
 
 // Client-side fetch (order-confirmation polling) — payment_status changes
 // asynchronously via Razorpay webhook, so this must never be cached.
-export async function getOrder(id: number | string): Promise<ApiOrder> {
-  const res = await fetch(apiUrl(`/api/v1/orders/${id}`), {
+export async function getOrder(id: number | string, token?: string): Promise<ApiOrder> {
+  const qs = token ? `?token=${encodeURIComponent(token)}` : "";
+  const res = await fetch(apiUrl(`/api/v1/orders/${id}${qs}`), {
     cache: "no-store",
   });
 

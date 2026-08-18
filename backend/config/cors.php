@@ -17,11 +17,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    // TODO: add the deployed Vercel origin once the frontend is live —
-    // see hostinger-deploy / frontend deployment notes.
-    'allowed_origins' => [
-        'http://localhost:3000', // Next.js dev
-    ],
+    'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', 'https://www.revvmotiv.com,https://revvmotiv.com,http://localhost:3000,http://127.0.0.1:3000')),
 
     'allowed_origins_patterns' => [],
 

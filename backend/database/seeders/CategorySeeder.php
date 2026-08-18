@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
         foreach ([
             'Splitters/Side Skirts',
             'Spoilers',
-            'Batman Cover',
+            'Aero Mirror & Styling',
             'Tyre Stickers',
             'Diffusers',
             'Lights & Flashers',

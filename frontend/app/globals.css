@@ -313,6 +313,11 @@ html.lenis, html.lenis body {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation-play-state: paused !important;
+  }
+}
 
 @keyframes route-progress-fill {
   from { transform: scaleX(0); }

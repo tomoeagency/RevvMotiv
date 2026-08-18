@@ -28,7 +28,7 @@ Route::get('/', function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('login', [AuthController::class, 'showLogin'])->name('login');
-        Route::post('login', [AuthController::class, 'login'])->name('login.attempt');
+        Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.attempt');
     });
 
     Route::middleware('auth')->group(function () {
@@ -75,6 +75,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('leads-enquiries/enquiries/export', [LeadEnquiryController::class, 'exportEnquiries'])->name('leads-enquiries.export-enquiries');
 
         Route::get('system/sync-database', function() {
+            if (!app()->environment('local', 'staging')) {
+                abort(404);
+            }
             \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\ProjectDemoSeeder', '--force' => true]);
             \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\ReviewDemoSeeder', '--force' => true]);
             \App\Models\Review::where('status', '!=', 'approved')->update(['status' => 'approved']);

@@ -194,7 +194,7 @@ export default async function AboutPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto mb-12">
             {WORKSHOP_HIGHLIGHTS.map((team) => (
               <div
                 key={team.title}
@@ -225,6 +225,35 @@ export default async function AboutPage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          <div className="max-w-4xl mx-auto p-6 rounded-lg border border-hairline bg-surface flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest block mb-1">
+                Live Workshop Updates
+              </span>
+              <p className="text-sm font-bold text-ink">
+                Follow our latest project cars, aero fits, and workshop behind-the-scenes on Instagram.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <a
+                href="https://www.instagram.com/revv.nation__/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-surface-alt hover:bg-hover border border-hairline text-xs font-bold text-ink uppercase tracking-wider rounded transition-colors"
+              >
+                @revv.nation__
+              </a>
+              <a
+                href="https://www.instagram.com/sonet.4100__/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-surface-alt hover:bg-hover border border-hairline text-xs font-bold text-ink uppercase tracking-wider rounded transition-colors"
+              >
+                @sonet.4100__
+              </a>
+            </div>
           </div>
         </div>
       </section>

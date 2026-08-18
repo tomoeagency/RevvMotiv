@@ -65,8 +65,23 @@ class CloudinaryUploadService
         $targetDir = public_path("uploads/{$folder}");
         File::ensureDirectoryExists($targetDir);
 
-        $extension = $file->getClientOriginalExtension() ?: 'png';
-        $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(8) . '.' . $extension;
+        $realPath = $file->getRealPath() ?: $file->getPathname();
+        $detectedMime = $realPath && file_exists($realPath) ? (mime_content_type($realPath) ?: '') : '';
+
+        $mimeMap = [
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+            'image/avif' => 'avif',
+            'image/gif' => 'gif',
+            'video/mp4' => 'mp4',
+            'video/webm' => 'webm',
+            'video/quicktime' => 'mov',
+        ];
+
+        $extension = $mimeMap[$detectedMime] ?? ($resourceType === 'video' ? 'mp4' : 'png');
+        $safeBase = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'upload';
+        $filename = "{$safeBase}-" . Str::random(12) . '.' . $extension;
 
         $file->move($targetDir, $filename);
 

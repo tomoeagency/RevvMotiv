@@ -15,6 +15,8 @@ import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 // active-route check (usePathname, not useSearchParams — that needs a
 // Suspense boundary and would opt every static page out of prerendering)
 // stays in one place instead of duplicated per link.
+import { FALLBACK_CATEGORIES } from "@/lib/constants";
+
 const PAGE_LINKS = [
   { href: "/work", label: "Our Work" },
   { href: "/gallery", label: "Gallery" },
@@ -26,21 +28,10 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const FALLBACK_CATEGORIES: Category[] = [
-  { id: 1, name: "Splitters/Side Skirts", slug: "splitters-side-skirts" },
-  { id: 2, name: "Spoilers", slug: "spoilers" },
-  { id: 3, name: "Diffusers", slug: "diffusers" },
-  { id: 4, name: "Batman Cover", slug: "batman-cover" },
-  { id: 5, name: "Tyre Stickers", slug: "tyre-stickers" },
-  { id: 6, name: "Lights & Flashers", slug: "lights-flashers" },
-  { id: 7, name: "Combo", slug: "combo" },
-  { id: 8, name: "Car Audio & Utilities", slug: "car-audio-utilities" },
-];
-
 export function Navbar() {
   const { itemCount, openDrawer } = useCart();
   const pathname = usePathname();
-  const [categories, setCategories] = useState<Category[]>(FALLBACK_CATEGORIES);
+  const [categories, setCategories] = useState<Category[]>([...FALLBACK_CATEGORIES]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
@@ -197,7 +188,7 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={openDrawer}
-            aria-label="Open cart"
+            aria-label={itemCount > 0 ? `${itemCount} ${itemCount === 1 ? "item" : "items"} in cart, open cart` : "Open cart (empty)"}
             className="relative text-ink hover:text-[var(--brand-red)] transition-colors"
           >
             <ShoppingCart className="w-5 h-5" />

@@ -22,8 +22,8 @@ class AdminSettingSeeder extends Seeder
         AdminSetting::updateOrCreate(['key' => 'announcement_scroll_speed'], ['value' => '30']);
         AdminSetting::updateOrCreate(['key' => 'announcement_rotate_duration'], ['value' => '4']);
 
-        AdminSetting::updateOrCreate(['key' => 'site_whatsapp_number'], ['value' => '+91 8368343232']);
+        AdminSetting::updateOrCreate(['key' => 'site_whatsapp_number'], ['value' => '+91 83683 43232']);
         AdminSetting::updateOrCreate(['key' => 'site_instagram_handle'], ['value' => '@revvmotiv']);
-        AdminSetting::updateOrCreate(['key' => 'site_contact_email'], ['value' => 'revvmotiv@gmail.com']);
+        AdminSetting::updateOrCreate(['key' => 'site_contact_email'], ['value' => 'support@revvmotiv.com']);
     }
 }

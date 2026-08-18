@@ -47,45 +47,44 @@ class PolicySeeder extends Seeder
                 'slug' => 'shipping-policy',
                 'title' => 'Shipping Policy',
                 'content' => <<<'MD'
-                    ## Processing time
+                    ## Processing & Dispatch Time
 
-                    Orders are dispatched within 48-72 hours of order confirmation. If you place your order over a weekend or on a public holiday, it will be processed on the next business day.
+                    Orders are inspected and dispatched within 48–72 hours of order confirmation. If you place your order over a weekend or on a public holiday, it will be processed on the next business day.
 
-                    ## Delivery time
+                    ## Delivery Timeline
 
-                    Once dispatched, most orders arrive within 5-9 business days, depending on your location and the courier partner handling the delivery.
+                    Once dispatched, orders are delivered via Standard Tracked Courier within 5–7 business days across India, depending on your pin code and courier logistics.
 
-                    ## Tracking
+                    ## Courier Tracking
 
-                    As soon as your order ships, we'll send you a shipping confirmation along with a tracking number so you can follow its progress.
+                    As soon as your package ships from our workshop, we will send you a shipping confirmation via email and WhatsApp along with a live tracking link.
 
-                    ## Delays outside our control
+                    ## Delays Outside Our Control
 
-                    While we do our best to get every order to you on time, RevvMotiv is not responsible for delays caused by courier partners, natural disasters, government restrictions, or an incorrect shipping address provided at checkout. Please double-check your address before placing your order.
+                    While we make every effort to deliver on time, RevvMotiv is not liable for logistics delays caused by courier partner routes, weather events, or incomplete delivery addresses provided at checkout. Please verify your address and phone number before completing your order.
                     MD,
             ],
             [
                 'slug' => 'contact-information',
                 'title' => 'Contact Us',
                 'content' => <<<'MD'
-                    We are here to help with anything related to your order, fitment advice, or styling consultation.
+                    We are here to help with vehicle fitment guidance, styling advice, and order tracking.
 
-                    **Email:** support@revvmotiv.com
-                    **WhatsApp:** +91 83683 43232
-                    **Instagram:** @revvmotiv
+                    **Business Name:** RevvMotiv  
+                    **Registered Office:** Site-5, Kasna, Greater Noida, Uttar Pradesh, India  
+                    **Email:** support@revvmotiv.com  
+                    **WhatsApp / Call:** +91 83683 43232  
+                    **Follow Builds:** [@revv.nation__](https://www.instagram.com/revv.nation__/) | [@sonet.4100__](https://www.instagram.com/sonet.4100__/)  
 
                     **Support Hours:** Monday to Saturday, 10:00 AM – 7:00 PM IST  
                     We typically respond within 24–48 business hours.
 
-                    ## What we can help with
+                    ## What We Can Help With
 
-                    - Vehicle fitment and compatibility verification
+                    - Vehicle fitment and compatibility checks
                     - Order status and live courier tracking
-                    - Product finish and material details
-                    - Installation and mounting guidance
-                    - Safe unboxing, claims, and warranty assistance
-
-                    Feel free to reach out — our team is glad to help.
+                    - Product finish, weave, and mounting guidance
+                    - Safe unboxing and claims assistance
                     MD,
             ],
             [
@@ -96,43 +95,37 @@ class PolicySeeder extends Seeder
 
                     ## Eligibility
 
-                    You must be at least 18 years old to place an order on our site. If you are under 18, please use this site only with the involvement and supervision of a parent or guardian.
+                    You must be at least 18 years old to place an order on our site. If you are under 18, please use this site only under parental or guardian supervision.
 
-                    ## Product Information & Pricing
+                    ## Pricing & Product Information
 
-                    We work hard to keep product descriptions, images, and prices accurate, but errors can occasionally occur. If we discover a pricing or listing error on an order you've placed, we reserve the right to correct it and will contact you before proceeding.
+                    All prices displayed on the website are final. While we work hard to keep product descriptions, images, and prices accurate, errors can occasionally occur. If we discover a pricing error on an order you have placed, we reserve the right to correct it and will contact you before proceeding.
 
-                    ## Order Acceptance
+                    ## Order Acceptance & Cancellation
 
-                    Placing an order is an offer to purchase, not a guaranteed sale. We reserve the right to accept, reject, or cancel any order at our discretion — including in cases of suspected fraud, pricing errors, or insufficient stock. If we cancel an order after payment, we'll issue a full refund.
+                    Placing an order is an offer to purchase. We reserve the right to accept, reject, or cancel any order at our discretion in cases of suspected fraud, pricing errors, or insufficient stock. Orders may be cancelled prior to workshop dispatch for a full refund by contacting support.
 
                     ## Payment
 
-                    Orders are processed and dispatched only after payment is successfully received.
-
-                    ## Shipping & Delivery
-
-                    Orders are dispatched within 48-72 hours of confirmation, with delivery typically taking 5-9 business days depending on location and courier. See our Shipping Policy for full details.
+                    Orders are processed and dispatched only after advance or full payment is verified via our secure payment gateway (Razorpay).
 
                     ## Returns, Refunds & Replacements
 
-                    We do not accept returns for personal preference. Refunds or replacements are offered only for products that are the wrong item or arrive defective or damaged, and only when reported within 48 hours of delivery with a complete unboxing video. See our Refund Policy for full details.
+                    We do not accept returns for personal preference. Refunds or replacements apply only for wrong items delivered or items arriving damaged, reported within 48 hours with a continuous unboxing video. See our Refund Policy for complete instructions.
 
-                    ## Installation
+                    ## Professional Installation
 
-                    Some of our products require professional installation for correct fitment and performance. RevvMotiv is not responsible for damage resulting from improper or amateur installation.
+                    Certain aerodynamic components (splitters, diffusers, spoiler wings) require professional workshop installation. RevvMotiv is not responsible for damage resulting from improper or amateur mounting.
 
-                    ## Limitation of Liability
+                    ## Statutory Grievance Redressal & Registered Office
 
-                    To the extent permitted by law, RevvMotiv is not liable for any indirect, incidental, or consequential damages arising from the use of our products or website.
+                    Under the Consumer Protection (E-Commerce) Rules, 2020 and DPDP Act 2023:
 
-                    ## Intellectual Property
-
-                    All content on this website — including text, images, logos, and design — is the property of RevvMotiv and may not be used or reproduced without our permission.
-
-                    ## Governing Law
-
-                    These terms are governed by the laws of India, and any disputes will be subject to the jurisdiction of Indian courts.
+                    **Entity:** RevvMotiv  
+                    **Registered Office:** Site-5, Kasna, Greater Noida, Uttar Pradesh, India  
+                    **Support & Grievances:** support@revvmotiv.com  
+                    **Telephone / WhatsApp:** +91 83683 43232  
+                    **Governing Law:** Laws of India, subject to the jurisdiction of competent courts.
                     MD,
             ],
             [
@@ -141,73 +134,54 @@ class PolicySeeder extends Seeder
                 'content' => <<<'MD'
                     This website is owned and operated by RevvMotiv.
 
+                    **Registered Office:** Site-5, Kasna, Greater Noida, Uttar Pradesh, India  
+                    **Contact:** support@revvmotiv.com | +91 83683 43232
+
                     ## Intellectual Property
 
-                    All content on this site, including product images, descriptions, branding, and design, is the intellectual property of RevvMotiv. Unauthorized use, reproduction, or distribution of this content is prohibited.
-
-                    ## Accuracy of Information
-
-                    We make every effort to ensure product information on this site is accurate and up to date. However, we do not guarantee that all details are error-free at all times.
+                    All content on this site, including product designs, imagery, branding, and text, is the intellectual property of RevvMotiv. Unauthorized reproduction is prohibited.
 
                     ## Vehicle Compatibility
 
-                    Our products are designed to fit specific vehicle makes, models, and body styles. It is the customer's responsibility to verify compatibility with their vehicle before placing an order.
-
-                    ## Third-Party Links
-
-                    Our website may contain links to third-party websites. RevvMotiv is not responsible for the content, policies, or practices of any external sites.
-
-                    ## Limitation of Liability
-
-                    RevvMotiv shall not be held liable for any loss or damage arising from the use of this website or our products, to the extent permitted by applicable law.
+                    Our products are engineered for specific vehicle models and variants. Customers are advised to verify vehicle compatibility before placing an order.
 
                     ## Governing Law
 
-                    This notice is governed by the laws of India.
+                    This notice and all platform operations are governed by the laws of India.
                     MD,
             ],
             [
                 'slug' => 'privacy-policy',
                 'title' => 'Privacy Policy',
                 'content' => <<<'MD'
-                    Your privacy matters to us. This policy explains what information we collect, how we use it, and the choices you have.
+                    Your privacy matters to us. This policy explains what information we collect, how we use it, and your rights under applicable data protection laws including the Digital Personal Data Protection (DPDP) Act, 2023.
 
                     ## Information We Collect
 
-                    When you shop with us, we collect:
+                    When you interact with RevvMotiv, we collect:
 
-                    - **Contact and shipping details** — your name, email, phone number, and delivery address
-                    - **Payment information** — processed securely through our payment partner, Razorpay; we do not store your card or bank details ourselves
-                    - **Order history** — details of products you've purchased and your order status
-                    - **Device and usage information** — such as your browser type, IP address, and how you interact with our website, which helps us improve your experience
+                    - **Contact and delivery details** — your name, email address, phone number, and delivery address.
+                    - **Transaction references** — order details and transaction identifiers processed securely by Razorpay. We never store credit card numbers or UPI MPINs.
+                    - **Communications** — messages sent via WhatsApp, email, or our contact forms.
 
                     ## How We Use Your Information
 
-                    We use your information to:
+                    - Fulfill and dispatch your orders.
+                    - Provide fitment advice and customer support.
+                    - Comply with statutory tax, invoicing, and regulatory obligations.
 
-                    - Process and fulfill your orders, including shipping and delivery
-                    - Respond to your questions and provide customer support
-                    - Detect and prevent fraud and unauthorized transactions
-                    - Send you marketing updates about new products and offers, which you can opt out of at any time
+                    ## Data Sharing
 
-                    ## Sharing Your Information
+                    We do not sell your personal data. Data is shared strictly with necessary operational partners:
+                    - **Razorpay** (Payment Gateway) for secure transaction processing.
+                    - **Courier Logistics Partners** for delivery of physical packages.
 
-                    We do not sell your personal information. We share it only where necessary to run our business, including with:
+                    ## Grievance Contact & Data Rights
 
-                    - **Razorpay**, our payment processor, to securely handle transactions
-                    - **Courier and shipping partners**, to deliver your order to you
-
-                    ## Data Security
-
-                    We take reasonable technical and organizational measures to protect your personal information from unauthorized access, loss, or misuse.
-
-                    ## Your Rights
-
-                    You have the right to access, correct, or request deletion of your personal information. To exercise any of these rights, contact us at support@revvmotiv.com.
-
-                    ## Contact Us
-
-                    If you have any questions about this privacy policy or how we handle your data, reach out to us at support@revvmotiv.com.
+                    You may request access, correction, or deletion of your personal data by writing to:  
+                    **RevvMotiv Grievance Desk**  
+                    Site-5, Kasna, Greater Noida, Uttar Pradesh, India  
+                    Email: support@revvmotiv.com | Tel: +91 83683 43232
                     MD,
             ],
         ];

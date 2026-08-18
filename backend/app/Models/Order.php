@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+use Illuminate\Support\Str;
+
 class Order extends Model
 {
     protected $fillable = [
@@ -13,8 +15,17 @@ class Order extends Model
         'total_amount', 'advance_amount', 'remaining_amount', 'advance_percent_applied',
         'coupon_id', 'discount_amount',
         'payment_status', 'order_status', 'razorpay_order_id', 'razorpay_payment_id',
-        'source', 'payment_mode', 'notes',
+        'source', 'payment_mode', 'notes', 'access_token',
     ];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Order $order) {
+            if (empty($order->access_token)) {
+                $order->access_token = Str::random(40);
+            }
+        });
+    }
 
     protected $casts = [
         'total_amount' => 'decimal:2',

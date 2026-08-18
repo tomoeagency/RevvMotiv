@@ -21,12 +21,22 @@ class ProductController extends Controller
                     $q->where('slug', $request->string('category'));
                 });
             })
-            ->when($request->filled('search'), function ($query) use ($request) {
-                $term = $request->string('search');
-                $query->where(function ($q) use ($term) {
-                    $q->where('title', 'like', "%{$term}%")
-                        ->orWhere('description', 'like', "%{$term}%");
+            ->when($request->filled('fitment'), function ($query) use ($request) {
+                $fitment = $request->string('fitment');
+                $query->where(function ($q) use ($fitment) {
+                    $q->where('fitment', 'like', "%{$fitment}%")
+                        ->orWhere('title', 'like', "%{$fitment}%");
                 });
+            })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $term = substr(trim((string) $request->input('search')), 0, 100);
+                if (!empty($term)) {
+                    $query->where(function ($q) use ($term) {
+                        $q->where('title', 'like', "%{$term}%")
+                            ->orWhere('description', 'like', "%{$term}%")
+                            ->orWhere('fitment', 'like', "%{$term}%");
+                    });
+                }
             })
             ->when($request->boolean('featured'), fn ($query) => $query->where('is_featured', true))
             ->orderBy('featured_order')

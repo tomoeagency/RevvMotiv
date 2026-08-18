@@ -106,24 +106,48 @@ export default async function ContactPage() {
               </a>
             )}
 
-            {settings?.instagram_handle && (
-              <a
-                href={`https://instagram.com/${settings.instagram_handle.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface hover:border-pink-500/40 transition-all group"
-              >
-                <div className="w-10 h-10 rounded-full bg-pink-500/10 text-pink-500 flex items-center justify-center flex-none group-hover:scale-110 transition-transform">
-                  <AtSign className="w-5 h-5" />
+            {/* Address */}
+            <div className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface">
+              <div className="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center flex-none">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-sm font-bold text-ink uppercase tracking-wider">
+                  Workshop & Registered Address
                 </div>
-                <div>
-                  <div className="text-sm font-bold text-ink uppercase tracking-wider group-hover:text-pink-400 transition-colors">
-                    {settings.instagram_handle}
-                  </div>
-                  <div className="text-xs text-ink-muted">Build photos, reels & stories</div>
+                <div className="text-xs text-ink-muted">
+                  Site-5, Kasna, Greater Noida, Uttar Pradesh, India
                 </div>
-              </a>
-            )}
+              </div>
+            </div>
+
+            {/* Instagram Builds */}
+            <div className="p-4 rounded border border-hairline bg-surface">
+              <div className="flex items-center gap-2 mb-2">
+                <AtSign className="w-4 h-4 text-pink-500" />
+                <span className="text-sm font-bold text-ink uppercase tracking-wider">
+                  Follow Our Workshop Builds
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                <a
+                  href="https://www.instagram.com/revv.nation__/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1 bg-surface-alt hover:bg-hover border border-hairline rounded font-bold text-ink-muted hover:text-ink transition-colors"
+                >
+                  @revv.nation__
+                </a>
+                <a
+                  href="https://www.instagram.com/sonet.4100__/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1 bg-surface-alt hover:bg-hover border border-hairline rounded font-bold text-ink-muted hover:text-ink transition-colors"
+                >
+                  @sonet.4100__
+                </a>
+              </div>
+            </div>
           </div>
 
           <div className="border-t border-hairline pt-10">

@@ -11,9 +11,10 @@ class SiteSettingsController extends Controller
     {
         return response()->json([
             'data' => [
-                'whatsapp_number' => AdminSetting::getValue('site_whatsapp_number', ''),
-                'instagram_handle' => AdminSetting::getValue('site_instagram_handle', ''),
-                'contact_email' => AdminSetting::getValue('site_contact_email', ''),
+                'whatsapp_number' => AdminSetting::getValue('site_whatsapp_number', '+91 83683 43232'),
+                'instagram_handle' => AdminSetting::getValue('site_instagram_handle', '@revvmotiv'),
+                'contact_email' => AdminSetting::getValue('site_contact_email', 'support@revvmotiv.com'),
+                'razorpay_advance_percent' => max(1, (int) AdminSetting::getValue('razorpay_advance_percent', '20')),
             ],
         ]);
     }

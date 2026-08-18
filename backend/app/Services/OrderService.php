@@ -54,7 +54,7 @@ class OrderService
             }
 
             $subtotal = collect($input['items'])->sum(
-                fn ($item) => ($item['unit_price'] ?? $products[$item['product_id']]->price) * $item['quantity']
+                fn ($item) => ($item['admin_unit_price'] ?? $item['unit_price'] ?? $products[$item['product_id']]->price) * $item['quantity']
             );
 
             // Coupon is validated and discount applied
@@ -100,7 +100,8 @@ class OrderService
 
             foreach ($input['items'] as $item) {
                 $product = $products[$item['product_id']];
-                $unitPrice = $item['unit_price'] ?? $product->price;
+                // Authoritative price: customer requests cannot override price; admin_unit_price allowed for manual orders
+                $unitPrice = $item['admin_unit_price'] ?? $item['unit_price'] ?? $product->price;
 
                 $order->items()->create([
                     'product_id' => $product->id,
@@ -118,9 +119,8 @@ class OrderService
             }
 
             if ($coupon) {
-                if (! $withRazorpay) {
-                    $coupon->increment('times_used');
-                }
+                // Reserve coupon usage slot at order creation time
+                $coupon->increment('times_used');
             }
 
             if ($withRazorpay) {
@@ -152,19 +152,17 @@ class OrderService
         DB::transaction(function () use ($order, $paymentId) {
             $paymentStatus = $order->advance_percent_applied >= 100 ? 'fully_paid' : 'advance_paid';
 
-            // Decrement stock only once upon confirmed payment
+            // Decrement stock only once upon confirmed payment using lockForUpdate to avoid race conditions
             if (in_array($order->payment_status, ['pending', 'failed'], true)) {
-                foreach ($order->items as $item) {
-                    $product = Product::find($item->product_id);
-                    if ($product) {
-                        $product->decrement('stock', $item->quantity);
-                    }
-                }
+                $itemProductIds = $order->items->pluck('product_id')->unique();
+                $lockedProducts = Product::whereIn('id', $itemProductIds)
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
-                if ($order->coupon_id) {
-                    $coupon = Coupon::find($order->coupon_id);
-                    if ($coupon) {
-                        $coupon->increment('times_used');
+                foreach ($order->items as $item) {
+                    if ($lockedProducts->has($item->product_id)) {
+                        $lockedProducts[$item->product_id]->decrement('stock', $item->quantity);
                     }
                 }
             }

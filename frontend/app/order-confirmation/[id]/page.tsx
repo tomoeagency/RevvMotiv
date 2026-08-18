@@ -29,12 +29,13 @@ export default function OrderConfirmationPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ just_paid?: string; payment_failed?: string }>;
+  searchParams: Promise<{ just_paid?: string; payment_failed?: string; token?: string }>;
 }) {
   const { id } = use(params);
   const sp = use(searchParams);
   const justPaid = sp.just_paid === "1";
   const paymentFailedFlag = sp.payment_failed === "1";
+  const token = sp.token || "";
 
   const [order, setOrder] = useState<ApiOrder | null>(null);
   const [phase, setPhase] = useState<Phase>("loading");
@@ -47,7 +48,7 @@ export default function OrderConfirmationPage({
 
     async function poll(attempt: number) {
       try {
-        const result = await getOrder(id);
+        const result = await getOrder(id, token);
         if (cancelled) return;
         setOrder(result);
         setLoadError(null);
@@ -63,7 +64,9 @@ export default function OrderConfirmationPage({
         }
 
         setPhase("polling");
-        timer = setTimeout(() => poll(attempt + 1), POLL_INTERVAL_MS);
+        // Exponential backoff: starts at 2.5s up to 6s
+        const delay = Math.min(2500 + attempt * 400, 6000);
+        timer = setTimeout(() => poll(attempt + 1), delay);
       } catch (err) {
         if (cancelled) return;
         setLoadError(
@@ -80,7 +83,7 @@ export default function OrderConfirmationPage({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [id, restartToken]);
+  }, [id, token, restartToken]);
 
   return (
     <div className="py-6 md:py-8 px-4 sm:px-6 max-w-screen-xl mx-auto w-full min-h-[calc(100vh-140px)] flex flex-col justify-center">
@@ -211,7 +214,7 @@ function OrderStatus({
                 <span className="text-ink-muted">Invoice sent to email</span>
                 <span className="text-ink-subtle">·</span>
                 <a
-                  href={`/api/v1/orders/${order.id}/invoice`}
+                  href={`/api/v1/orders/${order.id}/invoice${order.access_token ? `?token=${encodeURIComponent(order.access_token)}` : ""}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors cursor-pointer"
@@ -339,8 +342,7 @@ function OrderStatus({
           title="Payment Awaiting Confirmation"
         >
           <p className="text-xs text-ink-muted leading-relaxed mb-2.5">
-            Confirmation from Razorpay is taking a moment. Your order #{order.id} is
-            safe — our webhook will update status once settled.
+            Your payment was submitted — this may take a few minutes to confirm. Please don&apos;t close this page or retry payment. Your order #{order.id} is safe and will update automatically once confirmed.
           </p>
           <button
             onClick={onRetry}
@@ -368,7 +370,7 @@ function OrderStatus({
       >
         <p className="text-xs text-ink-muted leading-relaxed">
           {justPaid
-            ? "Your payment was submitted to Razorpay. Syncing confirmation with our workshop system..."
+            ? "Your payment was submitted — this may take a few minutes to confirm. Please don't close this page. Syncing confirmation with our workshop system..."
             : "Checking live order status from the server..."}
         </p>
       </StatusCard>

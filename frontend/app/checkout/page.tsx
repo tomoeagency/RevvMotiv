@@ -11,6 +11,7 @@ import {
   createOrder,
   formatPrice,
   getAvailableCoupons,
+  getSiteSettings,
   previewCoupon,
   ApiRequestError,
   type ApiOrder,
@@ -81,9 +82,15 @@ export default function CheckoutPage() {
   const [couponStatus, setCouponStatus] = useState<"idle" | "checking">("idle");
   const [couponError, setCouponError] = useState<string | null>(null);
   const [paymentOption, setPaymentOption] = useState<"advance" | "full">("advance");
+  const [advancePercent, setAdvancePercent] = useState<number>(20);
 
   useEffect(() => {
     getAvailableCoupons().then(setAvailableCoupons);
+    getSiteSettings().then((settings) => {
+      if (settings?.razorpay_advance_percent) {
+        setAdvancePercent(settings.razorpay_advance_percent);
+      }
+    });
   }, []);
 
   const cartItemPayload = items.map((i) => ({
@@ -136,7 +143,7 @@ export default function CheckoutPage() {
           href="/shop"
           className="text-xs font-bold text-ink uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors border-b border-[var(--brand-red)] pb-1"
         >
-          Continue Shopping
+          Browse Catalog
         </Link>
       </div>
     );
@@ -147,11 +154,6 @@ export default function CheckoutPage() {
   }
 
   // Opens the Razorpay Checkout.js popup for the order's advance amount.
-  // The order already exists server-side (created, priced, stock-checked)
-  // by this point — this only collects payment for it. Per the
-  // razorpay-checkout skill: the handler/dismiss callbacks are UX signals
-  // only, never final confirmation. Real status is fetched on the
-  // order-confirmation page from the backend.
   function openRazorpay(order: ApiOrder) {
     if (typeof window === "undefined" || !window.Razorpay) {
       setInfraError(
@@ -160,6 +162,8 @@ export default function CheckoutPage() {
       setStatus("error");
       return;
     }
+
+    const tokenParam = order.access_token ? `&token=${encodeURIComponent(order.access_token)}` : "";
 
     const rzp = new window.Razorpay({
       key: order.razorpay.key_id,
@@ -170,20 +174,22 @@ export default function CheckoutPage() {
       description: `Advance payment — Order #${order.id}`,
       handler: () => {
         clearCart();
-        router.push(`/order-confirmation/${order.id}?just_paid=1`);
+        router.push(`/order-confirmation/${order.id}?just_paid=1${tokenParam}`);
       },
       modal: {
         ondismiss: () => {
-          clearCart();
-          router.push(`/order-confirmation/${order.id}?payment_failed=1`);
+          // DO NOT clear cart on dismiss — allow customer to retry
+          setStatus("error");
+          setInfraError("Payment window was closed before completing checkout. Your cart has been preserved.");
         },
       },
       theme: { color: "#c9182b" },
     });
 
     rzp.on("payment.failed", () => {
-      clearCart();
-      router.push(`/order-confirmation/${order.id}?payment_failed=1`);
+      // DO NOT clear cart on failure — keep items for retry
+      setStatus("error");
+      setInfraError("Payment transaction was declined or failed. Your cart is preserved so you can retry.");
     });
 
     rzp.open();
@@ -335,12 +341,12 @@ export default function CheckoutPage() {
                 Select Payment Option
               </label>
               <span className="text-[10px] text-ink-subtle uppercase tracking-wider">
-                {paymentOption === "full" ? "100% Online" : "20% Advance Online"}
+                {paymentOption === "full" ? "100% Online" : `${advancePercent}% Advance Online`}
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Option 1: 20% Advance */}
+              {/* Option 1: Dynamic % Advance */}
               <button
                 type="button"
                 onClick={() => setPaymentOption("advance")}
@@ -352,17 +358,17 @@ export default function CheckoutPage() {
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-bold text-ink uppercase">
-                    Pay 20% Advance
+                    Pay {advancePercent}% Advance
                   </span>
                   <span className="text-[9px] font-bold px-1.5 py-0.5 bg-surface border border-hairline text-ink-muted uppercase rounded">
                     COD Available
                   </span>
                 </div>
                 <p className="text-sm font-black text-ink">
-                  {formatPrice(Math.round(totalAfterDiscount * 0.2))} Online
+                  {formatPrice(Math.round(totalAfterDiscount * (advancePercent / 100)))} Online
                 </p>
                 <p className="text-[10px] text-ink-muted mt-1">
-                  Pay rest {formatPrice(Math.round(totalAfterDiscount * 0.8))} on Delivery
+                  Pay rest {formatPrice(Math.round(totalAfterDiscount * ((100 - advancePercent) / 100)))} on Delivery
                 </p>
               </button>
 
@@ -410,7 +416,7 @@ export default function CheckoutPage() {
                 <span>
                   {paymentOption === "full"
                     ? `Pay Full ${formatPrice(totalAfterDiscount)} & Place Order`
-                    : `Pay Advance ${formatPrice(Math.round(totalAfterDiscount * 0.2))} & Place Order`}
+                    : `Pay Advance ${formatPrice(Math.round(totalAfterDiscount * (advancePercent / 100)))} & Place Order`}
                 </span>
               </>
             )}
@@ -594,12 +600,18 @@ function Field({
   errors?: string[];
   type?: string;
 }) {
+  const inputId = `checkout-field-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
   return (
     <div>
-      <label className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2">
+      <label
+        htmlFor={inputId}
+        className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2"
+      >
         {label}
       </label>
       <input
+        id={inputId}
         required
         type={type}
         value={value}

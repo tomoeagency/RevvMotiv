@@ -12,6 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
         // API guests (Sanctum-protected JSON routes) get a clean 401
         // instead of a redirect. Admin panel (Blade, session `web` guard)
         // guests get sent to the login screen.

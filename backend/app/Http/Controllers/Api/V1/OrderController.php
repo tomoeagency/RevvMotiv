@@ -16,8 +16,15 @@ class OrderController extends Controller
 {
     public function __construct(private readonly OrderService $orderService) {}
 
-    public function show(Order $order)
+    public function show(\Illuminate\Http\Request $request, Order $order)
     {
+        $token = $request->query('token');
+        if (!$request->user() && (!$token || !hash_equals((string) $order->access_token, (string) $token))) {
+            return response()->json([
+                'message' => 'Unauthorized order access.',
+            ], 403);
+        }
+
         return response()->json([
             'data' => new OrderResource($order),
         ]);
@@ -48,8 +55,13 @@ class OrderController extends Controller
         ], 201);
     }
 
-    public function invoice(Order $order)
+    public function invoice(\Illuminate\Http\Request $request, Order $order)
     {
+        $token = $request->query('token');
+        if (!$request->user() && (!$token || !hash_equals((string) $order->access_token, (string) $token))) {
+            abort(403, 'Unauthorized order invoice access.');
+        }
+
         $order->loadMissing('items.product');
         return view('emails.order_invoice', compact('order'));
     }

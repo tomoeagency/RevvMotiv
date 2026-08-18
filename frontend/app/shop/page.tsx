@@ -9,11 +9,30 @@ import { ClosingCta } from "@/app/components/ClosingCta";
 import { ShopSearchBar } from "@/app/shop/ShopSearchBar";
 import { ShopClientGrid } from "@/app/shop/ShopClientGrid";
 
+import { FALLBACK_CATEGORIES } from "@/lib/constants";
+
 export const dynamic = "force-dynamic";
 
 const PER_PAGE = 12;
 
-type SearchParams = Promise<{ category?: string; search?: string; page?: string; focus?: string }>;
+const VEHICLE_FILTERS = [
+  { label: "All Vehicles", value: "" },
+  { label: "Hyundai Verna", value: "Verna" },
+  { label: "Kia Sonet", value: "Sonet" },
+  { label: "Tata Tiago", value: "Tiago" },
+  { label: "VW Polo", value: "Polo" },
+  { label: "Maruti Swift", value: "Swift" },
+  { label: "Mahindra Thar", value: "Thar" },
+  { label: "Hyundai Creta", value: "Creta" },
+] as const;
+
+type SearchParams = Promise<{
+  category?: string;
+  search?: string;
+  page?: string;
+  focus?: string;
+  fitment?: string;
+}>;
 
 export async function generateMetadata({
   searchParams,
@@ -26,42 +45,45 @@ export async function generateMetadata({
       title: "Shop All Parts — Precision Carbon Aero & Performance | RevvMotiv",
       description:
         "Browse precision-engineered carbon fiber styling, spoilers, diffusers, custom tyre stickers, and OLED lighting upgrades.",
+      alternates: {
+        canonical: "/shop",
+      },
     };
   }
 
   const { data: categories } = await getCategories();
   const activeCategory = categories.find((c) => c.slug === category);
   if (!activeCategory) {
-    return { title: "Shop All Parts — RevvMotiv" };
+    return {
+      title: "Shop All Parts — RevvMotiv",
+      alternates: { canonical: "/shop" },
+    };
   }
 
   return {
     title: `${activeCategory.name} — RevvMotiv Store`,
     description: `Shop ${activeCategory.name} — precision-engineered automotive styling and performance parts, fitted and shipped across India.`,
+    alternates: {
+      canonical: `/shop?category=${activeCategory.slug}`,
+    },
   };
 }
 
-const DEFAULT_CATEGORIES = [
-  { id: 1, name: "Batman Cover", slug: "batman-cover" },
-  { id: 2, name: "Car Audio & Utilities", slug: "car-audio-utilities" },
-  { id: 3, name: "Combo", slug: "combo" },
-  { id: 4, name: "Diffusers", slug: "diffusers" },
-  { id: 5, name: "Lights & Flashers", slug: "lights-flashers" },
-  { id: 6, name: "Splitters/Side Skirts", slug: "splitters-side-skirts" },
-  { id: 7, name: "Spoilers", slug: "spoilers" },
-  { id: 8, name: "Tyre Stickers", slug: "tyre-stickers" },
-];
+const DEFAULT_CATEGORIES = [...FALLBACK_CATEGORIES];
 
 export default async function ShopPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { category, search, page: pageParam, focus } = await searchParams;
+  const { category, search, page: pageParam, focus, fitment } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
+  // Combine search and fitment for query
+  const effectiveSearch = fitment ? `${search ? `${search} ` : ""}${fitment}` : search;
+
   const [{ data: products, meta }, { data: apiCategories }] = await Promise.all([
-    getProducts({ category, search, page, perPage: PER_PAGE }),
+    getProducts({ category, search: effectiveSearch, page, perPage: PER_PAGE }),
     getCategories(),
   ]);
 
@@ -71,15 +93,13 @@ export default async function ShopPage({
     ? categories.find((c) => c.slug === category)
     : undefined;
 
-  // Category/pagination links need to carry the search term along (a
-  // search result set filtered further by category, or paged through) —
-  // built from the current params rather than hardcoded per link so none
-  // of them drop search/page independently of each other.
-  function buildHref(overrides: { category?: string; page?: number }) {
+  function buildHref(overrides: { category?: string; page?: number; fitment?: string }) {
     const params = new URLSearchParams();
     const nextCategory = "category" in overrides ? overrides.category : category;
     if (nextCategory) params.set("category", nextCategory);
     if (search) params.set("search", search);
+    const nextFitment = "fitment" in overrides ? overrides.fitment : fitment;
+    if (nextFitment) params.set("fitment", nextFitment);
     const nextPage = overrides.page ?? 1;
     if (nextPage > 1) params.set("page", String(nextPage));
     const qs = params.toString();
@@ -178,13 +198,38 @@ export default async function ShopPage({
               <ShopSearchBar autoFocus={focus === "search"} />
             </Suspense>
 
+            {/* Vehicle Model Fitment Filter */}
+            <div className="mb-6">
+              <span className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest block mb-2.5">
+                Filter by Vehicle Compatibility
+              </span>
+              <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1">
+                {VEHICLE_FILTERS.map((vf) => {
+                  const isSelected = (fitment || "") === vf.value;
+                  return (
+                    <Link
+                      key={vf.label}
+                      href={buildHref({ fitment: vf.value || undefined, page: 1 })}
+                      className={`px-3 py-1.5 rounded text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-all border ${
+                        isSelected
+                          ? "bg-[var(--brand-red)] text-white border-[var(--brand-red)] shadow-[0_0_15px_rgba(225,29,72,0.3)]"
+                          : "bg-surface border-hairline text-ink-muted hover:text-ink hover:border-hairline-strong"
+                      }`}
+                    >
+                      {vf.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
             <ShopClientGrid
               initialProducts={products}
               initialTotal={meta.total}
               initialPage={meta.current_page}
               initialLastPage={meta.last_page}
               category={category}
-              search={search}
+              search={effectiveSearch}
             />
           </div>
         </div>
