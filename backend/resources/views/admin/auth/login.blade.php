@@ -526,11 +526,10 @@
 
   </div>
 
-  <!-- Page Bottom Footer with Clickable Links -->
   <footer class="login-page-footer">
     <span>Engineered by <a href="https://tomoe.agency" target="_blank" rel="noopener noreferrer" class="brand-link tomoe-link">Tomoe</a></span>
     <span class="dot-separator">&bull;</span>
-    <span>Powered by <a href="https://www.revvmotiv.com" target="_blank" rel="noopener noreferrer" class="brand-link revv-link">RevvMotiv Core</a></span>
+    <span>Powered by <a href="https://www.revvmotiv.com" target="_blank" rel="noopener noreferrer" class="brand-link revv-link">RevvMotiv</a></span>
   </footer>
 
 <script>
