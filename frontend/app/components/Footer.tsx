@@ -13,19 +13,15 @@ export async function Footer() {
   const whatsappDigits = settings?.whatsapp_number.replace(/\D/g, "") ?? null;
 
   return (
-    <footer className="relative bg-canvas text-ink pt-20 pb-10 border-t border-hairline overflow-hidden">
+    <footer className="relative bg-canvas text-ink pt-10 sm:pt-16 md:pt-20 pb-8 sm:pb-10 border-t border-hairline overflow-hidden">
       {/* Sleek Motorsport Accent Line */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50" />
 
       {/* Subtle Carbon Fiber Texture Overlay */}
       <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
-      {/* Premium Watermark Graphics */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* Faded tire marks anchored to extreme left — the source art is
-            solid black, so on the dark canvas it needs inverting to white
-            (kept faint) to read at all; on the light canvas the original
-            black reads fine on its own at a higher opacity. */}
+      {/* Premium Watermark Graphics (Hidden on mobile to prevent text clash) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
         <img
           src="/tire-marks.svg"
           alt=""
@@ -36,34 +32,34 @@ export async function Footer() {
       </div>
 
       {/* Main Footer Container */}
-      <div className="relative z-20 max-w-screen-2xl mx-auto px-6 lg:px-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-20">
+      <div className="relative z-20 max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-8 mb-10 sm:mb-16">
           
           {/* Brand Column (Left) */}
           <div className="lg:col-span-4 flex flex-col items-start">
-            <Link href="/" aria-label="RevvMotiv Home" className="block mb-8">
+            <Link href="/" aria-label="RevvMotiv Home" className="block mb-4 sm:mb-6">
               <div className="opacity-90 hover:opacity-100 transition-opacity">
-                <LogoMark className="h-10 w-auto text-ink" />
+                <LogoMark className="h-7 sm:h-9 w-auto text-ink" />
               </div>
             </Link>
-            <p className="text-sm text-ink-muted leading-relaxed max-w-sm mb-8 font-medium">
+            <p className="text-xs sm:text-sm text-ink-muted leading-relaxed max-w-sm mb-4 sm:mb-6 font-medium">
               Custom aerodynamic styling and exterior accessories designed for popular Indian cars. Tested fitment, durable finish, and Pan-India delivery.
             </p>
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-hairline-strong bg-hover text-[10px] font-bold uppercase tracking-widest text-ink-subtle">
-              <Flag className="w-3.5 h-3.5 text-red-500" />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-hairline-strong bg-hover text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-ink-subtle">
+              <Flag className="w-3 h-3 text-red-500" />
               <span>Tested for Indian Roads</span>
             </div>
           </div>
 
           {/* Links Columns (Right) */}
-          <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8 lg:gap-12">
+          <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
             
             {/* Support */}
             <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-6">
+              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
                 Support
               </h4>
-              <ul className="flex flex-col gap-4 text-sm font-medium text-ink-muted">
+              <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
                   <Link href="/policies/shipping-policy" className="hover:text-red-500 transition-colors">
                     Shipping Policy
@@ -93,10 +89,10 @@ export async function Footer() {
 
             {/* Legal */}
             <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-6">
+              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
                 Legal
               </h4>
-              <ul className="flex flex-col gap-4 text-sm font-medium text-ink-muted">
+              <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
                   <Link href="/policies/terms-of-service" className="hover:text-red-500 transition-colors">
                     Terms of Service
@@ -117,10 +113,10 @@ export async function Footer() {
 
             {/* Social */}
             <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-6">
-                Follow the Builds
+              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
+                Follow Builds
               </h4>
-              <ul className="flex flex-col gap-4 text-sm font-medium text-ink-muted">
+              <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
                   <a
                     href="https://www.instagram.com/revv.nation__/"
@@ -147,21 +143,21 @@ export async function Footer() {
             </div>
 
             {/* Contact */}
-            <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-6">
+            <div className="flex flex-col col-span-2 sm:col-span-1">
+              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
                 Get In Touch
               </h4>
-              <ul className="flex flex-col gap-3 text-sm font-medium text-ink-muted">
-                <li className="text-xs leading-relaxed text-ink-muted">
-                  Site-5, Kasna, Greater Noida, Uttar Pradesh, India
+              <ul className="flex flex-col gap-2.5 text-xs font-medium text-ink-muted">
+                <li className="text-[11px] sm:text-xs leading-relaxed text-ink-muted">
+                  Greater Noida, UP, India
                 </li>
                 <li>
                   <a
                     href="tel:+918368343232"
-                    className="hover:text-red-500 transition-colors text-xs flex items-center gap-1 group"
+                    className="hover:text-red-500 transition-colors flex items-center gap-1 group"
                   >
                     Phone: +91 83683 43232
-                    <ArrowUpRight className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </li>
                 <li>
@@ -169,22 +165,22 @@ export async function Footer() {
                     href="https://wa.me/918368343232?text=Hi%20RevvMotiv%2C%20I'm%20looking%20for%20styling%20%26%20aero%20parts%20for%20my%20car.%20Can%20you%20assist%20me%3F"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-red-500 transition-colors text-xs flex items-center gap-1 group"
+                    className="hover:text-red-500 transition-colors flex items-center gap-1 group text-emerald-400 font-semibold"
                   >
                     WhatsApp Support
-                    <ArrowUpRight className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                    <ArrowUpRight className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="mailto:support@revvmotiv.com"
-                    className="hover:text-red-500 transition-colors text-xs"
+                    className="hover:text-red-500 transition-colors"
                   >
                     support@revvmotiv.com
                   </a>
                 </li>
                 <li>
-                  <div className="text-ink-muted hover:text-red-500 transition-colors">
+                  <div className="text-ink-muted hover:text-red-500 transition-colors pt-1">
                     <ConsultantFooterLink />
                   </div>
                 </li>
@@ -195,8 +191,8 @@ export async function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-hairline flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest">
+        <div className="pt-6 sm:pt-8 border-t border-hairline flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6">
+          <p className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest text-center sm:text-left">
             &copy; {new Date().getFullYear()} RevvMotiv. All rights reserved.
           </p>
 

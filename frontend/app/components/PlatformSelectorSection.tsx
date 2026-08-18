@@ -10,7 +10,7 @@ const PLATFORMS = [
     id: "verna",
     name: "Hyundai Verna",
     tagline: "Stealth Blackout Styling Kit",
-    image: "/images/projects/verna_cover.webp",
+    image: "/images/projects/verna_cover.png",
     badge: "Sedan Styling",
     parts: [
       "Front Carbon Lip Splitter",
@@ -24,7 +24,7 @@ const PLATFORMS = [
     id: "sonet",
     name: "Kia Sonet",
     tagline: "GT-Line Aero Styling Kit",
-    image: "/images/projects/sonet_cover.webp",
+    image: "/images/projects/sonet_cover.png",
     badge: "Compact SUV",
     parts: [
       "Front Splitter with Winglets",
@@ -38,7 +38,7 @@ const PLATFORMS = [
     id: "tiago",
     name: "Tata Tiago",
     tagline: "Street Sport Aero Package",
-    image: "/images/projects/tiago_cover.webp",
+    image: "/images/projects/tiago_cover.png",
     badge: "Hatchback",
     parts: [
       "Front Lip Splitter + Tie Rods",
@@ -142,22 +142,22 @@ export function PlatformSelectorSection() {
   return (
     <section
       id="platforms"
-      className="py-24 max-w-screen-2xl mx-auto px-6 scroll-mt-12 relative overflow-hidden"
+      className="py-12 sm:py-20 md:py-24 max-w-screen-2xl mx-auto px-4 sm:px-6 scroll-mt-12 relative overflow-hidden"
     >
       {/* Background Ambient Glow */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-red-600/5 rounded-full blur-3xl pointer-events-none" />
 
       {/* Header Row with Arrows */}
-      <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6 relative z-10">
+      <div className="flex flex-row items-end justify-between mb-8 sm:mb-12 gap-4 relative z-10">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-black uppercase tracking-widest mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-black uppercase tracking-widest mb-2 sm:mb-3">
             <Sparkles className="w-3.5 h-3.5" />
             Popular Indian Cars
           </div>
-          <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight text-ink">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink">
             Choose Your Car
           </h2>
-          <p className="text-sm text-ink-muted max-w-lg mt-2 font-medium">
+          <p className="text-xs sm:text-sm text-ink-muted max-w-lg mt-1.5 font-medium">
             Explore custom aerodynamic and styling packages made for popular Indian hatchbacks, sedans, and SUVs.
           </p>
         </div>
@@ -165,34 +165,34 @@ export function PlatformSelectorSection() {
         {/* Carousel Navigation Controls */}
         <div className="flex items-center gap-2">
           <button
-              onClick={() => scrollByAmount("left")}
-              disabled={!canScrollLeft}
-              className="w-12 h-12 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 disabled:hover:border-hairline disabled:hover:bg-surface text-ink transition-all flex items-center justify-center shadow-lg cursor-pointer"
-              aria-label="Previous platform"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => scrollByAmount("right")}
-              disabled={!canScrollRight}
-              className="w-12 h-12 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 disabled:hover:border-hairline disabled:hover:bg-surface text-ink transition-all flex items-center justify-center shadow-lg cursor-pointer"
-              aria-label="Next platform"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
+            onClick={() => scrollByAmount("left")}
+            disabled={!canScrollLeft}
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 disabled:hover:border-hairline disabled:hover:bg-surface text-ink transition-all flex items-center justify-center shadow-lg cursor-pointer"
+            aria-label="Previous platform"
+          >
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
+          <button
+            onClick={() => scrollByAmount("right")}
+            disabled={!canScrollRight}
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 disabled:hover:border-hairline disabled:hover:bg-surface text-ink transition-all flex items-center justify-center shadow-lg cursor-pointer"
+            aria-label="Next platform"
+          >
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+          </button>
         </div>
+      </div>
 
       {/* Horizontal Carousel Track */}
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto pb-6 hide-scrollbar relative z-10 -mx-6 px-6 scroll-smooth"
+        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-6 hide-scrollbar relative z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 scroll-smooth snap-x snap-mandatory"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none", touchAction: "pan-y" }}
       >
         {PLATFORMS.map((platform) => (
           <div
             key={platform.id}
-            className="flex-none w-[85vw] sm:w-[380px] md:w-[420px] group border border-hairline bg-surface rounded-2xl overflow-hidden hover:border-red-500/50 transition-all duration-500 flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-red-500/10"
+            className="flex-none w-[80vw] max-w-[320px] sm:w-[380px] md:w-[420px] snap-start group border border-hairline bg-surface rounded-2xl overflow-hidden hover:border-red-500/50 transition-all duration-500 flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-red-500/10"
           >
             <div>
               {/* Image Preview with Badges */}

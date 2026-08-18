@@ -28,19 +28,19 @@ function ReviewCard({
     .toUpperCase();
 
   return (
-    <div className="group/card relative z-0 hover:z-30 flex-none w-[370px] sm:w-[400px] h-[330px] bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.02] hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
+    <div className="group/card relative z-0 hover:z-30 flex-none w-[82vw] max-w-[340px] sm:w-[400px] h-[290px] sm:h-[330px] bg-surface border border-hairline rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.02] hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
       {/* Background ambient red glow on hover */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
       {/* 1. Header: Stars + Quote Mark */}
-      <div className="flex items-center justify-between flex-none mb-3">
+      <div className="flex items-center justify-between flex-none mb-2 sm:mb-3">
         <StarRating rating={review.rating} />
-        <Quote className="w-6 h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors" />
+        <Quote className="w-5 h-5 sm:w-6 sm:h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors" />
       </div>
 
       {/* 2. Full Review Comment Text (100% Unclipped & Complete) */}
       <div className="flex-1 flex items-start py-1">
-        <p className="text-[13px] sm:text-sm text-ink-muted group-hover/card:text-ink leading-relaxed font-normal transition-colors duration-200">
+        <p className="text-xs sm:text-sm text-ink-muted group-hover/card:text-ink leading-relaxed font-normal transition-colors duration-200 line-clamp-4 sm:line-clamp-none">
           &ldquo;{review.comment}&rdquo;
         </p>
       </div>
@@ -121,21 +121,21 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
   };
 
   return (
-    <section className="border-t border-hairline py-24 bg-surface-alt overflow-hidden">
-      <div className="max-w-screen-2xl mx-auto px-6">
-        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <section className="border-t border-hairline py-12 sm:py-20 md:py-24 bg-surface-alt overflow-hidden">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6">
+        <div className="mb-6 sm:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
           <div>
-            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2 flex items-center gap-1.5">
+            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1.5 sm:mb-2 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Customer Feedback
             </span>
-            <h2 className="text-3xl md:text-4xl font-black text-ink uppercase tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight">
               What Drivers Are Saying
             </h2>
-            <p className="text-sm text-ink-muted mt-1.5">
+            <p className="text-xs sm:text-sm text-ink-muted mt-1 sm:mt-1.5">
               Real feedback and installation photos from car owners across India.
             </p>
           </div>
-          <div className="text-xs text-ink-muted font-medium">
+          <div className="text-xs text-ink-muted font-medium hidden sm:block">
             Tested & delivered to drivers across India
           </div>
         </div>

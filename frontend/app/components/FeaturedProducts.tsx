@@ -27,38 +27,40 @@ export function FeaturedProducts({ products: initialProducts = [] }: { products?
   }, [initialProducts]);
 
   return (
-    <section className="py-24 px-6 max-w-screen-2xl mx-auto w-full">
+    <section className="py-12 sm:py-20 md:py-24 px-4 sm:px-6 max-w-screen-2xl mx-auto w-full overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: MOTION_DURATION.page, ease: MOTION_EASE_BRAND }}
-        className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6"
+        className="flex flex-row items-end justify-between mb-8 sm:mb-12 gap-4"
       >
         <div>
-          <h2 className="text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-2">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-1 sm:mb-2">
             Engineered Parts
           </h2>
-          <p className="text-sm text-ink-muted font-medium tracking-wide">
+          <p className="text-xs sm:text-sm text-ink-muted font-medium tracking-wide">
             Select upgrades for maximum visual and functional impact.
           </p>
         </div>
         <Link
           href="/shop"
-          className="text-xs font-bold text-ink uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors border-b border-[var(--brand-red)] pb-1"
+          className="text-xs font-bold text-ink uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors border-b border-[var(--brand-red)] pb-1 whitespace-nowrap"
         >
-          View Catalog
+          View Catalog →
         </Link>
       </motion.div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Horizontal Swipe on Mobile / Grid on Desktop */}
+      <div className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
         {products.map((item, i) => (
           <motion.div
             key={item.id}
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: MOTION_DURATION.base, delay: i * 0.1, ease: MOTION_EASE_BRAND }}
+            viewport={{ once: true }}
+            transition={{ duration: MOTION_DURATION.base, delay: i * 0.08, ease: MOTION_EASE_BRAND }}
+            className="flex-none w-[76vw] max-w-[280px] sm:w-auto snap-start"
           >
             <ProductCard product={item} />
           </motion.div>

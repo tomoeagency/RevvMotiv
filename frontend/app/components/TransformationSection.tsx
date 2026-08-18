@@ -28,19 +28,19 @@ export function TransformationSection() {
   };
 
   return (
-    <section className="border-t border-hairline bg-surface-alt py-24 relative overflow-hidden">
-      <div className="max-w-screen-2xl mx-auto px-6">
-        <div className="grid lg:grid-cols-12 gap-12 items-center">
+    <section className="border-t border-hairline bg-surface-alt py-12 sm:py-20 md:py-24 relative overflow-hidden">
+      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column — Copy & Spec Highlights */}
           <div className="lg:col-span-6">
-            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
+            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2 sm:mb-3">
               The Visual Difference
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-[0.95] mb-6">
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-[0.95] mb-4 sm:mb-6">
               Stock Factory vs. <br />
               <span className="text-red-500">RevvMotiv Styling.</span>
             </h2>
-            <p className="text-ink-muted text-base leading-relaxed mb-8">
+            <p className="text-ink-muted text-xs sm:text-base leading-relaxed mb-6 sm:mb-8">
               Slide to see how our aero packages transform stock commuter cars into clean, road-commanding street builds with direct-fit splitters and styling accents.
             </p>
 
