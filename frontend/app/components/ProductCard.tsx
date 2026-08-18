@@ -40,7 +40,7 @@ export function ProductCard({ product }: { product: ApiProduct }) {
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
           placeholder="blur"
           blurDataURL={PRODUCT_IMAGE_BLUR_DATA_URL}
-          className={`object-cover object-center transition-all duration-500 ease-out group-hover:scale-105 ${
+          className={`object-cover object-center transition-all duration-500 ease-out group-hover:scale-105 pointer-events-none ${
             hasSecondaryImage && isHovered ? "opacity-0 scale-100" : "opacity-100"
           }`}
         />
@@ -52,8 +52,8 @@ export function ProductCard({ product }: { product: ApiProduct }) {
             alt={`${product.title} alternate view`}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className={`object-cover object-center transition-all duration-500 ease-out group-hover:scale-105 ${
-              isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100 pointer-events-none"
+            className={`object-cover object-center transition-all duration-500 ease-out group-hover:scale-105 pointer-events-none ${
+              isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100"
             }`}
           />
         )}
@@ -76,7 +76,7 @@ export function ProductCard({ product }: { product: ApiProduct }) {
               ? `Add ${product.title} to cart`
               : `${product.title} is out of stock`
           }
-          className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white hover:bg-gradient-to-r hover:from-[var(--brand-red)] hover:to-[var(--brand-black)] hover:border-red-500 shadow-md transition-colors z-10 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+          className="absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white hover:bg-gradient-to-r hover:from-[var(--brand-red)] hover:to-[var(--brand-black)] hover:border-red-500 shadow-md transition-colors z-20 pointer-events-auto disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
         >
           {!product.in_stock ? (
             <Ban className="w-4 h-4 text-slate-400" />
