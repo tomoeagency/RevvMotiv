@@ -7,7 +7,7 @@
 
         <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <!-- Left: Welcome & Brand Greeting -->
-            <div class="space-y-2">
+            <div class="space-y-2 shrink-0">
                 <div class="flex items-center gap-2">
                     <span class="text-xs font-semibold font-mono text-slate-400" id="liveClock">{{ now('Asia/Kolkata')->format('l, d F Y · H:i') }} IST</span>
                 </div>
@@ -19,7 +19,7 @@
                         $greeting = $hour < 5 ? 'Good evening' : ($hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening'));
                         $userName = auth()->user()->name ?? 'Administrator';
                     @endphp
-                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-white whitespace-nowrap">
                         {{ $greeting }}, <span class="text-slate-100">{{ $userName }}</span>
                     </h1>
                     <p class="mt-1 text-xs sm:text-sm font-medium text-slate-400">
@@ -63,14 +63,6 @@
                         <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-slate-300">Leads &amp; Enquiries</span>
                         <span class="block text-lg font-extrabold tabular-nums text-white">{{ $newLeadsCount }} <span class="text-xs font-normal text-emerald-400">total</span></span>
                     </div>
-                </a>
-
-                <a href="{{ route('admin.orders.create') }}" 
-                   class="group flex items-center gap-2 rounded-xl border border-red-500 bg-gradient-to-r from-red-600 to-red-700 px-4 py-3 text-xs font-bold text-white shadow-lg backdrop-blur-sm transition-all hover:scale-105 hover:from-red-500 hover:to-red-600">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span>+ New Order</span>
                 </a>
             </div>
         </div>
