@@ -23,8 +23,16 @@ test.describe("03. Checkout, Pricing & Payment Flow", () => {
     await expect(phoneInput).toBeVisible();
     const emailInput = page.locator("input#checkout-field-email");
     await expect(emailInput).toBeVisible();
-    const addressInput = page.locator("textarea#checkout-field-shipping-address");
-    await expect(addressInput).toBeVisible();
+    const houseNoInput = page.locator("input#checkout-field-house-no");
+    await expect(houseNoInput).toBeVisible();
+    const areaInput = page.locator("input#checkout-field-area");
+    await expect(areaInput).toBeVisible();
+    const pincodeInput = page.locator("input#checkout-field-pincode");
+    await expect(pincodeInput).toBeVisible();
+    const cityInput = page.locator("input#checkout-field-city");
+    await expect(cityInput).toBeVisible();
+    const stateSelect = page.locator("select#checkout-field-state");
+    await expect(stateSelect).toBeVisible();
 
     // 4. Test Payment Option Toggle (Dynamic Advance vs 100% Full Payment)
     const advanceOption = page.locator("button:has-text('Advance')").first();
@@ -45,7 +53,11 @@ test.describe("03. Checkout, Pricing & Payment Flow", () => {
     await nameInput.fill("Test Customer");
     await phoneInput.fill("9876543210");
     await emailInput.fill("test@example.com");
-    await addressInput.fill("123 Test Street, Cyber City, Greater Noida, 201306");
+    await houseNoInput.fill("Flat 402, Block B, Green Heights");
+    await areaInput.fill("Sector 62, Cyber City");
+    await pincodeInput.fill("201306");
+    await cityInput.fill("Greater Noida");
+    await stateSelect.selectOption("Uttar Pradesh");
 
     // 6. Submit Order Form
     const submitButton = page.locator("button[type='submit']");

@@ -42,15 +42,67 @@ type FormState = {
   customer_name: string;
   customer_email: string;
   customer_phone: string;
-  shipping_address: string;
 };
 
 const EMPTY_FORM: FormState = {
   customer_name: "",
   customer_email: "",
   customer_phone: "",
-  shipping_address: "",
 };
+
+export type AddressState = {
+  house_no: string;
+  area: string;
+  landmark: string;
+  pincode: string;
+  city: string;
+  state: string;
+};
+
+const EMPTY_ADDRESS: AddressState = {
+  house_no: "",
+  area: "",
+  landmark: "",
+  pincode: "",
+  city: "",
+  state: "Uttar Pradesh",
+};
+
+export const INDIAN_STATES = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chandigarh",
+  "Chhattisgarh",
+  "Delhi",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jammu and Kashmir",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Ladakh",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Puducherry",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+];
 
 // Only these keys render inline under a specific field — anything else the
 // backend sends back (e.g. "items", "items.0.quantity" for a stock/quantity
@@ -59,11 +111,10 @@ const CUSTOMER_FIELD_KEYS: (keyof FormState)[] = [
   "customer_name",
   "customer_email",
   "customer_phone",
-  "shipping_address",
 ];
 // coupon_code also renders inline (next to the coupon input), so it's kept
 // out of the generic banner list the same way customer fields are.
-const INLINE_FIELD_KEYS: string[] = [...CUSTOMER_FIELD_KEYS, "coupon_code"];
+const INLINE_FIELD_KEYS: string[] = [...CUSTOMER_FIELD_KEYS, "coupon_code", "shipping_address"];
 
 type Status = "idle" | "submitting" | "error";
 
@@ -72,6 +123,8 @@ export default function CheckoutPage() {
   const router = useRouter();
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [address, setAddress] = useState<AddressState>(EMPTY_ADDRESS);
+  const [addressErrors, setAddressErrors] = useState<Partial<Record<keyof AddressState, string>>>({});
   const [couponCode, setCouponCode] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
@@ -153,6 +206,13 @@ export default function CheckoutPage() {
     setForm((f) => ({ ...f, [field]: value }));
   }
 
+  function handleAddressChange(field: keyof AddressState, value: string) {
+    setAddress((a) => ({ ...a, [field]: value }));
+    if (addressErrors[field]) {
+      setAddressErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  }
+
   // Opens the Razorpay Checkout.js popup for the order's advance amount.
   function openRazorpay(order: ApiOrder) {
     if (typeof window === "undefined" || !window.Razorpay) {
@@ -199,8 +259,43 @@ export default function CheckoutPage() {
     e.preventDefault();
     setStatus("submitting");
     setFieldErrors({});
+    setAddressErrors({});
     setCouponError(null);
     setInfraError(null);
+
+    // Client-side structured address validation
+    const addrErrs: Partial<Record<keyof AddressState, string>> = {};
+    if (!address.house_no.trim()) {
+      addrErrs.house_no = "Flat / House / Building details are required.";
+    }
+    if (!address.area.trim()) {
+      addrErrs.area = "Street / Area / Locality is required.";
+    }
+    if (!/^\d{6}$/.test(address.pincode.trim())) {
+      addrErrs.pincode = "Enter a valid 6-digit PIN code.";
+    }
+    if (!address.city.trim()) {
+      addrErrs.city = "City / District is required.";
+    }
+    if (!address.state.trim()) {
+      addrErrs.state = "State selection is required.";
+    }
+
+    if (Object.keys(addrErrs).length > 0) {
+      setAddressErrors(addrErrs);
+      setStatus("error");
+      return;
+    }
+
+    // Format into authoritative clean multi-line shipping address
+    const parts = [
+      address.house_no.trim(),
+      address.area.trim(),
+      address.landmark.trim() ? `Landmark: ${address.landmark.trim()}` : null,
+      `${address.city.trim()}, ${address.state.trim()} - ${address.pincode.trim()}`,
+      "India",
+    ].filter(Boolean);
+    const formattedShippingAddress = parts.join(", ");
 
     try {
       // coupon_code is re-validated and re-priced authoritatively here —
@@ -208,6 +303,7 @@ export default function CheckoutPage() {
       // not what actually determines the charge.
       const order = await createOrder({
         ...form,
+        shipping_address: formattedShippingAddress,
         coupon_code: couponCode.trim() || undefined,
         payment_option: paymentOption,
         items: cartItemPayload,
@@ -237,7 +333,7 @@ export default function CheckoutPage() {
 
   const hasCustomerErrors = CUSTOMER_FIELD_KEYS.some(
     (key) => (fieldErrors[key]?.length ?? 0) > 0
-  );
+  ) || Object.keys(addressErrors).length > 0;
   const itemErrors = Object.entries(fieldErrors)
     .filter(([key]) => !INLINE_FIELD_KEYS.includes(key))
     .flatMap(([, msgs]) => msgs);
@@ -314,23 +410,148 @@ export default function CheckoutPage() {
             onChange={(v) => handleChange("customer_phone", v)}
             errors={fieldErrors.customer_phone}
           />
-          <div>
-            <label
-              htmlFor="checkout-field-shipping-address"
-              className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2"
-            >
-              Shipping Address
-            </label>
-            <textarea
-              id="checkout-field-shipping-address"
-              required
-              rows={4}
-              value={form.shipping_address}
-              onChange={(e) =>
-                handleChange("shipping_address", e.target.value)
-              }
-              className="w-full bg-surface border border-hairline focus:border-[var(--brand-red)] outline-none px-4 py-3 text-sm text-ink transition-colors"
-            />
+
+          {/* Structured Indian Address Section */}
+          <div className="border border-hairline bg-surface p-5 rounded flex flex-col gap-4">
+            <div className="flex items-center justify-between border-b border-hairline pb-3">
+              <label className="text-xs font-bold text-ink uppercase tracking-wider">
+                Delivery & Shipping Address
+              </label>
+              <span className="text-[10px] text-ink-subtle uppercase tracking-wider font-semibold">
+                Pan-India Express Delivery
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="checkout-field-house-no"
+                  className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+                >
+                  Flat / House No. / Building / Floor <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="checkout-field-house-no"
+                  required
+                  placeholder="e.g. Flat 402, Tower B, Galaxy Heights"
+                  value={address.house_no}
+                  onChange={(e) => handleAddressChange("house_no", e.target.value)}
+                  className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
+                />
+                {addressErrors.house_no && (
+                  <p className="text-xs text-red-400 mt-1">{addressErrors.house_no}</p>
+                )}
+              </div>
+
+              <div className="sm:col-span-2">
+                <label
+                  htmlFor="checkout-field-area"
+                  className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+                >
+                  Street / Area / Sector / Colony <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="checkout-field-area"
+                  required
+                  placeholder="e.g. Sector 62, Near Metro Station"
+                  value={address.area}
+                  onChange={(e) => handleAddressChange("area", e.target.value)}
+                  className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
+                />
+                {addressErrors.area && (
+                  <p className="text-xs text-red-400 mt-1">{addressErrors.area}</p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="checkout-field-landmark"
+                  className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+                >
+                  Landmark <span className="text-ink-subtle font-normal">(Optional)</span>
+                </label>
+                <input
+                  id="checkout-field-landmark"
+                  placeholder="e.g. Opp. Apollo Pharmacy"
+                  value={address.landmark}
+                  onChange={(e) => handleAddressChange("landmark", e.target.value)}
+                  className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="checkout-field-pincode"
+                  className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+                >
+                  6-Digit PIN Code <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="checkout-field-pincode"
+                  required
+                  maxLength={6}
+                  pattern="[0-9]{6}"
+                  inputMode="numeric"
+                  placeholder="e.g. 201301"
+                  value={address.pincode}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 6);
+                    handleAddressChange("pincode", val);
+                  }}
+                  className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded font-mono"
+                />
+                {addressErrors.pincode && (
+                  <p className="text-xs text-red-400 mt-1">{addressErrors.pincode}</p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="checkout-field-city"
+                  className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+                >
+                  City / District <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="checkout-field-city"
+                  required
+                  placeholder="e.g. Greater Noida"
+                  value={address.city}
+                  onChange={(e) => handleAddressChange("city", e.target.value)}
+                  className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
+                />
+                {addressErrors.city && (
+                  <p className="text-xs text-red-400 mt-1">{addressErrors.city}</p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="checkout-field-state"
+                  className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+                >
+                  State <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="checkout-field-state"
+                  required
+                  value={address.state}
+                  onChange={(e) => handleAddressChange("state", e.target.value)}
+                  className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded cursor-pointer"
+                >
+                  <option value="" disabled>Select State</option>
+                  {INDIAN_STATES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+                {addressErrors.state && (
+                  <p className="text-xs text-red-400 mt-1">{addressErrors.state}</p>
+                )}
+              </div>
+            </div>
+
             {fieldErrors.shipping_address?.map((msg) => (
               <p key={msg} className="text-xs text-red-400 mt-1">
                 {msg}
@@ -339,7 +560,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Payment Mode Selector */}
-          <div className="mt-6 border border-hairline bg-surface p-5 flex flex-col gap-3 rounded">
+          <div className="mt-2 border border-hairline bg-surface p-5 flex flex-col gap-3 rounded">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-ink uppercase tracking-wider">
                 Select Payment Option
