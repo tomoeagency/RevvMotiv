@@ -255,17 +255,19 @@
     <div class="invoice-container">
       
       <!-- Brand Header -->
-      <div class="email-brand-header">
+      <div class="email-brand-header" style="background: #000000; padding: 24px 32px; border-bottom: 3px solid #dc2626;">
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="vertical-align: middle;">
-              <a href="https://revvmotiv.com" target="_blank" style="text-decoration: none; display: inline-block;">
-                <img src="https://revvmotiv.com/logo-white.png" alt="RevvMotiv" height="28" style="height: 28px; width: auto; max-height: 28px; display: block; border: 0;" />
-              </a>
-              <div class="brand-tagline">Custom Car Styling &amp; Aero Parts</div>
+              <div style="font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.1;">
+                REVV<span style="color: #dc2626;">MOTIV</span>
+              </div>
+              <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; font-weight: 700;">
+                Custom Car Styling &amp; Aero Parts
+              </div>
             </td>
             <td style="text-align: right; vertical-align: middle;">
-              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; background-color: #dc2626; padding: 6px 12px; border-radius: 4px; display: inline-block;">
+              <span style="font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; background-color: #dc2626; padding: 6px 14px; border-radius: 4px; display: inline-block;">
                 Order #{{ $order->id }}
               </span>
             </td>
