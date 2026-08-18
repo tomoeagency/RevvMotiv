@@ -200,16 +200,16 @@ export async function Footer() {
             &copy; {new Date().getFullYear()} RevvMotiv. All rights reserved.
           </p>
 
-          {/* Clean minimal agency attribution */}
+          {/* Agency attribution */}
           <a
             href="https://tomoe.agency"
             target="_blank"
             rel="noopener noreferrer"
-            title="Crafted by Tomoe Agency"
+            title="A Tomoe Creation"
             className="text-[11px] font-medium text-ink-subtle hover:text-ink transition-colors flex items-center gap-1.5"
           >
-            <span>Crafted by</span>
-            <span className="font-bold uppercase tracking-wider text-ink-muted hover:text-ink">Tomoe Agency</span>
+            <span>a</span>
+            <span className="font-bold uppercase tracking-wider text-ink-muted hover:text-ink">tomoe creation</span>
           </a>
 
           <div className="flex items-center gap-2 text-[10px] font-bold text-ink-muted uppercase tracking-widest">

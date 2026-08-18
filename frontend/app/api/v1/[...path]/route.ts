@@ -1,26 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const rawBase =
-  process.env.API_BASE_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  (process.env.NODE_ENV === "development"
-    ? "http://127.0.0.1:8000"
-    : "http://api.revvmotiv.com");
+const BACKEND_BASE = (
+  process.env.NODE_ENV === "development"
+    ? (process.env.API_BASE_URL || "http://127.0.0.1:8000")
+    : "http://api.revvmotiv.com"
+).replace(/\/+$/, "");
 
-const BACKEND_BASE = rawBase
-  .replace(/^https:\/\/api\.revvmotiv\.com/, "http://api.revvmotiv.com")
-  .replace(/\/api(\/v1)?\/?$/, "")
-  .replace(/\/+$/, "");
-
-async function proxyRequest(req: NextRequest, rawPath: string[]) {
-  let cleanPath = [...rawPath];
-  while (cleanPath.length > 0 && (cleanPath[0] === "api" || cleanPath[0] === "v1")) {
-    cleanPath.shift();
-  }
-
-  const targetPath = `/api/v1/${cleanPath.join("/")}`;
-  const searchParams = req.nextUrl.searchParams.toString();
-  const targetUrl = `${BACKEND_BASE}${targetPath}${searchParams ? `?${searchParams}` : ""}`;
+async function proxyRequest(req: NextRequest) {
+  const targetUrl = `${BACKEND_BASE}${req.nextUrl.pathname}${req.nextUrl.search}`;
 
   try {
     const headers = new Headers();
@@ -59,22 +46,18 @@ async function proxyRequest(req: NextRequest, rawPath: string[]) {
   }
 }
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
-  const { path } = await params;
-  return proxyRequest(req, path);
+export async function GET(req: NextRequest) {
+  return proxyRequest(req);
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
-  const { path } = await params;
-  return proxyRequest(req, path);
+export async function POST(req: NextRequest) {
+  return proxyRequest(req);
 }
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
-  const { path } = await params;
-  return proxyRequest(req, path);
+export async function PUT(req: NextRequest) {
+  return proxyRequest(req);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
-  const { path } = await params;
-  return proxyRequest(req, path);
+export async function DELETE(req: NextRequest) {
+  return proxyRequest(req);
 }
