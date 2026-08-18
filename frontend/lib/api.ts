@@ -262,10 +262,7 @@ export async function getProducts(params?: {
 
     const qs = query.toString();
     const res = await fetch(apiUrl(`/api/v1/products${qs ? `?${qs}` : ""}`), {
-      next:
-        params?.search || params?.page
-          ? { revalidate: 0 }
-          : { revalidate: 300 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -281,7 +278,7 @@ export async function getProducts(params?: {
 export async function getProduct(idOrSlug: string): Promise<ApiProduct | null> {
   try {
     const res = await fetch(apiUrl(`/api/v1/products/${idOrSlug}`), {
-      next: { revalidate: 300 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -471,7 +468,7 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
 export async function getCategories(): Promise<ApiResponse<Category[]>> {
   try {
     const res = await fetch(apiUrl("/api/v1/categories"), {
-      next: { revalidate: 300 },
+      cache: "no-store",
     });
 
     if (!res.ok) {

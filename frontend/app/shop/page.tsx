@@ -8,6 +8,8 @@ import { ProductCard } from "@/app/components/ProductCard";
 import { ClosingCta } from "@/app/components/ClosingCta";
 import { ShopSearchBar } from "@/app/shop/ShopSearchBar";
 
+export const dynamic = "force-dynamic";
+
 const PER_PAGE = 12;
 
 type SearchParams = Promise<{ category?: string; search?: string; page?: string; focus?: string }>;
