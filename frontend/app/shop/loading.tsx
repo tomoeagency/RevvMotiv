@@ -3,7 +3,7 @@ export default function ShopLoading() {
   const sidebarPlaceholders = Array.from({ length: 6 });
 
   return (
-    <div className="pt-12 md:pt-16 pb-24 px-6 max-w-screen-2xl mx-auto w-full">
+    <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-6 max-w-screen-2xl mx-auto w-full">
       <div className="mb-10">
         <div className="h-9 w-72 max-w-full bg-hover rounded-[var(--radius-sm)] animate-pulse mb-3" />
         <div className="h-4 w-48 bg-hover rounded-[var(--radius-sm)] animate-pulse" />

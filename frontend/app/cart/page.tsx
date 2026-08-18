@@ -15,7 +15,7 @@ export default function CartPage() {
       {/* 1. Hero Banner */}
       <section className="relative border-b border-hairline bg-canvas overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
-        <div className="relative max-w-screen-2xl mx-auto px-6 py-16 md:py-20">
+        <div className="relative max-w-screen-2xl mx-auto px-6 py-6 sm:py-10 md:py-16">
           <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
             Order Review
           </span>

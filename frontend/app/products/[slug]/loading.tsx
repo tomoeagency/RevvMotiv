@@ -1,6 +1,6 @@
 export default function ProductDetailLoading() {
   return (
-    <div className="pt-12 md:pt-16 pb-24 px-6 max-w-screen-2xl mx-auto w-full">
+    <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-6 max-w-screen-2xl mx-auto w-full">
       <div className="h-4 w-32 bg-hover rounded-[var(--radius-sm)] animate-pulse mb-10" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">

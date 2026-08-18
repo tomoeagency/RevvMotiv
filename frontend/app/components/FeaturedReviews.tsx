@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Quote, Camera, Sparkles, X } from "lucide-react";
+import { Quote, Camera, Sparkles, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Review } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
 
@@ -96,6 +96,10 @@ function ReviewCard({
 export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Review[] }) {
   const [reviews, setReviews] = useState<Review[]>(initialReviews || []);
   const [activePhoto, setActivePhoto] = useState<{ url: string; name: string } | null>(null);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeMobileIndex, setActiveMobileIndex] = useState(0);
 
   useEffect(() => {
     if (initialReviews && initialReviews.length > 0) {
@@ -106,12 +110,39 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
     fetch("/api/v1/reviews/featured")
       .then((res) => (res.ok ? res.json() : { data: [] }))
       .then((body) => {
-        if (body.data && Array.isArray(body.data) && body.data.length > 0) {
+        if (body.data && Array.isArray(body.data)) {
           setReviews(body.data);
         }
       })
       .catch(() => {});
   }, [initialReviews]);
+
+  const checkMobileScroll = () => {
+    if (!mobileScrollRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = mobileScrollRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+
+    const cardWidth = mobileScrollRef.current.firstElementChild?.clientWidth || 300;
+    const newIdx = Math.round(scrollLeft / (cardWidth + 16));
+    setActiveMobileIndex(Math.min(Math.max(newIdx, 0), reviews.length - 1));
+  };
+
+  const scrollMobile = (direction: "left" | "right") => {
+    if (!mobileScrollRef.current) return;
+    const cardWidth = mobileScrollRef.current.firstElementChild?.clientWidth || 300;
+    const amount = direction === "left" ? -(cardWidth + 16) : cardWidth + 16;
+    mobileScrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+  };
+
+  const scrollMobileToIndex = (index: number) => {
+    if (!mobileScrollRef.current) return;
+    const cardWidth = mobileScrollRef.current.firstElementChild?.clientWidth || 300;
+    mobileScrollRef.current.scrollTo({
+      left: index * (cardWidth + 16),
+      behavior: "smooth",
+    });
+  };
 
   if (!reviews || reviews.length === 0) return null;
   const canLoop = reviews.length >= 4;
@@ -123,7 +154,8 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
   return (
     <section className="border-t border-hairline py-12 sm:py-20 md:py-24 bg-surface-alt overflow-hidden">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6">
-        <div className="mb-6 sm:mb-12 flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
+        {/* Section Header */}
+        <div className="mb-6 sm:mb-12 flex flex-row items-end justify-between gap-3 sm:gap-4">
           <div>
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1.5 sm:mb-2 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" /> Customer Feedback
@@ -135,37 +167,45 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
               Real feedback and installation photos from car owners across India.
             </p>
           </div>
-          <div className="text-xs text-ink-muted font-medium hidden sm:block">
-            Tested & delivered to drivers across India
+
+          {/* Mobile Navigation Buttons (< md) */}
+          <div className="flex md:hidden items-center gap-1.5 flex-none">
+            <button
+              type="button"
+              onClick={() => scrollMobile("left")}
+              disabled={!canScrollLeft}
+              className="w-9 h-9 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 text-ink transition-all flex items-center justify-center cursor-pointer shadow-2xs"
+              aria-label="Previous review"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollMobile("right")}
+              disabled={!canScrollRight}
+              className="w-9 h-9 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 text-ink transition-all flex items-center justify-center cursor-pointer shadow-2xs"
+              aria-label="Next review"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="text-xs text-ink-muted font-medium hidden md:block">
+            Tested &amp; delivered to drivers across India
           </div>
         </div>
 
-        {canLoop ? (
-          <div className="group/marquee overflow-hidden py-8 -my-8">
-            <div
-              className="flex items-center gap-6 w-max animate-marquee group-hover/marquee:[animation-play-state:paused]"
-              style={{ animationDuration: `${reviews.length * 6}s` }}
-            >
-              {reviews.map((review) => (
-                <ReviewCard
-                  key={`orig-${review.id}`}
-                  review={review}
-                  onImageClick={handleImageClick}
-                />
-              ))}
-              {reviews.map((review) => (
-                <ReviewCard
-                  key={`copy-${review.id}`}
-                  review={review}
-                  onImageClick={handleImageClick}
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-6 overflow-x-auto hide-scrollbar pb-6 pt-2 snap-x snap-mandatory">
+        {/* 1. MOBILE TRACK: Manual Swipeable Track (NO AUTOSCROLL) */}
+        <div className="md:hidden">
+          <div
+            ref={mobileScrollRef}
+            onScroll={checkMobileScroll}
+            data-lenis-prevent
+            className="flex items-center gap-4 overflow-x-auto hide-scrollbar pb-4 pt-1 snap-x snap-mandatory touch-pan-x -mx-4 px-4 overscroll-x-contain"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
             {reviews.map((review) => (
-              <div key={review.id} className="snap-center">
+              <div key={`mobile-${review.id}`} className="snap-start flex-none">
                 <ReviewCard
                   review={review}
                   onImageClick={handleImageClick}
@@ -173,7 +213,62 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
               </div>
             ))}
           </div>
-        )}
+
+          {/* Mobile Slide Dots */}
+          <div className="flex items-center justify-center gap-1.5 mt-4">
+            {reviews.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => scrollMobileToIndex(i)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === activeMobileIndex
+                    ? "w-6 bg-red-600"
+                    : "w-1.5 bg-surface border border-hairline hover:bg-hover"
+                }`}
+                aria-label={`Go to review ${i + 1}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* 2. DESKTOP TRACK: Smooth Continuous Marquee (hidden on mobile) */}
+        <div className="hidden md:block">
+          {canLoop ? (
+            <div className="group/marquee overflow-hidden py-8 -my-8">
+              <div
+                className="flex items-center gap-6 w-max animate-marquee group-hover/marquee:[animation-play-state:paused]"
+                style={{ animationDuration: `${reviews.length * 6}s` }}
+              >
+                {reviews.map((review) => (
+                  <ReviewCard
+                    key={`orig-${review.id}`}
+                    review={review}
+                    onImageClick={handleImageClick}
+                  />
+                ))}
+                {reviews.map((review) => (
+                  <ReviewCard
+                    key={`copy-${review.id}`}
+                    review={review}
+                    onImageClick={handleImageClick}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-6 overflow-x-auto hide-scrollbar pb-6 pt-2 snap-x snap-mandatory">
+              {reviews.map((review) => (
+                <div key={review.id} className="snap-center">
+                  <ReviewCard
+                    review={review}
+                    onImageClick={handleImageClick}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Photo Lightbox Popup */}
