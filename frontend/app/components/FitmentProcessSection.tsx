@@ -1,9 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "motion/react";
-import { Cpu, ShieldCheck, Wind, Wrench, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Cpu,
+  ShieldCheck,
+  Wind,
+  Wrench,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Pause,
+} from "lucide-react";
 
 const STEPS = [
   {
@@ -56,284 +66,312 @@ const STEPS = [
   },
 ] as const;
 
-export function FitmentProcessSection() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [activeStep, setActiveStep] = useState<number>(0);
-  const [stepProgress, setStepProgress] = useState<number>(0);
-  const [isDesktop, setIsDesktop] = useState<boolean>(false);
+const AUTO_CYCLE_DURATION_MS = 5000;
 
-  useEffect(() => {
-    const checkIsDesktop = () => {
-      setIsDesktop(window.innerWidth >= 1024);
-    };
-    checkIsDesktop();
-    window.addEventListener("resize", checkIsDesktop, { passive: true });
-    return () => window.removeEventListener("resize", checkIsDesktop);
+export function FitmentProcessSection() {
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const nextStep = useCallback(() => {
+    setActiveStep((prev) => (prev + 1) % STEPS.length);
+    setProgress(0);
   }, []);
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  const prevStep = useCallback(() => {
+    setActiveStep((prev) => (prev - 1 + STEPS.length) % STEPS.length);
+    setProgress(0);
+  }, []);
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (!isDesktop) return;
-    const totalSteps = STEPS.length;
-    const rawStep = latest * totalSteps;
-    const clampedIndex = Math.min(Math.floor(rawStep), totalSteps - 1);
-    setActiveStep(clampedIndex);
+  const handleSelectStep = (idx: number) => {
+    setActiveStep(idx);
+    setProgress(0);
+  };
 
-    const localProgress = rawStep - clampedIndex;
-    setStepProgress(Math.min(Math.max(localProgress, 0), 1));
-  });
-
-  const scrollToStep = (idx: number) => {
-    if (!isDesktop || !containerRef.current) {
-      setActiveStep(idx);
+  // Timer loop for auto-cycling steps
+  useEffect(() => {
+    if (isPaused) {
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       return;
     }
-    const rect = containerRef.current.getBoundingClientRect();
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const containerTop = rect.top + scrollTop;
-    const totalHeight = containerRef.current.offsetHeight - window.innerHeight;
-    const targetScroll = containerTop + (idx / (STEPS.length - 1)) * totalHeight;
 
-    window.scrollTo({
-      top: targetScroll,
-      behavior: "smooth",
-    });
-  };
+    const intervalTime = 50; // update progress every 50ms
+    const stepIncrement = (intervalTime / AUTO_CYCLE_DURATION_MS) * 100;
+
+    progressIntervalRef.current = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          nextStep();
+          return 0;
+        }
+        return prev + stepIncrement;
+      });
+    }, intervalTime);
+
+    return () => {
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+  }, [isPaused, nextStep]);
 
   const current = STEPS[activeStep];
   const IconComponent = current.icon;
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative bg-surface-alt ${
-        isDesktop ? "h-[280vh]" : "h-auto py-12 sm:py-16 border-y border-hairline"
-      }`}
+    <section
+      className="relative bg-surface-alt border-y border-hairline py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      aria-label="Quality and Fitment Process"
     >
-      {/* Frame: Sticky on Desktop, Normal static flow on Mobile */}
-      <div
-        className={`${
-          isDesktop
-            ? "sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden border-y border-hairline z-10 px-6 lg:px-12 py-6"
-            : "w-full px-4 sm:px-6 relative z-10"
-        }`}
-      >
-        {/* Background Grid Pattern & Ambient Glow */}
-        <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:80px_80px] opacity-20 pointer-events-none" />
-        <div className="absolute -top-40 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-40 left-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Background Grid Pattern & Ambient Glow */}
+      <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:80px_80px] opacity-20 pointer-events-none" />
+      <div className="absolute -top-40 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 left-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-screen-2xl mx-auto w-full relative z-10">
-          {/* Header Row with Global Scroll Indicator */}
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 lg:mb-12 gap-4">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest mb-2 sm:mb-3">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                Engineered for Exact Fitment
-              </div>
-              <h2 className="text-2xl sm:text-3xl md:text-5xl font-black uppercase tracking-tight text-ink">
-                Our 4-Step Quality & Fitment Process
-              </h2>
+      <div className="max-w-screen-2xl mx-auto w-full relative z-10">
+        {/* Header Row with Phase Indicator & Controls */}
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 lg:mb-12 gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest mb-2 sm:mb-3">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              Engineered for Exact Fitment
             </div>
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black uppercase tracking-tight text-ink">
+              Our 4-Step Quality &amp; Fitment Process
+            </h2>
+          </div>
 
-            {/* Step Counter Indicator */}
-            <div className="flex items-center gap-4 bg-surface/80 backdrop-blur border border-hairline px-4 py-2 rounded-full">
+          {/* Phase Counter & Manual Controls */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4 bg-surface/80 backdrop-blur border border-hairline px-4 py-2 rounded-full shadow-xs">
               <span className="text-xs font-bold text-ink-muted uppercase tracking-wider">
                 Phase <span className="text-red-500 font-mono text-sm">{current.number}</span> / 04
               </span>
-              <div className="w-24 h-1.5 bg-surface-alt rounded-full overflow-hidden border border-hairline">
+              <div className="w-20 sm:w-28 h-1.5 bg-surface-alt rounded-full overflow-hidden border border-hairline">
                 <div
-                  className="h-full bg-red-600 transition-all duration-150 ease-out"
+                  className="h-full bg-red-600 transition-all duration-100 ease-out"
                   style={{
-                    width: isDesktop
-                      ? `${((activeStep + stepProgress) / STEPS.length) * 100}%`
-                      : `${((activeStep + 1) / STEPS.length) * 100}%`,
+                    width: `${((activeStep + progress / 100) / STEPS.length) * 100}%`,
                   }}
                 />
               </div>
             </div>
+
+            {/* Prev / Next & Pause Buttons for Desktop */}
+            <div className="hidden lg:flex items-center gap-1.5 bg-surface/80 backdrop-blur border border-hairline p-1 rounded-full">
+              <button
+                type="button"
+                onClick={prevStep}
+                aria-label="Previous step"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsPaused((prev) => !prev)}
+                aria-label={isPaused ? "Resume autoplay" : "Pause autoplay"}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover transition-colors"
+              >
+                {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={nextStep}
+                aria-label="Next step"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover transition-colors"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
+        </div>
 
-          {/* MOBILE VIEW (< lg): Horizontal Swipeable Cards (Zero Vertical Blank Space) */}
-          <div
-            data-lenis-prevent
-            className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-x hide-scrollbar -mx-4 px-4 overscroll-x-contain"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {STEPS.map((step) => {
-              const StepIcon = step.icon;
-              return (
-                <div
-                  key={step.id}
-                  className="flex-none w-[84vw] max-w-[340px] snap-start border border-hairline bg-surface rounded-2xl overflow-hidden shadow-xl p-4 flex flex-col justify-between"
-                >
-                  <div>
-                    {/* Step Image */}
-                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-4 bg-black border border-hairline">
-                      <Image
-                        src={step.image}
-                        alt={step.title}
-                        fill
-                        sizes="84vw"
-                        className="object-cover object-center"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 backdrop-blur rounded-full border border-white/20 text-[9px] font-black text-red-500 uppercase tracking-wider">
-                        {step.badge}
-                      </div>
-                      <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 bg-red-600 rounded text-[10px] font-black text-white font-mono">
-                        {step.number}
-                      </div>
+        {/* MOBILE & TABLET VIEW (< lg): Horizontal Swipeable Cards */}
+        <div
+          data-lenis-prevent
+          className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-x hide-scrollbar -mx-4 px-4 overscroll-x-contain"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {STEPS.map((step, idx) => {
+            const StepIcon = step.icon;
+            const isCurrent = idx === activeStep;
+            return (
+              <div
+                key={step.id}
+                onClick={() => handleSelectStep(idx)}
+                className={`flex-none w-[84vw] max-w-[340px] snap-start border rounded-2xl overflow-hidden shadow-xl p-4 flex flex-col justify-between transition-colors ${
+                  isCurrent
+                    ? "border-red-500/80 bg-surface ring-1 ring-red-500/30"
+                    : "border-hairline bg-surface/80"
+                }`}
+              >
+                <div>
+                  {/* Step Image */}
+                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden mb-4 bg-black border border-hairline">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      sizes="84vw"
+                      className="object-cover object-center"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 backdrop-blur rounded-full border border-white/20 text-[9px] font-black text-red-500 uppercase tracking-wider">
+                      {step.badge}
                     </div>
+                    <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 bg-red-600 rounded text-[10px] font-black text-white font-mono">
+                      {step.number}
+                    </div>
+                  </div>
 
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center flex-none">
-                        <StepIcon className="w-3.5 h-3.5" />
-                      </div>
-                      <h3 className="text-sm font-black uppercase tracking-tight text-ink leading-snug">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center flex-none">
+                      <StepIcon className="w-3.5 h-3.5" />
+                    </div>
+                    <h3 className="text-sm font-black uppercase tracking-tight text-ink leading-snug">
+                      {step.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-xs text-ink-muted leading-relaxed mb-3">
+                    {step.description}
+                  </p>
+                </div>
+
+                <div className="pt-2.5 border-t border-hairline flex items-center justify-between text-[10px] font-bold text-red-500 uppercase tracking-wider">
+                  <span>{step.stat}</span>
+                  <span className="text-ink-subtle">•</span>
+                  <span className="text-ink-muted">{step.subStat}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* DESKTOP VIEW (lg+): Interactive Step Selectors & Cinematic Preview */}
+        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-stretch">
+          {/* Left Column — Interactive Step Selectors */}
+          <div className="col-span-5 flex flex-col justify-between gap-3">
+            {STEPS.map((step, idx) => {
+              const Icon = step.icon;
+              const isActive = idx === activeStep;
+              const isPassed = idx < activeStep;
+
+              return (
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => handleSelectStep(idx)}
+                  className={`relative text-left p-4 lg:p-5 rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
+                    isActive
+                      ? "bg-surface border-red-500/80 shadow-2xl shadow-red-500/15 scale-[1.01]"
+                      : isPassed
+                      ? "bg-surface/60 border-hairline text-ink-muted opacity-85 hover:opacity-100 hover:bg-surface/75"
+                      : "bg-surface/30 border-hairline/60 opacity-60 hover:opacity-100 hover:bg-surface/50"
+                  }`}
+                >
+                  {/* Active Step Dynamic Progress Line */}
+                  {isActive && (
+                    <div
+                      className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-red-600 via-red-500 to-red-400 transition-all duration-75"
+                      style={{ width: `${progress}%` }}
+                    />
+                  )}
+
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`text-[11px] font-mono font-black px-2 py-0.5 rounded transition-colors ${
+                          isActive
+                            ? "bg-red-600 text-white shadow-sm"
+                            : isPassed
+                            ? "bg-red-500/20 text-red-400"
+                            : "bg-surface-alt text-ink-muted"
+                        }`}
+                      >
+                        {step.number}
+                      </span>
+                      <h3
+                        className={`text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors ${
+                          isActive ? "text-ink" : "text-ink-muted"
+                        }`}
+                      >
                         {step.title}
                       </h3>
                     </div>
 
-                    <p className="text-xs text-ink-muted leading-relaxed mb-3">
-                      {step.description}
-                    </p>
+                    {isPassed ? (
+                      <CheckCircle2 className="w-4 h-4 text-red-500 flex-none" />
+                    ) : (
+                      <Icon
+                        className={`w-4 h-4 transition-colors flex-none ${
+                          isActive ? "text-red-500" : "text-ink-subtle"
+                        }`}
+                      />
+                    )}
                   </div>
 
-                  <div className="pt-2.5 border-t border-hairline flex items-center justify-between text-[10px] font-bold text-red-500 uppercase tracking-wider">
+                  <p className="text-[11px] text-ink-muted pl-8 flex items-center gap-2">
+                    <span className="text-red-500/90 font-medium">{step.badge}</span>
+                    <span>•</span>
                     <span>{step.stat}</span>
-                    <span className="text-ink-subtle">•</span>
-                    <span className="text-ink-muted">{step.subStat}</span>
-                  </div>
-                </div>
+                  </p>
+                </button>
               );
             })}
           </div>
 
-          {/* DESKTOP VIEW (lg+): Sticky Scroll-Driven Columns with Animated Step Fill */}
-          <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left Column — Interactive Step Selectors */}
-            <div className="col-span-5 flex flex-col gap-3">
-              {STEPS.map((step, idx) => {
-                const Icon = step.icon;
-                const isActive = idx === activeStep;
-                const isPassed = idx < activeStep;
+          {/* Right Column — Animated Active Step Cinematic Preview */}
+          <div className="col-span-7 flex">
+            <div className="w-full border border-hairline bg-surface/90 backdrop-blur-md rounded-2xl p-6 sm:p-7 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={current.id}
+                  initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="flex flex-col h-full justify-between"
+                >
+                  {/* Image Container with Telemetry Badges */}
+                  <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-5 border border-hairline shadow-inner bg-black">
+                    <Image
+                      src={current.image}
+                      alt={current.title}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-cover object-center scale-105 hover:scale-100 transition-transform duration-700"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
-                return (
-                  <button
-                    key={step.id}
-                    type="button"
-                    onClick={() => scrollToStep(idx)}
-                    className={`relative text-left p-4 sm:p-5 rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
-                      isActive
-                        ? "bg-surface border-red-500/80 shadow-2xl shadow-red-500/15 scale-[1.02]"
-                        : isPassed
-                        ? "bg-surface/60 border-hairline text-ink-muted opacity-85 hover:opacity-100"
-                        : "bg-surface/30 border-hairline/60 opacity-60 hover:opacity-100 hover:bg-surface/50"
-                    }`}
-                  >
-                    {/* Active Step Progress Fill Line on Desktop Scroll */}
-                    {isActive && (
-                      <div
-                        className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-red-600 via-red-500 to-red-400 transition-all duration-75"
-                        style={{ width: `${stepProgress * 100}%` }}
-                      />
-                    )}
+                    {/* Top Badges */}
+                    <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex items-center gap-2">
+                      <div className="px-3 py-1 bg-black/75 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-black text-red-500 uppercase tracking-widest">
+                        {current.badge}
+                      </div>
+                    </div>
 
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={`text-[11px] font-mono font-black px-2 py-0.5 rounded transition-colors ${
-                            isActive
-                              ? "bg-red-600 text-white shadow-sm"
-                              : isPassed
-                              ? "bg-red-500/20 text-red-400"
-                              : "bg-surface-alt text-ink-muted"
-                          }`}
-                        >
-                          {step.number}
+                    {/* Bottom Stat Overlays */}
+                    <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between gap-2">
+                      <div className="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg text-white">
+                        <span className="text-[9px] font-bold text-ink-subtle uppercase block">
+                          Telemetry Benchmark
                         </span>
-                        <h3
-                          className={`text-xs sm:text-sm font-bold uppercase tracking-wider transition-colors ${
-                            isActive ? "text-ink" : "text-ink-muted"
-                          }`}
-                        >
-                          {step.title}
-                        </h3>
+                        <span className="text-xs font-bold text-red-400">
+                          {current.subStat}
+                        </span>
                       </div>
-
-                      {isPassed ? (
-                        <CheckCircle2 className="w-4 h-4 text-red-500 flex-none" />
-                      ) : (
-                        <Icon
-                          className={`w-4 h-4 transition-colors flex-none ${
-                            isActive ? "text-red-500" : "text-ink-subtle"
-                          }`}
-                        />
-                      )}
-                    </div>
-
-                    <p className="text-[11px] text-ink-muted pl-8 flex items-center gap-2">
-                      <span className="text-red-500/90 font-medium">{step.badge}</span>
-                      <span>•</span>
-                      <span>{step.stat}</span>
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Right Column — Animated Active Step Cinematic Preview */}
-            <div className="col-span-7">
-              <div className="border border-hairline bg-surface/90 backdrop-blur-md rounded-2xl p-6 sm:p-7 shadow-2xl relative overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={current.id}
-                    initial={{ opacity: 0, y: 15, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                    transition={{ duration: 0.35, ease: "easeOut" }}
-                  >
-                    {/* Image Container with Telemetry Badges */}
-                    <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 border border-hairline shadow-inner bg-black">
-                      <Image
-                        src={current.image}
-                        alt={current.title}
-                        fill
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        className="object-cover object-center scale-105 hover:scale-100 transition-transform duration-700"
-                        priority
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-
-                      {/* Top Badges */}
-                      <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex items-center gap-2">
-                        <div className="px-3 py-1 bg-black/75 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-black text-red-500 uppercase tracking-widest">
-                          {current.badge}
-                        </div>
-                      </div>
-
-                      {/* Bottom Stat Overlays */}
-                      <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4 flex items-end justify-between gap-2">
-                        <div className="bg-black/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg text-white">
-                          <span className="text-[9px] font-bold text-ink-subtle uppercase block">
-                            Telemetry Benchmark
-                          </span>
-                          <span className="text-xs font-bold text-red-400">
-                            {current.subStat}
-                          </span>
-                        </div>
-                        <div className="px-3.5 py-1.5 bg-red-600 text-white rounded-lg text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/30">
-                          {current.stat}
-                        </div>
+                      <div className="px-3.5 py-1.5 bg-red-600 text-white rounded-lg text-xs font-black uppercase tracking-wider shadow-lg shadow-red-600/30">
+                        {current.stat}
                       </div>
                     </div>
+                  </div>
 
-                    {/* Step Title & Detailed Description */}
+                  {/* Step Title & Detailed Description */}
+                  <div>
                     <div className="flex items-center gap-3 mb-2.5">
                       <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center flex-none">
                         <IconComponent className="w-4 h-4" />
@@ -346,13 +384,13 @@ export function FitmentProcessSection() {
                     <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
                       {current.description}
                     </p>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

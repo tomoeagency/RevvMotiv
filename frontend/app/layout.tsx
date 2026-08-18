@@ -130,14 +130,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${inter.variable} antialiased w-full max-w-full overflow-x-hidden`}
+      className={`${orbitron.variable} ${inter.variable} antialiased w-full max-w-full`}
       suppressHydrationWarning
     >
       <head>
         <RootSchema />
         <link rel="dns-prefetch" href="https://api.revvmotiv.com" />
       </head>
-      <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full overflow-x-hidden relative">
+      <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full relative">
         <Script id="theme-init" strategy="beforeInteractive">
           {`try {
             if (localStorage.getItem("revvmotiv-theme") === "light") {
@@ -150,7 +150,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <ConsultantProvider>
               <AnnouncementStrip />
               <Navbar />
-              <main className="flex-1 w-full max-w-full overflow-x-clip">{children}</main>
+              <main className="flex-1 w-full max-w-full">{children}</main>
               <Footer />
               <CartDrawer />
               <TrustPanel />
