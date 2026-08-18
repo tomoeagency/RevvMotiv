@@ -18,20 +18,20 @@ class ProjectDemoSeeder extends Seeder
                 'description' => "Complete dark-stealth aero package: precision 3D-scanned front carbon lip splitter with red accents, gloss black de-chromed cascading grille, concave forged satin black alloys with 3D white REVV MOTIV tyre lettering, and an aggressive quad-fin carbon rear diffuser with quad titanium tips.",
                 'status' => 'active',
                 'sort_order' => 1,
-                'cover_image' => '/images/projects/verna_cover.webp',
+                'cover_image' => '/images/projects/verna_cover.png',
                 'views' => [
                     [
                         'view_type' => 'front',
                         'work_description' => 'Precision 3D laser-scanned carbon fiber front splitter with subtle red aero accent trim and de-chromed gloss black grille.',
                         'images' => [
-                            '/images/projects/verna_front.webp',
+                            '/images/projects/verna_front.png',
                         ],
                     ],
                     [
                         'view_type' => 'rear',
                         'work_description' => 'Aggressive quad-fin carbon fiber rear diffuser paired with quad titanium burnt exhaust tips and gloss black ducktail spoiler.',
                         'images' => [
-                            '/images/projects/verna_rear.webp',
+                            '/images/projects/verna_rear.png',
                         ],
                     ],
                 ],
@@ -44,20 +44,20 @@ class ProjectDemoSeeder extends Seeder
                 'description' => "Matte pewter gray compact SUV build featuring RevvMotiv carbon fiber front splitter with red GT-Line corner winglets, floating gloss black roof wrap, rally-style roof spoiler with aero endplates, and multi-fin carbon rear diffuser.",
                 'status' => 'active',
                 'sort_order' => 2,
-                'cover_image' => '/images/projects/sonet_cover.webp',
+                'cover_image' => '/images/projects/sonet_cover.png',
                 'views' => [
                     [
                         'view_type' => 'front',
                         'work_description' => 'Front carbon fiber lip splitter with red GT-Line corner winglets and gloss black tiger-nose grille styling.',
                         'images' => [
-                            '/images/projects/sonet_front.webp',
+                            '/images/projects/sonet_front.png',
                         ],
                     ],
                     [
                         'view_type' => 'rear',
                         'work_description' => 'Extended rally-inspired carbon fiber roof wing spoiler with aero endplates and deep multi-fin rear diffuser.',
                         'images' => [
-                            '/images/projects/sonet_rear.webp',
+                            '/images/projects/sonet_rear.png',
                         ],
                     ],
                 ],
@@ -70,20 +70,20 @@ class ProjectDemoSeeder extends Seeder
                 'description' => "Fiery magma orange hot hatch build equipped with high-downforce front splitter with red anodized support struts, rally-style carbon fiber roof wing spoiler, center-exit quad diffuser, and motorsport lightweight wheels with white tyre lettering.",
                 'status' => 'active',
                 'sort_order' => 3,
-                'cover_image' => '/images/projects/tiago_cover.webp',
+                'cover_image' => '/images/projects/tiago_cover.png',
                 'views' => [
                     [
                         'view_type' => 'front',
                         'work_description' => 'Motorsport front carbon splitter with red anodized tie-rod support struts and lowered track suspension setup.',
                         'images' => [
-                            '/images/projects/tiago_front.webp',
+                            '/images/projects/tiago_front.png',
                         ],
                     ],
                     [
                         'view_type' => 'rear',
                         'work_description' => 'Carbon fiber rally roof wing spoiler, center dual-exit diffuser, and smoked LED taillamp treatment.',
                         'images' => [
-                            '/images/projects/tiago_rear.webp',
+                            '/images/projects/tiago_rear.png',
                         ],
                     ],
                 ],
