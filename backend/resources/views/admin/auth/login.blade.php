@@ -478,7 +478,7 @@
               name="email"
               value="{{ old('email', '') }}"
               autocomplete="email"
-              placeholder="admin@revvmotiv.test"
+              placeholder="name@example.com"
               required
               autofocus
             />
