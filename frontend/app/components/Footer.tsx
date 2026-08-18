@@ -18,14 +18,14 @@ export async function Footer() {
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50" />
 
       {/* Subtle Carbon Fiber Texture Overlay */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(currentColor 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
 
       {/* Premium Watermark Graphics (Hidden on mobile to prevent text clash) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden hidden lg:block">
         <img
           src="/tire-marks.svg"
           alt=""
-          className="absolute top-0 -left-[5%] w-1/2 h-full object-cover object-left invert opacity-10 light:invert-0 light:opacity-[0.08]"
+          className="absolute top-0 -left-[5%] w-1/3 h-full object-cover object-left invert opacity-10 light:invert-0 light:opacity-[0.08]"
         />
         {/* Soft red glow */}
         <div className="absolute bottom-[-200px] right-[-200px] w-[600px] h-[600px] bg-red-600/15 light:bg-red-600/10 rounded-full blur-[100px]" />
