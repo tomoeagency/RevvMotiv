@@ -172,7 +172,6 @@ export default async function ShopPage({
               initialLastPage={meta.last_page}
               category={category}
               search={search}
-              buildHref={buildHref}
             />
           </div>
         </div>

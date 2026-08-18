@@ -13,7 +13,6 @@ interface ShopClientGridProps {
   initialLastPage: number;
   category?: string;
   search?: string;
-  buildHref: (overrides: { category?: string; page?: number }) => string;
 }
 
 export function ShopClientGrid({
@@ -23,7 +22,6 @@ export function ShopClientGrid({
   initialLastPage,
   category,
   search,
-  buildHref,
 }: ShopClientGridProps) {
   const [products, setProducts] = useState<ApiProduct[]>(initialProducts);
   const [total, setTotal] = useState(initialTotal);
@@ -31,8 +29,18 @@ export function ShopClientGrid({
   const [lastPage, setLastPage] = useState(initialLastPage);
   const [isLoading, setIsLoading] = useState(initialProducts.length === 0);
 
+  const buildHref = (overrides: { category?: string; page?: number }) => {
+    const params = new URLSearchParams();
+    const nextCat = "category" in overrides ? overrides.category : category;
+    if (nextCat) params.set("category", nextCat);
+    if (search) params.set("search", search);
+    const nextPage = overrides.page ?? 1;
+    if (nextPage > 1) params.set("page", String(nextPage));
+    const qs = params.toString();
+    return `/shop${qs ? `?${qs}` : ""}`;
+  };
+
   useEffect(() => {
-    // If server passed products, use them
     if (initialProducts.length > 0) {
       setProducts(initialProducts);
       setTotal(initialTotal);
@@ -56,7 +64,7 @@ export function ShopClientGrid({
         return res.json();
       })
       .then((json) => {
-        if (json?.data) {
+        if (json?.data && Array.isArray(json.data)) {
           setProducts(json.data);
           setTotal(json.meta?.total ?? json.data.length);
           setCurrentPage(json.meta?.current_page ?? 1);
@@ -89,7 +97,9 @@ export function ShopClientGrid({
           No Products Found
         </h3>
         <p className="text-sm text-ink-muted mb-6">
-          There are currently no items in this category.
+          {search
+            ? `Nothing matched "${search}". Try a different search term.`
+            : "There are currently no items in this category."}
         </p>
         <Link
           href="/shop"

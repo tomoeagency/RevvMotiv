@@ -26,10 +26,21 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+const FALLBACK_CATEGORIES: Category[] = [
+  { id: 1, name: "Splitters/Side Skirts", slug: "splitters-side-skirts" },
+  { id: 2, name: "Spoilers", slug: "spoilers" },
+  { id: 3, name: "Diffusers", slug: "diffusers" },
+  { id: 4, name: "Batman Cover", slug: "batman-cover" },
+  { id: 5, name: "Tyre Stickers", slug: "tyre-stickers" },
+  { id: 6, name: "Lights & Flashers", slug: "lights-flashers" },
+  { id: 7, name: "Combo", slug: "combo" },
+  { id: 8, name: "Car Audio & Utilities", slug: "car-audio-utilities" },
+];
+
 export function Navbar() {
   const { itemCount, openDrawer } = useCart();
   const pathname = usePathname();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>(FALLBACK_CATEGORIES);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
@@ -46,14 +57,15 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Nav is global chrome rendered on every route (including error/loading
-  // pages), so this fetches client-side and fails quietly — a nav link list
-  // isn't indexable content, and one flaky request here shouldn't be able
-  // to take down the whole site the way a layout-level server fetch could.
   useEffect(() => {
-    getCategories()
-      .then(({ data }) => setCategories(data))
-      .catch(() => setCategories([]));
+    fetch("/api/v1/categories")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json?.data && Array.isArray(json.data) && json.data.length > 0) {
+          setCategories(json.data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const isShopActive = isActive(pathname, "/shop");
