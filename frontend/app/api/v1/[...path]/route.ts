@@ -11,14 +11,17 @@ async function proxyRequest(req: NextRequest) {
 
   try {
     const headers = new Headers();
+    req.headers.forEach((val, key) => {
+      const lower = key.toLowerCase();
+      if (lower !== "host" && lower !== "connection" && lower !== "transfer-encoding") {
+        headers.set(key, val);
+      }
+    });
+
     headers.set("User-Agent", "RevvMotiv-Storefront/1.0 (Next.js Proxy)");
-    headers.set("Accept", "application/json");
-
-    const auth = req.headers.get("authorization");
-    if (auth) headers.set("Authorization", auth);
-
-    const contentType = req.headers.get("content-type");
-    if (contentType) headers.set("Content-Type", contentType);
+    if (!headers.has("Accept")) {
+      headers.set("Accept", "application/json");
+    }
 
     const body = req.method !== "GET" && req.method !== "HEAD" ? await req.text() : undefined;
 
