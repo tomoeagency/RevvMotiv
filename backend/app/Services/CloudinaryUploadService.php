@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
-use RuntimeException;
+use Illuminate\Support\Str;
 
-// Thin wrapper around Cloudinary's signed upload HTTP API — no SDK
-// dependency needed, Laravel's HTTP client (Guzzle) already ships with
-// the framework. Signing prevents arbitrary uploads to the account by
-// anyone who can read the (public) cloud name.
+// Cloudinary upload service with transparent local storage fallback.
+// If CLOUDINARY_* keys are not configured in .env, files are stored
+// directly into public/uploads/{folder}/ so the application never breaks.
 class CloudinaryUploadService
 {
     public function upload(UploadedFile $file, string $folder): array
@@ -18,43 +18,67 @@ class CloudinaryUploadService
         $apiKey = config('services.cloudinary.api_key');
         $apiSecret = config('services.cloudinary.api_secret');
 
-        if (! $cloudName || ! $apiKey || ! $apiSecret) {
-            throw new RuntimeException('Cloudinary is not configured — set CLOUDINARY_* in .env.');
+        // If Cloudinary credentials are configured, attempt Cloudinary upload
+        if ($cloudName && $apiKey && $apiSecret) {
+            try {
+                $timestamp = time();
+                $paramsToSign = ['folder' => $folder, 'timestamp' => $timestamp];
+                ksort($paramsToSign);
+                $signable = collect($paramsToSign)
+                    ->map(fn ($value, $key) => "{$key}={$value}")
+                    ->implode('&');
+                $signature = sha1($signable.$apiSecret);
+
+                $resourceType = str_starts_with((string) $file->getMimeType(), 'video') ? 'video' : 'image';
+
+                $response = Http::attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
+                    ->post("https://api.cloudinary.com/v1_1/{$cloudName}/{$resourceType}/upload", [
+                        'api_key' => $apiKey,
+                        'timestamp' => $timestamp,
+                        'folder' => $folder,
+                        'signature' => $signature,
+                    ]);
+
+                if ($response->successful()) {
+                    return $response->json();
+                }
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
-        $timestamp = time();
-        $paramsToSign = ['folder' => $folder, 'timestamp' => $timestamp];
-        ksort($paramsToSign);
-        $signable = collect($paramsToSign)
-            ->map(fn ($value, $key) => "{$key}={$value}")
-            ->implode('&');
-        $signature = sha1($signable.$apiSecret);
+        // Fallback: Store locally in public/uploads/{folder}
+        return $this->uploadLocally($file, $folder);
+    }
 
-        $resourceType = str_starts_with((string) $file->getMimeType(), 'video') ? 'video' : 'image';
+    /**
+     * Store file locally and return Cloudinary-compatible array structure.
+     */
+    protected function uploadLocally(UploadedFile $file, string $folder): array
+    {
+        $targetDir = public_path("uploads/{$folder}");
+        File::ensureDirectoryExists($targetDir);
 
-        $response = Http::attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
-            ->post("https://api.cloudinary.com/v1_1/{$cloudName}/{$resourceType}/upload", [
-                'api_key' => $apiKey,
-                'timestamp' => $timestamp,
-                'folder' => $folder,
-                'signature' => $signature,
-            ]);
+        $extension = $file->getClientOriginalExtension() ?: 'png';
+        $filename = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '-' . Str::random(8) . '.' . $extension;
 
-        if ($response->failed()) {
-            throw new RuntimeException('Cloudinary upload failed: '.$response->body());
-        }
+        $file->move($targetDir, $filename);
 
-        return $response->json();
+        $relativeUrl = "/uploads/{$folder}/{$filename}";
+        $fullUrl = asset("uploads/{$folder}/{$filename}");
+
+        return [
+            'secure_url' => $fullUrl,
+            'url' => $fullUrl,
+            'public_id' => "local_{$folder}_{$filename}",
+            'relative_path' => $relativeUrl,
+        ];
     }
 
     /** @return string[] Cloudinary secure_urls, in the same order as $files. */
     public function uploadMany(array $files, string $folder): array
     {
         return collect($files)
-            // A multi-file <input> can hand back an entry with no file
-            // actually attached (browser-dependent quirk on empty array-name
-            // inputs) — isValid() is false for those, filter them out before
-            // wasting an upload call on them.
             ->filter(fn ($file) => $file instanceof UploadedFile && $file->isValid())
             ->map(fn (UploadedFile $file) => $this->upload($file, $folder)['secure_url'])
             ->all();
