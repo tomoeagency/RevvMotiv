@@ -54,7 +54,7 @@ export function TrustPanelClient({
   initialReviews?: Review[];
 }) {
   const rawPathname = usePathname();
-  const { isDrawerOpen } = useCart();
+  const { isDrawerOpen, closeDrawer } = useCart();
   const { open: openConsultant } = useConsultant();
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
 
@@ -159,12 +159,15 @@ export function TrustPanelClient({
 
   return (
     <div
-      className="hidden md:block fixed inset-y-0 left-0 right-[420px] z-[58] pointer-events-none overflow-y-auto"
+      className="hidden md:block fixed inset-y-0 left-0 right-[420px] z-[58] pointer-events-auto overflow-y-auto overscroll-contain p-6 pb-28 scroll-smooth"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) closeDrawer();
+      }}
       aria-live="polite"
     >
       {/* Masonry via CSS multi-column layout */}
       <AnimatePresence>
-        <div className="columns-1 lg:columns-2 xl:columns-3 gap-5 p-6">
+        <div className="columns-1 lg:columns-2 xl:columns-3 gap-5 pb-8">
           {cards.map((card, i) => {
           // Slightly different bob duration/delay per box so they float
           // out of sync with each other instead of bobbing in unison.
