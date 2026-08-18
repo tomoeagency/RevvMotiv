@@ -28,16 +28,16 @@ function ReviewCard({
     .toUpperCase();
 
   return (
-    <div className="group/card relative z-0 hover:z-30 flex-none w-[340px] h-[270px] hover:h-[310px] bg-surface border border-hairline overflow-hidden rounded-2xl p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.04] hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/15 hover:border-red-500/50">
+    <div className="group/card relative z-0 hover:z-30 flex-none w-[360px] h-[290px] bg-surface border border-hairline rounded-2xl p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.03] hover:-translate-y-2 hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
       {/* Background ambient red glow on hover */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
       {/* 1. Header: Stars + Verified Badge + Quote Mark */}
-      <div className="flex items-center justify-between flex-none">
+      <div className="flex items-center justify-between flex-none mb-2">
         <div className="flex items-center gap-2">
           <StarRating rating={review.rating} />
           {review.verified_purchase && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-500 border border-red-500/20">
+            <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2.5 py-0.5 text-[10px] font-bold text-red-500 border border-red-500/20">
               <ShieldCheck className="w-3 h-3" />
               Verified Driver
             </span>
@@ -46,9 +46,9 @@ function ReviewCard({
         <Quote className="w-6 h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors" />
       </div>
 
-      {/* 2. Review Comment Text (Expands smoothly on Hover with no click required) */}
-      <div className="my-auto py-1 overflow-hidden">
-        <p className="text-xs sm:text-sm text-ink/90 leading-relaxed font-normal line-clamp-3 group-hover/card:line-clamp-none max-h-20 group-hover/card:max-h-36 overflow-y-auto pr-1 hide-scrollbar transition-all duration-300">
+      {/* 2. Review Comment Text */}
+      <div className="flex-1 flex items-center py-1">
+        <p className="text-xs sm:text-sm text-ink-muted group-hover/card:text-ink leading-relaxed font-normal line-clamp-4 transition-colors duration-200">
           &ldquo;{review.comment}&rdquo;
         </p>
       </div>
@@ -144,7 +144,7 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
         </div>
 
         {canLoop ? (
-          <div className="group/marquee overflow-hidden py-6 -my-6">
+          <div className="group/marquee overflow-hidden py-8 -my-8">
             <div
               className="flex items-center gap-6 w-max animate-marquee group-hover/marquee:[animation-play-state:paused]"
               style={{ animationDuration: `${reviews.length * 6}s` }}
