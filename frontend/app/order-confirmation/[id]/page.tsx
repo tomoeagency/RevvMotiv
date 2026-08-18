@@ -212,16 +212,6 @@ function OrderStatus({
                 </span>
                 <span className="text-ink-subtle">·</span>
                 <span className="text-ink-muted">Invoice sent to email</span>
-                <span className="text-ink-subtle">·</span>
-                <a
-                  href={`/api/v1/orders/${order.id}/invoice${order.access_token ? `?token=${encodeURIComponent(order.access_token)}` : ""}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors cursor-pointer"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  View Tax Invoice
-                </a>
               </div>
             </div>
           </div>

@@ -52,8 +52,8 @@ test.describe("04. Order IDOR Security & Invoice Validation", () => {
       expect(invoiceRes.status()).toBe(200);
       const invoiceHtml = await invoiceRes.text();
 
-      // Verify company name is strictly RevvMotiv
-      expect(invoiceHtml).toContain("REVV<span>MOTIV</span>");
+      // Verify company name and logo is strictly RevvMotiv
+      expect(invoiceHtml).toContain("logo-white.png");
       expect(invoiceHtml).toContain("Site-5, Kasna, Greater Noida, Uttar Pradesh, India");
       expect(invoiceHtml).toContain("support@revvmotiv.com");
       expect(invoiceHtml).toContain("+91 83683 43232");

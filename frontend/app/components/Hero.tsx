@@ -66,11 +66,11 @@ export function Hero() {
       </div>
 
       {/* 3. Text & Content Layer (Directly Over Image) */}
-      <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-6 py-20 md:py-28 flex-1 flex flex-col justify-center">
-        <div className="max-w-4xl relative">
-          {/* Engineering Crosshairs */}
-          <Crosshair className="absolute -top-10 -left-6 text-red-500/50 w-5 h-5" />
-          <Crosshair className="absolute -bottom-10 -left-6 text-red-500/50 w-5 h-5" />
+      <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 py-16 sm:py-20 md:py-28 flex-1 flex flex-col justify-center">
+        <div className="max-w-4xl relative w-full">
+          {/* Engineering Crosshairs - hidden on mobile to avoid horizontal overflow */}
+          <Crosshair className="hidden md:block absolute -top-10 -left-6 text-red-500/50 w-5 h-5" />
+          <Crosshair className="hidden md:block absolute -bottom-10 -left-6 text-red-500/50 w-5 h-5" />
 
           <div
             className="relative mb-6"
@@ -84,11 +84,10 @@ export function Hero() {
             }}
             onMouseLeave={() => setScan((s) => ({ ...s, active: false }))}
           >
-            {/* Removed Chrome glint to fix sharp edges / weird block */}
             {/* Caliper tick */}
             <div
               aria-hidden
-              className="pointer-events-none absolute inset-y-0 z-10 w-px bg-red-500 transition-opacity duration-200"
+              className="pointer-events-none absolute inset-y-0 z-10 w-px bg-red-500 transition-opacity duration-200 hidden sm:block"
               style={{ opacity: scan.active ? 0.9 : 0, left: `${scan.x}%` }}
             >
               <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 border-t border-l border-red-500" />
@@ -106,7 +105,7 @@ export function Hero() {
                   ease: MOTION_EASE_BRAND,
                   delay: currentSlide === 0 ? 0.2 : 0,
                 }}
-                className="text-5xl sm:text-7xl lg:text-[90px] font-black uppercase tracking-tighter leading-[0.88] text-ink drop-shadow-2xl"
+                className="text-3xl sm:text-5xl md:text-7xl lg:text-[88px] font-black uppercase tracking-tight sm:tracking-tighter leading-[0.95] sm:leading-[0.88] text-ink drop-shadow-2xl break-words"
               >
                 {HERO_SLIDES[currentSlide].headline[0]}
                 <br />

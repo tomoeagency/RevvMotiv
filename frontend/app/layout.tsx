@@ -1,4 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0b0d10",
+};
 import { Orbitron, Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -123,7 +130,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${orbitron.variable} ${inter.variable} antialiased`}
+      className={`${orbitron.variable} ${inter.variable} antialiased w-full max-w-full overflow-x-hidden`}
       suppressHydrationWarning
     >
       <head>
@@ -134,7 +141,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="dns-prefetch" href="http://api.revvmotiv.com" />
         <link rel="dns-prefetch" href="https://api.revvmotiv.com" />
       </head>
-      <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink">
+      <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full overflow-x-hidden relative">
         <Script id="theme-init" strategy="beforeInteractive">
           {`try {
             if (localStorage.getItem("revvmotiv-theme") === "light") {
@@ -147,7 +154,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <ConsultantProvider>
               <AnnouncementStrip />
               <Navbar />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 w-full max-w-full overflow-x-clip">{children}</main>
               <Footer />
               <CartDrawer />
               <TrustPanel />

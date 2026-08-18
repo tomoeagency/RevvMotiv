@@ -83,16 +83,10 @@ export function Navbar() {
           : "bg-transparent border-transparent"
       } ${pathname === "/" ? "-mb-20" : ""}`}
     >
-      <div className="flex items-center justify-between px-6 h-20 max-w-screen-2xl mx-auto w-full">
-        <Link href="/" className="flex items-center flex-none mr-8 lg:mr-12">
-          {/* Full wordmark lives in the logo file itself — no adjacent
-              text label, that would just repeat the name a second time.
-              Inline SVG (not <img src="/logo.webp">) so it inherits
-              text-ink and flips color with the theme automatically.
-              Explicit right margin (not relying on justify-between's
-              leftover space) keeps a fixed gap before the nav links. */}
+      <div className="flex items-center justify-between px-4 sm:px-6 h-16 sm:h-20 max-w-screen-2xl mx-auto w-full">
+        <Link href="/" className="flex items-center flex-none mr-2 sm:mr-6 lg:mr-12">
           <motion.div whileHover={{ scale: 1.05 }}>
-            <LogoMark className="h-9 w-auto text-ink" />
+            <LogoMark className="h-6 sm:h-8 md:h-9 max-w-[140px] sm:max-w-[200px] md:max-w-none w-auto text-ink" />
           </motion.div>
         </Link>
 
