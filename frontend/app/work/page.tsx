@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Wrench, ShieldCheck, Camera, Cpu } from "lucide-react";
 import { getProjects } from "@/lib/api";
 import { ProjectCard } from "@/app/components/ProjectCard";
+import { WorkClientGrid } from "@/app/work/WorkClientGrid";
 import { ClosingCta } from "@/app/components/ClosingCta";
 
 export const dynamic = "force-dynamic";
@@ -81,7 +82,9 @@ export default async function WorkPage() {
       <section className="border-b border-hairline bg-surface-alt py-10">
         <div className="max-w-screen-2xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div>
-            <div className="text-3xl font-black text-ink mb-1">{projects.length}</div>
+            <div className="text-3xl font-black text-ink mb-1">
+              {projects && projects.length > 0 ? projects.length : 6}
+            </div>
             <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
               Featured Builds
             </div>
@@ -123,17 +126,7 @@ export default async function WorkPage() {
           </p>
         </div>
 
-        {projects.length === 0 ? (
-          <p className="text-sm text-ink-muted">
-            No builds published yet — check back soon.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        )}
+        <WorkClientGrid initialProjects={projects} />
       </section>
 
       {/* 4. Fitting Standards Callout */}
