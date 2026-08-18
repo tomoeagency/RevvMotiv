@@ -163,13 +163,8 @@ export function PlatformSelectorSection() {
         </div>
 
         {/* Carousel Navigation Controls */}
-        <div className="flex items-center gap-4">
-          <div className="text-xs font-bold text-ink-muted uppercase tracking-widest hidden sm:block">
-            Platform <span className="text-red-500 font-mono font-bold">0{activeIndex + 1}</span> / 0{PLATFORMS.length}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
+        <div className="flex items-center gap-2">
+          <button
               onClick={() => scrollByAmount("left")}
               disabled={!canScrollLeft}
               className="w-12 h-12 rounded-xl border border-hairline bg-surface hover:bg-hover hover:border-red-500 disabled:opacity-30 disabled:hover:border-hairline disabled:hover:bg-surface text-ink transition-all flex items-center justify-center shadow-lg cursor-pointer"
