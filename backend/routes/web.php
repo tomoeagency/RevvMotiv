@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('https://www.revvmotiv.com', 301);
 });
 
 // Admin panel — server-rendered Blade, single admin login via session

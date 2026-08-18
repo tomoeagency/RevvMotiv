@@ -14,7 +14,7 @@ const STEPS = [
     badge: "Millimeter Precision",
     description:
       "Every splitter, diffuser, and spoiler begins with a high-density 3D laser scan of the original factory chassis. We capture exact bolt holes and bumper contours so there is zero guesswork during mounting.",
-    image: "/images/about/workshop.png",
+    image: "/images/fitment/fitment_step1.webp",
     stat: "0.1mm Tolerance",
     subStat: "Factory Points Matched",
   },
@@ -26,7 +26,7 @@ const STEPS = [
     badge: "Vacuum Baked Rigidity",
     description:
       "Formed using high-modulus 2x2 twill and forged carbon composite weave, vacuum-pressurized in autoclaves to eliminate micro-voids, and clear-coated for deep UV protection.",
-    image: "/images/about/hero.png",
+    image: "/images/fitment/fitment_step2.webp",
     stat: "40% Lighter Than ABS",
     subStat: "Aerospace Resin Matrix",
   },
@@ -38,7 +38,7 @@ const STEPS = [
     badge: "Track Tested",
     description:
       "Aero profiles are CFD simulated to generate functional downforce and direct smooth underbody airflow without creating excessive drag on daily Indian highways.",
-    image: "/images/hero/work_hero.png",
+    image: "/images/fitment/fitment_step3.webp",
     stat: "+45kg Downforce @ 120km/h",
     subStat: "CFD Wind-Tunnel Mapped",
   },
@@ -50,7 +50,7 @@ const STEPS = [
     badge: "Master Technicians",
     description:
       "Installed directly inside our clean studio workshop. Certified master technicians perform final alignment checks, torque-spec fastening, and multi-angle photo documentation.",
-    image: "/images/about/facility.png",
+    image: "/images/fitment/fitment_step4.webp",
     stat: "100% OEM Fit Guarantee",
     subStat: "Torque-Spec Fastened",
   },
