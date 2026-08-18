@@ -346,27 +346,50 @@
   .form-message.error { color: #C9182B; }
   .form-message.success { color: #2E7D4F; }
 
-  /* Unified Brand Footer */
-  .brand-credit-footer {
-    font-size: 0.76rem;
-    color: rgba(26, 42, 56, 0.5);
-    margin-top: 24px;
-    font-weight: 600;
+  /* Fixed Page Bottom Footer */
+  .login-page-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    padding: 14px 24px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: rgba(26, 42, 56, 0.55);
+    background: rgba(244, 243, 238, 0.85);
+    backdrop-filter: blur(8px);
     border-top: 1px solid rgba(34, 64, 94, 0.08);
-    padding-top: 16px;
+    z-index: 20;
   }
 
-  .brand-credit-footer strong {
+  .login-page-footer .brand-link {
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.15s ease, opacity 0.15s ease;
+  }
+
+  .login-page-footer .tomoe-link {
     color: #22405E;
-    font-weight: 700;
+  }
+  .login-page-footer .tomoe-link:hover {
+    color: #0F1E2E;
+    text-decoration: underline;
   }
 
-  .brand-credit-footer span.red {
+  .login-page-footer .revv-link {
     color: #C9182B;
-    font-weight: 700;
+  }
+  .login-page-footer .revv-link:hover {
+    color: #9E1020;
+    text-decoration: underline;
+  }
+
+  .login-page-footer .dot-separator {
+    color: rgba(34, 64, 94, 0.3);
   }
 
   @media (max-width: 900px) {
@@ -499,16 +522,16 @@
           <div class="form-message" id="formMessage">&nbsp;</div>
         @endif
       </form>
-
-      <!-- Unified Brand Footer -->
-      <div class="brand-credit-footer">
-        <span>Engineered by <strong>Tomoe</strong></span>
-        <span>&bull;</span>
-        <span>Powered by <strong class="red">RevvMotiv</strong> Core</span>
-      </div>
     </div>
 
   </div>
+
+  <!-- Page Bottom Footer with Clickable Links -->
+  <footer class="login-page-footer">
+    <span>Engineered by <a href="https://tomoe.agency" target="_blank" rel="noopener noreferrer" class="brand-link tomoe-link">Tomoe</a></span>
+    <span class="dot-separator">&bull;</span>
+    <span>Powered by <a href="https://www.revvmotiv.com" target="_blank" rel="noopener noreferrer" class="brand-link revv-link">RevvMotiv Core</a></span>
+  </footer>
 
 <script>
   /* ===================== element refs ===================== */
