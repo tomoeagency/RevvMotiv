@@ -48,9 +48,9 @@ export function Hero() {
             alt={slide.caption}
             fill
             priority={idx === 0}
-            unoptimized
+            sizes="100vw"
             className={`object-cover object-center transition-[opacity,transform] duration-1000 ease-out ${
-              idx === currentSlide ? "opacity-100 scale-105" : "opacity-0 scale-100"
+              idx === currentSlide ? "opacity-100 scale-105" : "opacity-0 scale-100 pointer-events-none"
             }`}
           />
         ))}

@@ -135,10 +135,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         <RootSchema />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://checkout.razorpay.com" />
-        <link rel="dns-prefetch" href="http://api.revvmotiv.com" />
         <link rel="dns-prefetch" href="https://api.revvmotiv.com" />
       </head>
       <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full overflow-x-hidden relative">

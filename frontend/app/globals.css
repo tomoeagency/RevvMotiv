@@ -327,26 +327,17 @@ html.lenis, html.lenis body {
   animation: route-progress-fill 5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes textShimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
 .animate-text-shimmer {
   background: linear-gradient(
     90deg,
-    var(--ink-subtle) 0%,
+    var(--ink-muted) 0%,
     var(--ink) 50%,
-    var(--ink-subtle) 100%
+    var(--ink-muted) 100%
   );
   background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: textShimmer 3.5s ease-in-out infinite;
 }
 
 /* Reduced motion accessibility */

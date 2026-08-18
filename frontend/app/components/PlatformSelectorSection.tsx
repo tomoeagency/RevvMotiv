@@ -225,7 +225,7 @@ export function PlatformSelectorSection() {
 
               {/* Upgrades Included List */}
               <div className="p-6">
-                <div className="text-[11px] font-bold text-ink-subtle uppercase tracking-widest mb-3.5">
+                <div className="text-[11px] font-bold text-ink-muted uppercase tracking-widest mb-3.5">
                   Featured Upgrades Included:
                 </div>
                 <ul className="space-y-2.5 mb-6">
@@ -246,6 +246,7 @@ export function PlatformSelectorSection() {
             <div className="px-6 pb-6 pt-0">
               <Link
                 href={platform.link}
+                aria-label={`View full build details for ${platform.name}`}
                 className="w-full py-3.5 bg-surface-alt hover:bg-gradient-to-r hover:from-red-600 hover:to-red-700 border border-hairline text-ink hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-md"
               >
                 <span>View Full Build Details</span>
@@ -257,18 +258,22 @@ export function PlatformSelectorSection() {
       </div>
 
       {/* Slide Navigation Indicator Dots */}
-      <div className="flex items-center justify-center gap-2 mt-8">
+      <div className="flex items-center justify-center gap-1.5 mt-8">
         {PLATFORMS.map((_, i) => (
           <button
             key={i}
             onClick={() => scrollToIndex(i)}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === activeIndex
-                ? "w-8 bg-red-600"
-                : "w-2 bg-surface-alt border border-hairline hover:bg-hover"
-            }`}
+            className="p-2 flex items-center justify-center cursor-pointer"
             aria-label={`Jump to platform ${i + 1}`}
-          />
+          >
+            <span
+              className={`block h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex
+                  ? "w-8 bg-red-600"
+                  : "w-2 bg-surface-alt border border-hairline hover:bg-hover"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>

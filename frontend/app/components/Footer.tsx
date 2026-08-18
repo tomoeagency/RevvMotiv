@@ -56,9 +56,9 @@ export async function Footer() {
             
             {/* Support */}
             <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
+              <h3 className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-3 sm:mb-5">
                 Support
-              </h4>
+              </h3>
               <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
                   <Link href="/policies/shipping-policy" className="hover:text-red-500 transition-colors">
@@ -72,7 +72,7 @@ export async function Footer() {
                 </li>
                 <li>
                   <Link href="/policies/contact-information" className="hover:text-red-500 transition-colors">
-                    Contact Us
+                    Contact Information
                   </Link>
                 </li>
                 <li>
@@ -89,9 +89,9 @@ export async function Footer() {
 
             {/* Legal */}
             <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
+              <h3 className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-3 sm:mb-5">
                 Legal
-              </h4>
+              </h3>
               <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
                   <Link href="/policies/terms-of-service" className="hover:text-red-500 transition-colors">
@@ -113,9 +113,9 @@ export async function Footer() {
 
             {/* Social */}
             <div className="flex flex-col">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
+              <h3 className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-3 sm:mb-5">
                 Follow Builds
-              </h4>
+              </h3>
               <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
                   <a
@@ -144,9 +144,9 @@ export async function Footer() {
 
             {/* Contact */}
             <div className="flex flex-col col-span-1">
-              <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
+              <h3 className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mb-3 sm:mb-5">
                 Get In Touch
-              </h4>
+              </h3>
               <ul className="flex flex-col gap-2.5 text-xs font-medium text-ink-muted">
                 <li className="text-[11px] sm:text-xs leading-relaxed text-ink-muted">
                   Greater Noida, UP, India
