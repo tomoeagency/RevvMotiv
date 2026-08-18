@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://118.139.162.193/api/:path*",
+        destination: "http://api.revvmotiv.com/api/:path*",
       },
     ];
   },
