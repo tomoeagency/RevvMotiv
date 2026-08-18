@@ -200,20 +200,20 @@ export default function SubmitReviewPage() {
                     onClick={() => setRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
-                    className="p-1 text-2xl transition-transform hover:scale-110 focus:outline-none"
+                    className="p-1 text-2xl transition-transform hover:scale-110 focus:outline-none cursor-pointer"
                     aria-label={`Rate ${star} star`}
                   >
                     <Star
                       className={`w-8 h-8 ${
                         star <= (hoverRating || rating)
-                          ? "fill-red-500 text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]"
+                          ? "fill-amber-400 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.65)]"
                           : "text-ink-subtle fill-transparent"
                       } transition-colors duration-150`}
                     />
                   </button>
                 ))}
               </div>
-              <span className="text-xs font-bold text-red-400">
+              <span className="text-xs font-bold text-amber-400">
                 {RATING_LABELS[hoverRating || rating]}
               </span>
             </div>
