@@ -626,20 +626,32 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
   return fallback ?? null;
 }
 
+const DEFAULT_CATEGORIES: Category[] = [
+  { id: 1, name: "Batman Cover", slug: "batman-cover" },
+  { id: 2, name: "Car Audio & Utilities", slug: "car-audio-utilities" },
+  { id: 3, name: "Combo", slug: "combo" },
+  { id: 4, name: "Diffusers", slug: "diffusers" },
+  { id: 5, name: "Lights & Flashers", slug: "lights-flashers" },
+  { id: 6, name: "Splitters/Side Skirts", slug: "splitters-side-skirts" },
+  { id: 7, name: "Spoilers", slug: "spoilers" },
+  { id: 8, name: "Tyre Stickers", slug: "tyre-stickers" },
+];
+
 export async function getCategories(): Promise<ApiResponse<Category[]>> {
   try {
     const res = await fetch(apiUrl("/api/v1/categories"), {
       cache: "no-store",
     });
 
-    if (!res.ok) {
-      return { data: [] };
+    if (res.ok) {
+      const json = await res.json();
+      if (json?.data && Array.isArray(json.data) && json.data.length > 0) {
+        return json;
+      }
     }
+  } catch {}
 
-    return res.json();
-  } catch {
-    return { data: [] };
-  }
+  return { data: DEFAULT_CATEGORIES };
 }
 
 // Client-side fetch (checkout) — genuinely interactive, not meant to be

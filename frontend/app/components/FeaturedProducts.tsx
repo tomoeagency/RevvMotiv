@@ -1,12 +1,31 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import type { ApiProduct } from "@/lib/api";
 import { ProductCard } from "@/app/components/ProductCard";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 
-export function FeaturedProducts({ products }: { products: ApiProduct[] }) {
+export function FeaturedProducts({ products: initialProducts }: { products: ApiProduct[] }) {
+  const [products, setProducts] = useState<ApiProduct[]>(initialProducts);
+
+  useEffect(() => {
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
+      return;
+    }
+
+    fetch("/api/v1/products?per_page=4")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json?.data && Array.isArray(json.data) && json.data.length > 0) {
+          setProducts(json.data.slice(0, 4));
+        }
+      })
+      .catch(() => {});
+  }, [initialProducts]);
+
   return (
     <section className="py-24 px-6 max-w-screen-2xl mx-auto w-full">
       <motion.div
