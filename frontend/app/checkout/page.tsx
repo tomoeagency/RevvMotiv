@@ -315,10 +315,14 @@ export default function CheckoutPage() {
             errors={fieldErrors.customer_phone}
           />
           <div>
-            <label className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2">
+            <label
+              htmlFor="checkout-field-shipping-address"
+              className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2"
+            >
               Shipping Address
             </label>
             <textarea
+              id="checkout-field-shipping-address"
               required
               rows={4}
               value={form.shipping_address}

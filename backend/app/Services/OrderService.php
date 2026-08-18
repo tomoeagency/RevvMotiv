@@ -83,6 +83,7 @@ class OrderService
             $remainingAmount = round($totalAmount - $advanceAmount, 2);
 
             $order = Order::create(array_merge([
+                'access_token' => \Illuminate\Support\Str::random(40),
                 'customer_name' => $input['customer_name'],
                 'customer_email' => $input['customer_email'] ?? null,
                 'customer_phone' => $input['customer_phone'],

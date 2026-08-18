@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_BASE = "http://api.revvmotiv.com";
+const BACKEND_BASE =
+  process.env.API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:8000";
 
 async function proxyRequest(req: NextRequest, path: string[]) {
   const targetPath = `/api/v1/${path.join("/")}`;
@@ -11,7 +14,6 @@ async function proxyRequest(req: NextRequest, path: string[]) {
     const headers = new Headers();
     headers.set("User-Agent", "RevvMotiv-Storefront/1.0 (Next.js Proxy)");
     headers.set("Accept", "application/json");
-    headers.set("Host", "api.revvmotiv.com");
 
     const auth = req.headers.get("authorization");
     if (auth) headers.set("Authorization", auth);
