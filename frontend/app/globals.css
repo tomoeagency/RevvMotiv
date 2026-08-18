@@ -360,3 +360,57 @@ html.lenis, html.lenis body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Mobile Horizontal Touch-Swipe & Accessibility Utilities */
+.mobile-swipe-track {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-swipe-track::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-swipe-slide {
+  flex: 0 0 82%;
+  max-width: 20rem;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  content-visibility: auto;
+  contain-intrinsic-size: 320px 400px;
+}
+
+@media (min-width: 640px) {
+  .mobile-swipe-slide {
+    flex: 0 0 45%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-swipe-track {
+    display: grid;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+  .mobile-swipe-slide {
+    flex: unset;
+    max-width: unset;
+    content-visibility: visible;
+  }
+}
+
+.touch-target-48 {
+  min-width: 3rem;
+  min-height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
