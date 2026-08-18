@@ -198,7 +198,8 @@ export default async function ShopPage({
               <ShopSearchBar autoFocus={focus === "search"} />
             </Suspense>
 
-            {/* Vehicle Model Fitment Filter */}
+            {/* Vehicle Model Fitment Filter (Temporarily disabled) */}
+            {/*
             <div className="mb-6">
               <span className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest block mb-2.5">
                 Filter by Vehicle Compatibility
@@ -222,6 +223,7 @@ export default async function ShopPage({
                 })}
               </div>
             </div>
+            */}
 
             <ShopClientGrid
               initialProducts={products}
