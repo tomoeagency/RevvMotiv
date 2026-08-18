@@ -57,8 +57,9 @@ const STEPS = [
 ] as const;
 
 export function FitmentProcessSection() {
-  const [activeStep, setActiveStep] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const [stepProgress, setStepProgress] = useState<number>(0);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -66,26 +67,42 @@ export function FitmentProcessSection() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    // Only drive step change via scroll on desktop screens (lg+)
+    // Only apply scroll-driven step change on desktop screens (lg+)
     if (typeof window !== "undefined" && window.innerWidth >= 1024) {
-      const stepIndex = Math.min(
-        STEPS.length - 1,
-        Math.max(0, Math.floor(latest * STEPS.length))
-      );
-      setActiveStep(stepIndex);
+      const totalSteps = STEPS.length;
+      const rawStep = latest * totalSteps;
+      const clampedIndex = Math.min(Math.floor(rawStep), totalSteps - 1);
+      setActiveStep(clampedIndex);
+
+      const localProgress = rawStep - clampedIndex;
+      setStepProgress(Math.min(Math.max(localProgress, 0), 1));
     }
   });
+
+  const scrollToStep = (idx: number) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const containerTop = rect.top + scrollTop;
+    const totalHeight = containerRef.current.offsetHeight - window.innerHeight;
+    const targetScroll = containerTop + (idx / (STEPS.length - 1)) * totalHeight;
+
+    window.scrollTo({
+      top: targetScroll,
+      behavior: "smooth",
+    });
+  };
 
   const current = STEPS[activeStep];
   const IconComponent = current.icon;
 
   return (
-    <section
+    <div
       ref={containerRef}
-      className="relative bg-surface-alt border-y border-hairline overflow-visible lg:h-[240vh]"
+      className="relative bg-surface-alt border-y border-hairline h-auto lg:h-[280vh]"
     >
-      {/* Sticky Frame on Desktop / Normal Flow on Mobile */}
-      <div className="lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:flex lg:flex-col lg:justify-center py-12 sm:py-16 md:py-20 lg:py-0 overflow-hidden relative">
+      {/* Sticky Frame for Desktop (h-screen, sticky top-0) / Normal Container on Mobile */}
+      <div className="lg:sticky lg:top-0 lg:h-screen lg:flex lg:flex-col lg:justify-center py-12 sm:py-16 md:py-20 lg:py-0 overflow-hidden relative">
         {/* Background Grid Pattern & Ambient Glow */}
         <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:80px_80px] opacity-15 pointer-events-none" />
         <div className="absolute -top-40 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -104,14 +121,23 @@ export function FitmentProcessSection() {
               </h2>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-bold text-ink-muted uppercase tracking-wider bg-surface border border-hairline px-3.5 py-1.5 rounded-full">
-              <span>Phase</span>
-              <span className="text-red-500 font-mono font-bold text-sm">0{activeStep + 1}</span>
-              <span>/ 04</span>
+            {/* Step Counter Indicator with Live Progress Fill */}
+            <div className="flex items-center gap-4 bg-surface/80 backdrop-blur border border-hairline px-4 py-2 rounded-full">
+              <span className="text-xs font-bold text-ink-muted uppercase tracking-wider">
+                Phase <span className="text-red-500 font-mono text-sm">{current.number}</span> / 04
+              </span>
+              <div className="w-24 h-1.5 bg-surface-alt rounded-full overflow-hidden border border-hairline">
+                <div
+                  className="h-full bg-red-600 transition-all duration-150 ease-out"
+                  style={{
+                    width: `${((activeStep + stepProgress) / STEPS.length) * 100}%`,
+                  }}
+                />
+              </div>
             </div>
           </div>
 
-          {/* MOBILE VIEW (< lg): Horizontal Swipeable Cards Track */}
+          {/* MOBILE VIEW (< lg): Horizontal Swipeable Cards Track (Zero Blank Space) */}
           <div
             data-lenis-prevent
             className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-x hide-scrollbar -mx-4 px-4 overscroll-x-contain"
@@ -172,31 +198,44 @@ export function FitmentProcessSection() {
             })}
           </div>
 
-          {/* DESKTOP VIEW (lg+): Interactive Two-Column Experience with Scroll-Lock Sync */}
+          {/* DESKTOP VIEW (lg+): Interactive Two-Column Experience with Scroll Sync & Tab Click */}
           <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center">
-            {/* Left Column — Interactive Step Selectors */}
+            {/* Left Column — Interactive Step Selectors with Dynamic Fill Lines */}
             <div className="col-span-5 flex flex-col gap-3">
               {STEPS.map((step, idx) => {
                 const Icon = step.icon;
                 const isActive = idx === activeStep;
+                const isPassed = idx < activeStep;
 
                 return (
                   <button
                     key={step.id}
                     type="button"
-                    onClick={() => setActiveStep(idx)}
-                    className={`text-left p-4 sm:p-5 rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
+                    onClick={() => scrollToStep(idx)}
+                    className={`relative text-left p-4 sm:p-5 rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
                       isActive
                         ? "bg-surface border-red-500/80 shadow-2xl shadow-red-500/15 scale-[1.02]"
-                        : "bg-surface/40 border-hairline text-ink-muted hover:opacity-100 hover:bg-surface/70"
+                        : isPassed
+                        ? "bg-surface/60 border-hairline text-ink-muted opacity-85 hover:opacity-100"
+                        : "bg-surface/30 border-hairline/60 opacity-60 hover:opacity-100 hover:bg-surface/50"
                     }`}
                   >
+                    {/* Active Step Dynamic Progress Fill Line */}
+                    {isActive && (
+                      <div
+                        className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-red-600 via-red-500 to-red-400 transition-all duration-75"
+                        style={{ width: `${stepProgress * 100}%` }}
+                      />
+                    )}
+
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-3">
                         <span
                           className={`text-[11px] font-mono font-black px-2 py-0.5 rounded transition-colors ${
                             isActive
                               ? "bg-red-600 text-white shadow-sm"
+                              : isPassed
+                              ? "bg-red-500/20 text-red-400"
                               : "bg-surface-alt text-ink-muted"
                           }`}
                         >
@@ -211,11 +250,15 @@ export function FitmentProcessSection() {
                         </h3>
                       </div>
 
-                      <Icon
-                        className={`w-4 h-4 transition-colors flex-none ${
-                          isActive ? "text-red-500" : "text-ink-subtle"
-                        }`}
-                      />
+                      {isPassed ? (
+                        <CheckCircle2 className="w-4 h-4 text-red-500 flex-none" />
+                      ) : (
+                        <Icon
+                          className={`w-4 h-4 transition-colors flex-none ${
+                            isActive ? "text-red-500" : "text-ink-subtle"
+                          }`}
+                        />
+                      )}
                     </div>
 
                     <p className="text-[11px] text-ink-muted pl-8 flex items-center gap-2">
@@ -237,7 +280,7 @@ export function FitmentProcessSection() {
                     initial={{ opacity: 0, y: 15, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -15, scale: 0.98 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
+                    transition={{ duration: 0.35, ease: "easeOut" }}
                   >
                     {/* Image Container with Telemetry Badges */}
                     <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 border border-hairline shadow-inner bg-black">
@@ -246,7 +289,7 @@ export function FitmentProcessSection() {
                         alt={current.title}
                         fill
                         sizes="50vw"
-                        className="object-cover object-center"
+                        className="object-cover object-center scale-105 hover:scale-100 transition-transform duration-700"
                         priority
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
@@ -294,6 +337,6 @@ export function FitmentProcessSection() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
