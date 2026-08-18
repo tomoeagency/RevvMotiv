@@ -172,10 +172,6 @@ export default function SubmitReviewPage() {
           {/* LEFT COLUMN: Headings, Highlights & Trust Badges */}
           <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-black uppercase tracking-widest mb-4">
-                <Sparkles className="w-3.5 h-3.5" />
-                Official Build Review Link
-              </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink leading-[1.05] mb-4">
                 Share Your Build Experience.
               </h1>
