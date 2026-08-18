@@ -189,49 +189,16 @@ export function TransformationSection() {
                 </div>
 
                 {/* BADGES: STOCK VS TUNED */}
-                <div className="absolute top-3.5 left-3.5 z-10 px-2.5 py-1 bg-black/80 backdrop-blur border border-white/20 rounded text-[10px] font-black text-neutral-300 uppercase tracking-wider pointer-events-none">
-                  Stock Factory OEM
+                <div className="absolute top-2.5 sm:top-3.5 left-2.5 sm:left-3.5 z-10 px-2 sm:px-2.5 py-0.5 sm:py-1 bg-black/85 backdrop-blur border border-white/20 rounded text-[8px] sm:text-[10px] font-black text-neutral-300 uppercase tracking-wider pointer-events-none shadow-md">
+                  Stock Factory
                 </div>
-                <div className="absolute top-3.5 right-3.5 z-10 px-2.5 py-1 bg-red-600/90 backdrop-blur border border-white/20 rounded text-[10px] font-black text-white uppercase tracking-wider pointer-events-none">
+                <div className="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 z-10 px-2 sm:px-2.5 py-0.5 sm:py-1 bg-red-600/95 backdrop-blur border border-white/20 rounded text-[8px] sm:text-[10px] font-black text-white uppercase tracking-wider pointer-events-none shadow-md">
                   RevvMotiv Tuned
-                </div>
-
-                {/* BOTTOM FLOATING SPEC SUMMARY */}
-                <div className="absolute bottom-3 left-3 right-3 z-10 p-3 bg-black/75 backdrop-blur border border-white/10 rounded-lg text-xs text-white pointer-events-none">
-                  {sliderPos > 50 ? (
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <strong className="text-red-500 block text-[11px] uppercase tracking-wider mb-0.5">
-                          RevvMotiv Aero & Performance Spec
-                        </strong>
-                        <span className="text-[11px] text-neutral-300">
-                          Carbon Splitter + Lowered Stance + Forged Rims + White Tyre Decals.
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono text-red-400 font-bold ml-2">
-                        {Math.round(sliderPos)}% TUNED
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <strong className="text-neutral-400 block text-[11px] uppercase tracking-wider mb-0.5">
-                          Factory OEM Commuter Spec
-                        </strong>
-                        <span className="text-[11px] text-neutral-400">
-                          Stock ride height, plastic bumper trim & factory standard wheels.
-                        </span>
-                      </div>
-                      <span className="text-[10px] font-mono text-neutral-400 font-bold ml-2">
-                        {100 - Math.round(sliderPos)}% STOCK
-                      </span>
-                    </div>
-                  )}
                 </div>
               </div>
 
               {/* Accessible Range Input for Mobile & Smooth Scrubbing */}
-              <div className="mt-3 flex items-center gap-3">
+              <div className="mt-3.5 flex items-center gap-3">
                 <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted">Stock</span>
                 <input
                   type="range"
@@ -243,6 +210,39 @@ export function TransformationSection() {
                   aria-label="Before / After comparison slider"
                 />
                 <span className="text-[10px] font-bold uppercase tracking-wider text-red-500">Tuned</span>
+              </div>
+
+              {/* DEDICATED SPEC SUMMARY CARD (Cleanly placed below the image for 100% visibility) */}
+              <div className="mt-3 p-3 sm:p-3.5 bg-surface-alt border border-hairline rounded-lg text-xs transition-all">
+                {sliderPos > 50 ? (
+                  <div className="flex items-start sm:items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <strong className="text-red-500 block text-[11px] sm:text-xs font-extrabold uppercase tracking-wider mb-0.5">
+                        RevvMotiv Aero &amp; Performance Spec
+                      </strong>
+                      <span className="text-[10px] sm:text-[11px] text-ink-muted leading-relaxed block">
+                        Carbon Splitter + Lowered Stance + Forged Rims + White Tyre Decals.
+                      </span>
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-mono text-red-500 font-black shrink-0 px-2 py-0.5 rounded bg-red-500/10 border border-red-500/20">
+                      {Math.round(sliderPos)}% TUNED
+                    </span>
+                  </div>
+                ) : (
+                  <div className="flex items-start sm:items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <strong className="text-ink-subtle block text-[11px] sm:text-xs font-extrabold uppercase tracking-wider mb-0.5">
+                        Factory OEM Commuter Spec
+                      </strong>
+                      <span className="text-[10px] sm:text-[11px] text-ink-muted leading-relaxed block">
+                        Stock ride height, plastic bumper trim &amp; factory standard wheels.
+                      </span>
+                    </div>
+                    <span className="text-[10px] sm:text-xs font-mono text-ink-muted font-black shrink-0 px-2 py-0.5 rounded bg-hover border border-hairline">
+                      {100 - Math.round(sliderPos)}% STOCK
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
