@@ -39,23 +39,24 @@ const MAX_CARDS = 8;
 // rotation, this only decides slot/stagger order now — everything
 // applicable is shown at once.
 function getTypeOrder(pathname: string): Array<"review" | "work" | "contact" | "reel"> {
-  if (pathname.startsWith("/checkout")) return ["contact", "review", "work", "reel"];
-  if (pathname.startsWith("/work")) return ["contact", "review", "reel"];
-  if (pathname.startsWith("/products") || pathname.startsWith("/shop")) return ["review", "work", "reel", "contact"];
-  return ["work", "reel", "review", "contact"];
+  if (pathname.startsWith("/checkout")) return ["review", "contact", "work", "reel"];
+  if (pathname.startsWith("/work")) return ["review", "contact", "reel"];
+  return ["review", "work", "reel", "contact"];
 }
 
 export function TrustPanelClient({
   whatsappDigits,
   workPhoto,
+  initialReviews = [],
 }: {
   whatsappDigits: string | null;
   workPhoto: string | null;
+  initialReviews?: Review[];
 }) {
   const rawPathname = usePathname();
   const { isDrawerOpen } = useCart();
   const { open: openConsultant } = useConsultant();
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews);
 
   // Opening the cart now changes the URL to /cart (see cart-context.tsx),
   // which makes usePathname() report "/cart" instead of whatever page the
@@ -75,7 +76,7 @@ export function TrustPanelClient({
         }
       })
       .catch(() => {
-        if (!cancelled) setReviews([]);
+        // Keep initialReviews if client fetch fails
       });
     return () => {
       cancelled = true;
@@ -239,7 +240,6 @@ export function TrustPanelClient({
                     </p>
                     <p className="text-xs font-bold text-ink-muted uppercase tracking-widest">
                       {card.review.customer_name}
-                      {card.review.verified_purchase && <span className="text-[var(--brand-red)]"> · Verified</span>}
                     </p>
                   </div>
                 )}
