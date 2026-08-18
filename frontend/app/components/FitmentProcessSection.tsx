@@ -1,19 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import {
-  Cpu,
-  ShieldCheck,
-  Wind,
-  Wrench,
-  CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  Play,
-  Pause,
-} from "lucide-react";
+import { Cpu, ShieldCheck, Wind, Wrench } from "lucide-react";
 
 const STEPS = [
   {
@@ -66,71 +56,21 @@ const STEPS = [
   },
 ] as const;
 
-const AUTO_CYCLE_DURATION_MS = 5000;
-
 export function FitmentProcessSection() {
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [isPaused, setIsPaused] = useState<boolean>(false);
-  const [progress, setProgress] = useState<number>(0);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const nextStep = useCallback(() => {
-    setActiveStep((prev) => (prev + 1) % STEPS.length);
-    setProgress(0);
-  }, []);
-
-  const prevStep = useCallback(() => {
-    setActiveStep((prev) => (prev - 1 + STEPS.length) % STEPS.length);
-    setProgress(0);
-  }, []);
-
-  const handleSelectStep = (idx: number) => {
-    setActiveStep(idx);
-    setProgress(0);
-  };
-
-  // Timer loop for auto-cycling steps
-  useEffect(() => {
-    if (isPaused) {
-      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
-      return;
-    }
-
-    const intervalTime = 50; // update progress every 50ms
-    const stepIncrement = (intervalTime / AUTO_CYCLE_DURATION_MS) * 100;
-
-    progressIntervalRef.current = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          nextStep();
-          return 0;
-        }
-        return prev + stepIncrement;
-      });
-    }, intervalTime);
-
-    return () => {
-      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
-    };
-  }, [isPaused, nextStep]);
 
   const current = STEPS[activeStep];
   const IconComponent = current.icon;
 
   return (
-    <section
-      className="relative bg-surface-alt border-y border-hairline py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      aria-label="Quality and Fitment Process"
-    >
+    <section className="relative bg-surface-alt border-y border-hairline py-12 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-12 overflow-hidden">
       {/* Background Grid Pattern & Ambient Glow */}
       <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:80px_80px] opacity-20 pointer-events-none" />
       <div className="absolute -top-40 right-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-40 left-10 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-screen-2xl mx-auto w-full relative z-10">
-        {/* Header Row with Phase Indicator & Controls */}
+        {/* Header Row */}
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 lg:mb-12 gap-4">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest mb-2 sm:mb-3">
@@ -142,53 +82,14 @@ export function FitmentProcessSection() {
             </h2>
           </div>
 
-          {/* Phase Counter & Manual Controls */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-4 bg-surface/80 backdrop-blur border border-hairline px-4 py-2 rounded-full shadow-xs">
-              <span className="text-xs font-bold text-ink-muted uppercase tracking-wider">
-                Phase <span className="text-red-500 font-mono text-sm">{current.number}</span> / 04
-              </span>
-              <div className="w-20 sm:w-28 h-1.5 bg-surface-alt rounded-full overflow-hidden border border-hairline">
-                <div
-                  className="h-full bg-red-600 transition-all duration-100 ease-out"
-                  style={{
-                    width: `${((activeStep + progress / 100) / STEPS.length) * 100}%`,
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Prev / Next & Pause Buttons for Desktop */}
-            <div className="hidden lg:flex items-center gap-1.5 bg-surface/80 backdrop-blur border border-hairline p-1 rounded-full">
-              <button
-                type="button"
-                onClick={prevStep}
-                aria-label="Previous step"
-                className="w-7 h-7 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsPaused((prev) => !prev)}
-                aria-label={isPaused ? "Resume autoplay" : "Pause autoplay"}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover transition-colors"
-              >
-                {isPaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
-              </button>
-              <button
-                type="button"
-                onClick={nextStep}
-                aria-label="Next step"
-                className="w-7 h-7 rounded-full flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover transition-colors"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
+          <div className="flex items-center gap-2 bg-surface/80 backdrop-blur border border-hairline px-4 py-2 rounded-full">
+            <span className="text-xs font-bold text-ink-muted uppercase tracking-wider">
+              Phase <span className="text-red-500 font-mono text-sm">{current.number}</span> / 04
+            </span>
           </div>
         </div>
 
-        {/* MOBILE & TABLET VIEW (< lg): Horizontal Swipeable Cards */}
+        {/* MOBILE VIEW (< lg): Horizontal Swipeable Cards */}
         <div
           data-lenis-prevent
           className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-x hide-scrollbar -mx-4 px-4 overscroll-x-contain"
@@ -200,7 +101,7 @@ export function FitmentProcessSection() {
             return (
               <div
                 key={step.id}
-                onClick={() => handleSelectStep(idx)}
+                onClick={() => setActiveStep(idx)}
                 className={`flex-none w-[84vw] max-w-[340px] snap-start border rounded-2xl overflow-hidden shadow-xl p-4 flex flex-col justify-between transition-colors ${
                   isCurrent
                     ? "border-red-500/80 bg-surface ring-1 ring-red-500/30"
@@ -218,14 +119,19 @@ export function FitmentProcessSection() {
                       className="object-cover object-center"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+                    {/* Top Tag */}
                     <div className="absolute top-2.5 left-2.5 px-2.5 py-0.5 bg-black/80 backdrop-blur rounded-full border border-white/20 text-[9px] font-black text-red-500 uppercase tracking-wider">
                       {step.badge}
                     </div>
+
+                    {/* Step Number */}
                     <div className="absolute bottom-2.5 right-2.5 px-2 py-0.5 bg-red-600 rounded text-[10px] font-black text-white font-mono">
                       {step.number}
                     </div>
                   </div>
 
+                  {/* Title & Badge */}
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-7 h-7 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center flex-none">
                       <StepIcon className="w-3.5 h-3.5" />
@@ -250,44 +156,31 @@ export function FitmentProcessSection() {
           })}
         </div>
 
-        {/* DESKTOP VIEW (lg+): Interactive Step Selectors & Cinematic Preview */}
-        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-stretch">
+        {/* DESKTOP VIEW (lg+): Interactive Two-Column Experience */}
+        <div className="hidden lg:grid grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column — Interactive Step Selectors */}
-          <div className="col-span-5 flex flex-col justify-between gap-3">
+          <div className="col-span-5 flex flex-col gap-3">
             {STEPS.map((step, idx) => {
               const Icon = step.icon;
               const isActive = idx === activeStep;
-              const isPassed = idx < activeStep;
 
               return (
                 <button
                   key={step.id}
                   type="button"
-                  onClick={() => handleSelectStep(idx)}
-                  className={`relative text-left p-4 lg:p-5 rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
+                  onClick={() => setActiveStep(idx)}
+                  className={`text-left p-4 sm:p-5 rounded-xl border transition-all duration-300 overflow-hidden cursor-pointer ${
                     isActive
-                      ? "bg-surface border-red-500/80 shadow-2xl shadow-red-500/15 scale-[1.01]"
-                      : isPassed
-                      ? "bg-surface/60 border-hairline text-ink-muted opacity-85 hover:opacity-100 hover:bg-surface/75"
-                      : "bg-surface/30 border-hairline/60 opacity-60 hover:opacity-100 hover:bg-surface/50"
+                      ? "bg-surface border-red-500/80 shadow-2xl shadow-red-500/15 scale-[1.02]"
+                      : "bg-surface/40 border-hairline text-ink-muted hover:opacity-100 hover:bg-surface/70"
                   }`}
                 >
-                  {/* Active Step Dynamic Progress Line */}
-                  {isActive && (
-                    <div
-                      className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-red-600 via-red-500 to-red-400 transition-all duration-75"
-                      style={{ width: `${progress}%` }}
-                    />
-                  )}
-
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-3">
                       <span
                         className={`text-[11px] font-mono font-black px-2 py-0.5 rounded transition-colors ${
                           isActive
                             ? "bg-red-600 text-white shadow-sm"
-                            : isPassed
-                            ? "bg-red-500/20 text-red-400"
                             : "bg-surface-alt text-ink-muted"
                         }`}
                       >
@@ -302,15 +195,11 @@ export function FitmentProcessSection() {
                       </h3>
                     </div>
 
-                    {isPassed ? (
-                      <CheckCircle2 className="w-4 h-4 text-red-500 flex-none" />
-                    ) : (
-                      <Icon
-                        className={`w-4 h-4 transition-colors flex-none ${
-                          isActive ? "text-red-500" : "text-ink-subtle"
-                        }`}
-                      />
-                    )}
+                    <Icon
+                      className={`w-4 h-4 transition-colors flex-none ${
+                        isActive ? "text-red-500" : "text-ink-subtle"
+                      }`}
+                    />
                   </div>
 
                   <p className="text-[11px] text-ink-muted pl-8 flex items-center gap-2">
@@ -324,19 +213,18 @@ export function FitmentProcessSection() {
           </div>
 
           {/* Right Column — Animated Active Step Cinematic Preview */}
-          <div className="col-span-7 flex">
-            <div className="w-full border border-hairline bg-surface/90 backdrop-blur-md rounded-2xl p-6 sm:p-7 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+          <div className="col-span-7">
+            <div className="border border-hairline bg-surface/90 backdrop-blur-md rounded-2xl p-6 sm:p-7 shadow-2xl relative overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current.id}
-                  initial={{ opacity: 0, y: 12, scale: 0.98 }}
+                  initial={{ opacity: 0, y: 15, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -12, scale: 0.98 }}
+                  exit={{ opacity: 0, y: -15, scale: 0.98 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="flex flex-col h-full justify-between"
                 >
                   {/* Image Container with Telemetry Badges */}
-                  <div className="relative aspect-[16/9] w-full rounded-xl overflow-hidden mb-5 border border-hairline shadow-inner bg-black">
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-5 border border-hairline shadow-inner bg-black">
                     <Image
                       src={current.image}
                       alt={current.title}
@@ -371,20 +259,18 @@ export function FitmentProcessSection() {
                   </div>
 
                   {/* Step Title & Detailed Description */}
-                  <div>
-                    <div className="flex items-center gap-3 mb-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center flex-none">
-                        <IconComponent className="w-4 h-4" />
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight text-ink">
-                        {current.title}
-                      </h3>
+                  <div className="flex items-center gap-3 mb-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center flex-none">
+                      <IconComponent className="w-4 h-4" />
                     </div>
-
-                    <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
-                      {current.description}
-                    </p>
+                    <h3 className="text-lg sm:text-xl font-black uppercase tracking-tight text-ink">
+                      {current.title}
+                    </h3>
                   </div>
+
+                  <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">
+                    {current.description}
+                  </p>
                 </motion.div>
               </AnimatePresence>
             </div>
