@@ -64,9 +64,15 @@
             <header class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
                 <h1 class="text-lg font-semibold text-slate-900">{{ $title }}</h1>
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('admin.account.edit') }}" class="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900">
-                        <x-admin.icon name="account" class="h-4 w-4" />
-                        {{ auth()->user()?->name }}
+                    <a href="{{ route('admin.account.edit') }}" class="flex items-center gap-2.5 text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors">
+                        @if (auth()->user()?->avatar_url)
+                            <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="h-7 w-7 rounded-full object-cover border border-slate-300 shadow-sm">
+                        @else
+                            <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#1e3a5f]/10 text-[#1e3a5f] font-bold text-xs">
+                                {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
+                            </span>
+                        @endif
+                        <span>{{ auth()->user()?->name }}</span>
                     </a>
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
