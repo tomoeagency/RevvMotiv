@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tax Invoice — Order #{{ $order->id }} — RevvMotiv</title>
+  <title>Order Confirmation & Invoice — Order #{{ $order->id }} — RevvMotiv</title>
   <style>
     * {
       box-sizing: border-box;
@@ -22,417 +22,372 @@
         width: 100% !important;
         font-size: 10pt !important;
       }
+      .email-wrapper {
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
       .invoice-container {
         box-shadow: none !important;
         border: none !important;
-        padding: 12mm 14mm !important;
-        margin: 0 auto !important;
+        padding: 0 !important;
         max-width: 100% !important;
         width: 100% !important;
-        box-sizing: border-box !important;
       }
       .no-print {
         display: none !important;
       }
-      .items-table tr {
-        page-break-inside: avoid !important;
-      }
-      .summary-table {
-        page-break-inside: avoid !important;
-      }
     }
     body {
       margin: 0;
-      padding: 30px 15px;
-      background-color: #f1f5f9;
+      padding: 0;
+      background-color: #0b0d10;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       color: #0f172a;
       -webkit-font-smoothing: antialiased;
     }
+    .email-wrapper {
+      width: 100%;
+      background-color: #0b0d10;
+      padding: 30px 15px;
+    }
     .invoice-container {
-      max-width: 740px;
+      max-width: 680px;
       margin: 0 auto;
       background: #ffffff;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      padding: 32px 36px;
-      box-sizing: border-box;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     }
-    .header-table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 20px;
+    .email-brand-header {
+      background: #000000;
+      background: linear-gradient(135deg, #111418 0%, #000000 100%);
+      padding: 24px 32px;
+      border-bottom: 3px solid #dc2626;
     }
-    .logo-cell {
-      width: 52%;
-      vertical-align: top;
-      padding-right: 12px;
-    }
-    .logo-title {
-      font-size: 22px;
+    .brand-logo {
+      font-size: 24px;
       font-weight: 900;
-      letter-spacing: 1.5px;
-      color: #0f172a;
+      letter-spacing: 2px;
+      color: #ffffff;
       margin: 0;
       text-transform: uppercase;
     }
-    .logo-title span {
+    .brand-logo span {
       color: #dc2626;
     }
-    .company-info {
+    .brand-tagline {
       font-size: 11px;
-      color: #64748b;
-      line-height: 1.5;
-      margin-top: 4px;
-    }
-    .invoice-title-cell {
-      width: 45%;
-      text-align: right;
-      vertical-align: top;
-    }
-    .invoice-heading {
-      font-size: 18px;
-      font-weight: 900;
-      color: #0f172a;
+      color: #94a3b8;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin: 0 0 4px 0;
+      margin-top: 4px;
     }
-    .invoice-meta {
-      font-size: 11px;
+    .content-body {
+      padding: 30px 32px;
+    }
+    .status-banner {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #dc2626;
+      padding: 16px 20px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    .status-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+    .status-desc {
+      font-size: 13px;
       color: #475569;
       line-height: 1.5;
+      margin: 0;
     }
-    .divider {
-      height: 2px;
-      background-color: #0f172a;
-      margin: 14px 0 20px 0;
-    }
-    .parties-table {
+    .meta-table {
       width: 100%;
-      table-layout: fixed;
       border-collapse: collapse;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
     }
-    .party-box {
+    .meta-box {
       width: 48%;
       vertical-align: top;
       background-color: #f8fafc;
       border: 1px solid #e2e8f0;
-      border-radius: 4px;
-      padding: 12px 14px;
+      border-radius: 6px;
+      padding: 14px 16px;
     }
-    .party-spacer {
+    .meta-spacer {
       width: 4%;
     }
-    .party-heading {
+    .meta-heading {
       font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #64748b;
+      color: #dc2626;
       margin-bottom: 6px;
     }
-    .party-name {
-      font-size: 13px;
+    .meta-title {
+      font-size: 14px;
       font-weight: 800;
       color: #0f172a;
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
-    .party-details {
-      font-size: 11px;
+    .meta-details {
+      font-size: 12px;
       color: #334155;
       line-height: 1.5;
     }
     .items-table {
       width: 100%;
-      table-layout: fixed;
       border-collapse: collapse;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     .items-table th {
-      background-color: #0f172a !important;
-      color: #ffffff !important;
+      background-color: #0f172a;
+      color: #ffffff;
       font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 8px 10px;
+      letter-spacing: 0.6px;
+      padding: 10px 12px;
       text-align: left;
     }
     .items-table td {
-      padding: 10px;
-      font-size: 11px;
+      padding: 12px;
+      font-size: 12px;
       color: #1e293b;
       border-bottom: 1px solid #e2e8f0;
-      word-wrap: break-word;
     }
     .items-table tr:nth-child(even) td {
-      background-color: #f8fafc !important;
-    }
-    .summary-table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-    .terms-cell {
-      width: 48%;
-      vertical-align: top;
-      padding-right: 15px;
-    }
-    .calc-cell {
-      width: 52%;
-      vertical-align: top;
+      background-color: #f8fafc;
     }
     .calc-table {
       width: 100%;
-      table-layout: fixed;
       border-collapse: collapse;
+      margin-bottom: 24px;
     }
     .calc-table td {
-      padding: 5px 6px;
-      font-size: 11px;
-      color: #334155;
+      padding: 6px 8px;
+      font-size: 12px;
     }
     .calc-label {
-      width: 60%;
       text-align: right;
       color: #64748b;
       font-weight: 600;
-      padding-right: 8px;
+      width: 65%;
     }
     .calc-val {
-      width: 40%;
       text-align: right;
       font-weight: 700;
       color: #0f172a;
-      white-space: nowrap;
+      width: 35%;
     }
     .grand-total-row td {
       border-top: 2px solid #0f172a;
       border-bottom: 2px solid #0f172a;
-      padding: 7px 6px;
-      font-size: 13px;
+      padding: 8px;
+      font-size: 14px;
       font-weight: 900;
       color: #0f172a;
     }
     .advance-paid-row td {
-      background-color: #ecfdf5 !important;
-      color: #047857 !important;
+      background-color: #ecfdf5;
+      color: #047857;
       font-weight: 700;
     }
     .balance-due-row td {
-      background-color: #fff1f2 !important;
-      color: #be123c !important;
+      background-color: #fff1f2;
+      color: #be123c;
       font-weight: 800;
-      font-size: 12px;
+      font-size: 13px;
     }
-    .badge {
-      display: inline-block;
-      padding: 3px 6px;
-      font-size: 9px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border-radius: 3px;
-    }
-    .badge-paid {
-      background-color: #d1fae5 !important;
-      color: #065f46 !important;
-      border: 1px solid #34d399;
-    }
-    .badge-advance {
-      background-color: #e0e7ff !important;
-      color: #3730a3 !important;
-      border: 1px solid #818cf8;
-    }
-    .terms-box {
-      border: 1px dashed #cbd5e1;
-      background-color: #f8fafc !important;
-      padding: 10px 12px;
-      border-radius: 4px;
-      font-size: 10px;
-      color: #475569;
-      line-height: 1.45;
-    }
-    .terms-title {
-      font-weight: 800;
-      text-transform: uppercase;
-      font-size: 9.5px;
-      color: #0f172a;
-      margin-bottom: 3px;
-    }
-    .footer-note {
+    .cta-container {
       text-align: center;
-      font-size: 9.5px;
-      color: #94a3b8;
-      margin-top: 24px;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 12px;
+      margin: 28px 0 10px 0;
     }
-    .print-bar {
-      max-width: 760px;
-      margin: 0 auto 15px auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .print-btn {
-      background-color: #0f172a;
-      color: #ffffff;
-      border: none;
-      padding: 8px 16px;
+    .cta-button {
+      display: inline-block;
+      background-color: #dc2626;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 12px 28px;
       border-radius: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
     }
-    .print-btn:hover {
-      background-color: #1e293b;
+    .whatsapp-card {
+      background-color: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .whatsapp-text {
+      font-size: 12px;
+      color: #166534;
+      line-height: 1.4;
+    }
+    .email-footer {
+      background-color: #0b0d10;
+      color: #64748b;
+      padding: 24px 32px;
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .email-footer a {
+      color: #94a3b8;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="print-bar no-print">
-    <span style="font-size: 12px; color: #64748b;">Tax Invoice</span>
-    <button onclick="window.print()" class="print-btn">
-      🖨️ Print / Save as PDF
-    </button>
-  </div>
+  <div class="email-wrapper">
+    <div class="invoice-container">
+      
+      <!-- Brand Header -->
+      <div class="email-brand-header">
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td>
+              <h1 class="brand-logo">REVV<span>MOTIV</span></h1>
+              <div class="brand-tagline">Custom Car Styling &amp; Aero Parts</div>
+            </td>
+            <td style="text-align: right; vertical-align: top;">
+              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; background-color: #dc2626; padding: 4px 10px; border-radius: 3px;">
+                Order #{{ $order->id }}
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
 
-  <div class="invoice-container">
-    <!-- Header -->
-    <table class="header-table">
-      <tr>
-        <td class="logo-cell">
-          <h1 class="logo-title">REVV<span>MOTIV</span></h1>
-          <div class="company-info">
-            <strong>RevvMotiv</strong><br>
-            Site-5, Kasna, Greater Noida, Uttar Pradesh, India<br>
-            Email: support@revvmotiv.com | Tel: +91 83683 43232
-          </div>
-        </td>
-        <td class="invoice-title-cell">
-          <div class="invoice-heading">TAX INVOICE</div>
-          <div class="invoice-meta">
-            <strong>Invoice No:</strong> RM-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}<br>
-            <strong>Order ID:</strong> #{{ $order->id }}<br>
-            <strong>Date:</strong> {{ $order->created_at ? $order->created_at->format('d/m/Y, h:i A') : now()->format('d/m/Y') }}<br>
-            <strong>Payment Status:</strong> 
-            @if($order->payment_status === 'fully_paid')
-              <span class="badge badge-paid">FULLY PAID</span>
-            @elseif($order->payment_status === 'advance_paid')
-              <span class="badge badge-advance">ADVANCE PAID</span>
-            @else
-              <span class="badge" style="background:#fee2e2; color:#991b1b;">{{ strtoupper(str_replace('_', ' ', $order->payment_status)) }}</span>
-            @endif
-          </div>
-        </td>
-      </tr>
-    </table>
+      <!-- Main Body -->
+      <div class="content-body">
+        
+        <!-- Status Banner -->
+        <div class="status-banner">
+          <div class="status-title">Order Confirmed &amp; In Fabrication / Queue!</div>
+          <p class="status-desc">
+            Thank you for ordering with RevvMotiv, <strong>{{ $order->customer_name }}</strong>. Your performance build order has been received and our technicians are preparing your components with 1:1 fitment inspection.
+          </p>
+        </div>
 
-    <div class="divider"></div>
+        <!-- Meta Grid -->
+        <table class="meta-table">
+          <tr>
+            <td class="meta-box">
+              <div class="meta-heading">Delivery Address</div>
+              <div class="meta-title">{{ $order->customer_name }}</div>
+              <div class="meta-details">
+                <strong>Phone:</strong> {{ $order->customer_phone }}<br>
+                <strong>Address:</strong> {{ $order->shipping_address ?? 'Standard Express Delivery' }}
+              </div>
+            </td>
+            <td class="meta-spacer"></td>
+            <td class="meta-box">
+              <div class="meta-heading">Payment Breakdown</div>
+              <div class="meta-title">
+                @if($order->payment_status === 'fully_paid')
+                  Prepaid in Full
+                @elseif($order->payment_status === 'advance_paid')
+                  {{ $order->advance_percent_applied }}% Advance Paid (COD Balance)
+                @else
+                  {{ ucfirst($order->payment_status) }}
+                @endif
+              </div>
+              <div class="meta-details">
+                <strong>Gateway Ref:</strong> {{ $order->razorpay_payment_id ?? ($order->razorpay_order_id ?? 'Razorpay Verified') }}<br>
+                <strong>Date:</strong> {{ $order->created_at ? $order->created_at->format('d M Y, h:i A') : now()->format('d M Y') }}
+              </div>
+            </td>
+          </tr>
+        </table>
 
-    <!-- Billed To & Shipped To -->
-    <table class="parties-table">
-      <tr>
-        <td class="party-box">
-          <div class="party-heading">Billed & Shipped To:</div>
-          <div class="party-name">{{ $order->customer_name }}</div>
-          <div class="party-details">
-            <strong>Phone:</strong> {{ $order->customer_phone }}<br>
-            <strong>Email:</strong> {{ $order->customer_email ?? 'N/A' }}<br>
-            <strong>Address:</strong> {{ $order->shipping_address ?? 'Standard Delivery' }}
-          </div>
-        </td>
-        <td class="party-spacer"></td>
-        <td class="party-box">
-          <div class="party-heading">Payment & Gateway Details:</div>
-          <div class="party-details">
-            <strong>Payment Gateway:</strong> Razorpay Secure Gateway<br>
-            <strong>Transaction / Ref ID:</strong> {{ $order->razorpay_payment_id ?? ($order->razorpay_order_id ?? 'Pending Verification') }}<br>
-            <strong>Order Source:</strong> {{ ucfirst($order->source ?? 'Website') }}<br>
-            <strong>Payment Terms:</strong> {{ $order->advance_percent_applied >= 100 ? '100% Prepaid Online' : $order->advance_percent_applied . '% Advance Online + Balance COD' }}
-          </div>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Items Table -->
-    <table class="items-table">
-      <thead>
-        <tr>
-          <th style="width: 5%;">#</th>
-          <th style="width: 55%;">Item Description</th>
-          <th style="width: 15%; text-align: center;">HSN/SAC</th>
-          <th style="width: 10%; text-align: center;">Qty</th>
-          <th style="width: 15%; text-align: right;">Amount (INR)</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach($order->items as $index => $item)
-        <tr>
-          <td style="color: #64748b;">{{ $index + 1 }}</td>
-          <td>
-            <strong>{{ $item->product ? $item->product->title : 'Performance Component #' . $item->product_id }}</strong>
-            <div style="font-size: 10px; color: #64748b;">Precision 1:1 OEM Fitment / Quality Inspected</div>
-          </td>
-          <td style="text-align: center; color: #64748b; font-size: 11px;">87082900</td>
-          <td style="text-align: center; font-weight: 700;">{{ $item->quantity }}</td>
-          <td style="text-align: right; font-weight: 700;">₹{{ number_format($item->unit_price * $item->quantity, 2) }}</td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-
-    <!-- Calculation & Terms -->
-    <table class="summary-table">
-      <tr>
-        <td class="terms-cell">
-          <div class="terms-box">
-            <div class="terms-title">Terms & Guarantee</div>
-            • 100% Vehicle-Specific Test Fitment Guarantee.<br>
-            • Inspect parcel condition upon delivery before balance handover.<br>
-            • For tracking or fitment support, contact WhatsApp: <strong>+91 83683 43232</strong>.
-          </div>
-        </td>
-        <td class="calc-cell">
-          <table class="calc-table">
+        <!-- Products Table -->
+        <table class="items-table">
+          <thead>
             <tr>
-              <td class="calc-label">Subtotal:</td>
-              <td class="calc-val">₹{{ number_format($order->total_amount + $order->discount_amount, 2) }}</td>
+              <th style="width: 60%;">Item Description</th>
+              <th style="width: 15%; text-align: center;">Qty</th>
+              <th style="width: 25%; text-align: right;">Amount</th>
             </tr>
-            @if($order->discount_amount > 0)
+          </thead>
+          <tbody>
+            @foreach($order->items as $item)
             <tr>
-              <td class="calc-label">Discount ({{ $order->coupon_code }}):</td>
-              <td class="calc-val" style="color: #dc2626;">−₹{{ number_format($order->discount_amount, 2) }}</td>
+              <td>
+                <strong>{{ $item->product ? $item->product->title : 'Custom Component #' . $item->product_id }}</strong>
+                <div style="font-size: 10px; color: #64748b; margin-top: 2px;">
+                  1:1 3D Laser Fitment Inspected
+                </div>
+              </td>
+              <td style="text-align: center; font-weight: 700;">{{ $item->quantity }}</td>
+              <td style="text-align: right; font-weight: 700;">₹{{ number_format($item->unit_price * $item->quantity, 2) }}</td>
             </tr>
-            @endif
-            <tr class="grand-total-row">
-              <td class="calc-label" style="color: #0f172a;">Total Invoice Value:</td>
-              <td class="calc-val">₹{{ number_format($order->total_amount, 2) }}</td>
-            </tr>
-            <tr class="advance-paid-row">
-              <td class="calc-label" style="color: #047857;">Advance Paid Online ({{ $order->advance_percent_applied }}%):</td>
-              <td class="calc-val" style="color: #047857;">₹{{ number_format($order->advance_amount, 2) }}</td>
-            </tr>
-            <tr class="balance-due-row">
-              <td class="calc-label" style="color: #be123c;">Balance Due on Delivery (COD):</td>
-              <td class="calc-val" style="color: #be123c;">₹{{ number_format($order->remaining_amount, 2) }}</td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
+            @endforeach
+          </tbody>
+        </table>
 
-    <div class="footer-note">
-      This is a digitally generated invoice issued by RevvMotiv. Valid for all warranty and customer records.
+        <!-- Calculations Table -->
+        <table class="calc-table">
+          <tr>
+            <td class="calc-label">Subtotal:</td>
+            <td class="calc-val">₹{{ number_format($order->total_amount + $order->discount_amount, 2) }}</td>
+          </tr>
+          @if($order->discount_amount > 0)
+          <tr>
+            <td class="calc-label">Coupon Discount ({{ $order->coupon_code }}):</td>
+            <td class="calc-val" style="color: #dc2626;">−₹{{ number_format($order->discount_amount, 2) }}</td>
+          </tr>
+          @endif
+          <tr class="grand-total-row">
+            <td class="calc-label" style="color: #0f172a;">Total Order Value:</td>
+            <td class="calc-val">₹{{ number_format($order->total_amount, 2) }}</td>
+          </tr>
+          <tr class="advance-paid-row">
+            <td class="calc-label" style="color: #047857;">Advance Paid Online ({{ $order->advance_percent_applied }}%):</td>
+            <td class="calc-val" style="color: #047857;">₹{{ number_format($order->advance_amount, 2) }}</td>
+          </tr>
+          <tr class="balance-due-row">
+            <td class="calc-label" style="color: #be123c;">Balance Due on Delivery (COD):</td>
+            <td class="calc-val" style="color: #be123c;">₹{{ number_format($order->remaining_amount, 2) }}</td>
+          </tr>
+        </table>
+
+        <!-- WhatsApp Support Card -->
+        <div class="whatsapp-card">
+          <div class="whatsapp-text">
+            <strong>Need Fitment Assistance or Urgent Tracking?</strong><br>
+            Our build technicians are available on WhatsApp: <strong>+91 83683 43232</strong> (Mon–Sat 10 AM – 7 PM IST).
+          </div>
+        </div>
+
+        <!-- Tracking Button -->
+        <div class="cta-container no-print">
+          <a href="https://revvmotiv.com/order-confirmation/{{ $order->id }}?token={{ $order->access_token }}" class="cta-button" target="_blank">
+            View Live Order Status &amp; Invoice →
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="email-footer">
+        <strong>RevvMotiv</strong> — Automotive Aero &amp; Styling Studio<br>
+        Registered Facility: Site-5, Kasna, Greater Noida, Uttar Pradesh 201306, India<br>
+        Support: <a href="mailto:support@revvmotiv.com">support@revvmotiv.com</a> | WhatsApp: +91 83683 43232
+      </div>
+
     </div>
   </div>
 </body>
