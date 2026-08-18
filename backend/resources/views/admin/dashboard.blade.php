@@ -1,16 +1,18 @@
 <x-admin.layout title="Dashboard">
     <!-- Executive Dynamic Welcome Command Hero -->
-    <div class="mb-8 relative overflow-hidden rounded-2xl border border-slate-700/50 bg-gradient-to-br from-[#111d2e] via-[#182d48] to-[#0d1624] p-6 text-white shadow-xl sm:p-7">
+    <div class="mb-8 relative overflow-hidden rounded-2xl p-6 sm:p-7 shadow-xl" 
+         style="background: linear-gradient(135deg, #0f1c2e 0%, #162a42 50%, #0b1420 100%); border: 1.5px solid rgba(51, 65, 85, 0.8); color: #ffffff;">
         <!-- Subtle Ambient Background Light -->
-        <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-red-500/10 blur-3xl"></div>
-        <div class="pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 rounded-full bg-sky-500/10 blur-3xl"></div>
+        <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full blur-3xl" style="background: rgba(201, 24, 43, 0.15);"></div>
+        <div class="pointer-events-none absolute -bottom-16 left-1/3 h-56 w-56 rounded-full blur-3xl" style="background: rgba(14, 165, 233, 0.12);"></div>
 
         <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <!-- Left: Welcome & Brand Greeting -->
             <div class="space-y-3">
                 <div class="flex flex-wrap items-center gap-2.5">
                     <!-- Tomoe Emblem Badge -->
-                    <div class="inline-flex items-center gap-1.5 rounded-lg border border-sky-400/20 bg-sky-500/10 px-2.5 py-1 text-xs font-semibold text-sky-300">
+                    <div class="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold"
+                         style="background: rgba(14, 165, 233, 0.18); border: 1px solid rgba(56, 189, 248, 0.4); color: #7dd3fc;">
                         <svg class="h-3.5 w-3.5" viewBox="0 0 100 100" fill="currentColor">
                             <rect x="32" y="31" width="7" height="7" rx="1.5" />
                             <rect x="50" y="28" width="9" height="9" rx="1.5" />
@@ -19,16 +21,17 @@
                     </div>
 
                     <!-- System Status Live Pulse -->
-                    <div class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">
+                    <div class="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-bold"
+                         style="background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(52, 211, 153, 0.4); color: #6ee7b7;">
                         <span class="relative flex h-2 w-2">
-                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style="background: #34d399;"></span>
+                            <span class="relative inline-flex h-2 w-2 rounded-full" style="background: #10b981;"></span>
                         </span>
                         <span>Console Active</span>
                     </div>
 
-                    <span class="text-xs text-slate-400">·</span>
-                    <span class="text-xs font-medium text-slate-400 font-mono" id="liveClock">{{ now()->format('D, d M Y · H:i') }} IST</span>
+                    <span style="color: #64748b;">·</span>
+                    <span class="text-xs font-semibold font-mono" id="liveClock" style="color: #94a3b8;">{{ now()->format('D, d M Y · H:i') }} IST</span>
                 </div>
 
                 <div>
@@ -37,10 +40,10 @@
                         $greeting = $hour < 12 ? 'Good morning' : ($hour < 17 ? 'Good afternoon' : 'Good evening');
                         $userName = auth()->user()->name ?? 'Administrator';
                     @endphp
-                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                        {{ $greeting }}, <span class="text-slate-200">{{ $userName }}</span>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight" style="color: #ffffff;">
+                        {{ $greeting }}, <span style="color: #f1f5f9;">{{ $userName }}</span>
                     </h1>
-                    <p class="mt-1 text-xs sm:text-sm text-slate-300">
+                    <p class="mt-1 text-xs sm:text-sm font-medium" style="color: #94a3b8;">
                         RevvMotiv Operations & Inventory Management Suite
                     </p>
                 </div>
@@ -49,29 +52,32 @@
             <!-- Right: Quick Executive Action Deck -->
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.orders.index') }}?status=pending" 
-                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:border-amber-500/50 hover:bg-slate-800 hover:shadow-lg">
-                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 transition-transform group-hover:scale-110">
+                   class="group flex items-center gap-3 rounded-xl px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105"
+                   style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(51, 65, 85, 0.7); text-decoration: none;">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
                         <x-admin.icon name="orders" class="h-4.5 w-4.5" />
                     </span>
                     <div>
-                        <span class="block text-[11px] font-medium uppercase tracking-wider text-slate-400">Order Queue</span>
-                        <span class="block text-lg font-bold text-white tabular-nums">{{ $pendingOrderCount }} <span class="text-xs font-normal text-amber-400">pending</span></span>
+                        <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #94a3b8;">Order Queue</span>
+                        <span class="block text-lg font-extrabold tabular-nums" style="color: #ffffff;">{{ $pendingOrderCount }} <span class="text-xs font-normal" style="color: #fbbf24;">pending</span></span>
                     </div>
                 </a>
 
                 <a href="{{ route('admin.reviews.index') }}?status=pending" 
-                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:border-sky-500/50 hover:bg-slate-800 hover:shadow-lg">
-                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/10 text-sky-400 transition-transform group-hover:scale-110">
+                   class="group flex items-center gap-3 rounded-xl px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105"
+                   style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(51, 65, 85, 0.7); text-decoration: none;">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style="background: rgba(14, 165, 233, 0.15); color: #38bdf8;">
                         <x-admin.icon name="reviews" class="h-4.5 w-4.5" />
                     </span>
                     <div>
-                        <span class="block text-[11px] font-medium uppercase tracking-wider text-slate-400">Review Moderation</span>
-                        <span class="block text-lg font-bold text-white tabular-nums">{{ $pendingReviewCount }} <span class="text-xs font-normal text-sky-400">new</span></span>
+                        <span class="block text-[11px] font-bold uppercase tracking-wider" style="color: #94a3b8;">Review Moderation</span>
+                        <span class="block text-lg font-extrabold tabular-nums" style="color: #ffffff;">{{ $pendingReviewCount }} <span class="text-xs font-normal" style="color: #38bdf8;">new</span></span>
                     </div>
                 </a>
 
                 <a href="https://www.revvmotiv.com" target="_blank" rel="noopener noreferrer"
-                   class="group flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-600/20 px-4 py-3 text-xs font-bold text-red-300 shadow-md backdrop-blur-sm transition-all hover:border-red-500/60 hover:bg-red-600/30 hover:text-white">
+                   class="group flex items-center gap-2 rounded-xl px-4 py-3 text-xs font-bold shadow-md backdrop-blur-sm transition-all hover:scale-105"
+                   style="background: rgba(201, 24, 43, 0.25); border: 1.5px solid rgba(201, 24, 43, 0.6); color: #fecaca; text-decoration: none;">
                     <span>Live Store</span>
                     <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
