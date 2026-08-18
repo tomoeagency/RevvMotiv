@@ -240,7 +240,7 @@ function apiUrl(path: string): string {
   if (typeof window !== "undefined") {
     return path;
   }
-  return `http://118.139.162.193${path}`;
+  return `http://api.revvmotiv.com${path}`;
 }
 
 // Server-side fetch (product listing, product detail, homepage) — the
