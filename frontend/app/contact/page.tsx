@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import { Mail, AtSign, Clock, ShieldCheck, MapPin } from "lucide-react";
+import { Mail, AtSign, Clock, ShieldCheck, MapPin, Phone } from "lucide-react";
 import { getSiteSettings } from "@/lib/api";
 import { ContactForm } from "@/app/components/ContactForm";
 import { WhatsAppIcon } from "@/app/components/WhatsAppIcon";
+import { BUSINESS_DETAILS } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Contact Us — Fitment Advice & Custom Build Consultation | RevvMotiv",
@@ -13,64 +14,45 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const settings = await getSiteSettings().catch(() => null);
-  const whatsappDigits = settings?.whatsapp_number.replace(/\D/g, "") ?? null;
+  const whatsappDigits = (settings?.whatsapp_number || BUSINESS_DETAILS.whatsappNumber).replace(/\D/g, "") || "918368343232";
+  const displayPhone = settings?.whatsapp_number || BUSINESS_DETAILS.whatsappNumber;
 
   return (
     <div className="w-full bg-carbon text-ink">
       {/* 1. Hero Section */}
       <section className="relative border-b border-hairline bg-canvas overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
-        <div className="relative max-w-screen-2xl mx-auto px-6 py-12 md:py-16">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-7">
-              <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
-                Workshop Support & Consultation
-              </span>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
-                Get In Touch. <br />
-                <span className="text-red-500">Plan Your Build.</span>
-              </h1>
-              <p className="text-ink-muted text-base md:text-lg leading-relaxed max-w-2xl">
-                Have questions about vehicle compatibility, custom styling, or order tracking? Our workshop team is here to help you get the exact fitment for your car.
-              </p>
-            </div>
-
-            <div className="lg:col-span-5">
-              <div className="relative aspect-[4/3] rounded-lg border border-hairline bg-surface overflow-hidden shadow-2xl">
-                <Image
-                  src="/images/about/fitting.png"
-                  alt="Master technician aligning carbon fiber diffuser"
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                  className="object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 p-3 bg-black/60 backdrop-blur border border-white/10 rounded text-xs text-white">
-                  <span className="font-bold text-red-500 uppercase tracking-wider block mb-0.5">
-                    Workshop Fitment Desk
-                  </span>
-                  Direct consultation & technical build support.
-                </div>
-              </div>
-            </div>
+        <div className="relative max-w-screen-2xl mx-auto px-6 py-16 md:py-24">
+          <div className="max-w-3xl">
+            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
+              Get In Touch
+            </span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
+              Talk to Our Master Technicians
+            </h1>
+            <p className="text-ink-muted text-base md:text-lg leading-relaxed max-w-2xl">
+              Have a question about aero fitment for your vehicle, want custom styling advice, or need support with an existing order? Reach out to our Greater Noida workshop team directly.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* 2. Main Contact Grid */}
-      <section className="max-w-screen-2xl mx-auto px-6 py-20 grid lg:grid-cols-[1fr_1.3fr] gap-12 items-start">
-        {/* Left Column: Direct Channels & Help Topics */}
-        <div>
-          <h2 className="text-2xl font-black uppercase tracking-tight mb-4">
-            Direct Support Channels
-          </h2>
-          <p className="text-sm text-ink-muted leading-relaxed mb-8">
-            Connect directly with our workshop team via WhatsApp, email, or Instagram. We are active Monday to Saturday, 10:00 AM – 7:00 PM IST.
-          </p>
+      {/* 2. Main Content Grid */}
+      <section className="max-w-screen-2xl mx-auto px-6 py-16 md:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left Column: Direct Support Channels */}
+          <div className="lg:col-span-5 flex flex-col">
+            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
+              Direct Contact
+            </span>
+            <h2 className="text-2xl font-black uppercase tracking-tight mb-4">
+              Direct Support Channels
+            </h2>
+            <p className="text-sm text-ink-muted leading-relaxed mb-8">
+              Connect directly with our workshop team via WhatsApp, phone, email, or Instagram. We are active Monday to Saturday, 10:00 AM – 7:00 PM IST.
+            </p>
 
-          <div className="flex flex-col gap-4 mb-10">
-            {whatsappDigits && (
+            <div className="flex flex-col gap-4 mb-10">
               <a
                 href={`https://wa.me/${whatsappDigits}?text=${encodeURIComponent("Hi RevvMotiv, I'm looking for styling & aero parts for my car. Can you assist me?")}`}
                 target="_blank"
@@ -87,11 +69,24 @@ export default async function ContactPage() {
                   <div className="text-xs text-ink-muted">Chat directly with a build technician</div>
                 </div>
               </a>
-            )}
 
-            {settings?.contact_email && (
               <a
-                href={`mailto:${settings.contact_email}`}
+                href={`tel:${whatsappDigits}`}
+                className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface hover:border-red-500/40 transition-all group"
+              >
+                <div className="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center flex-none group-hover:scale-110 transition-transform">
+                  <Phone className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-bold text-ink uppercase tracking-wider group-hover:text-red-400 transition-colors">
+                    Phone: {displayPhone}
+                  </div>
+                  <div className="text-xs text-ink-muted">Direct phone assistance (Mon–Sat, 10 AM – 7 PM)</div>
+                </div>
+              </a>
+
+              <a
+                href={`mailto:${settings?.contact_email || "support@revvmotiv.com"}`}
                 className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface hover:border-red-500/40 transition-all group"
               >
                 <div className="w-10 h-10 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center flex-none group-hover:scale-110 transition-transform">
@@ -99,12 +94,11 @@ export default async function ContactPage() {
                 </div>
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider group-hover:text-red-400 transition-colors">
-                    {settings.contact_email}
+                    {settings?.contact_email || "support@revvmotiv.com"}
                   </div>
                   <div className="text-xs text-ink-muted">Email support & technical inquiries</div>
                 </div>
               </a>
-            )}
 
             {/* Address */}
             <div className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface">

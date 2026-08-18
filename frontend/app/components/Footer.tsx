@@ -157,12 +157,21 @@ export async function Footer() {
                 </li>
                 <li>
                   <a
-                    href="https://wa.me/918368343232?text=Hi%20RevvMotiv%2C%20I%20have%20a%20question%20about%20a%20part%20or%20build."
+                    href="tel:+918368343232"
+                    className="hover:text-red-500 transition-colors text-xs flex items-center gap-1 group"
+                  >
+                    Phone: +91 83683 43232
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://wa.me/918368343232?text=Hi%20RevvMotiv%2C%20I'm%20looking%20for%20styling%20%26%20aero%20parts%20for%20my%20car.%20Can%20you%20assist%20me%3F"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-red-500 transition-colors flex items-center gap-1 group"
+                    className="hover:text-red-500 transition-colors text-xs flex items-center gap-1 group"
                   >
-                    WhatsApp (+91 83683 43232)
+                    WhatsApp Support
                     <ArrowUpRight className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </li>
