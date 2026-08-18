@@ -305,5 +305,24 @@
     @endphp
     <script>
         window.__dashboardCharts = @json($dashboardChartsPayload);
+
+        // Real-time IST Clock
+        function updateLiveClock() {
+            const clockEl = document.getElementById('liveClock');
+            if (!clockEl) return;
+            const now = new Date();
+            const formatted = now.toLocaleDateString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                weekday: 'long',
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            clockEl.textContent = formatted.replace(',', '') + ' IST';
+        }
+        setInterval(updateLiveClock, 1000);
     </script>
 </x-admin.layout>
