@@ -148,10 +148,6 @@ export default function CartPage() {
                   <span>Express Shipping</span>
                   <span className="text-green-400 font-bold uppercase text-xs">FREE</span>
                 </div>
-                <div className="flex justify-between text-ink-muted">
-                  <span>3D Laser Fitment Check</span>
-                  <span className="text-green-400 font-bold uppercase text-xs">INCLUDED</span>
-                </div>
                 <div className="border-t border-hairline pt-4 flex justify-between items-baseline">
                   <span className="text-base font-bold text-ink uppercase">Total</span>
                   <span className="text-2xl font-black text-ink">{formatPrice(subtotal)}</span>
