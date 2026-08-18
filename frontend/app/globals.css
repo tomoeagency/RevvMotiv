@@ -63,6 +63,8 @@
   --duration-base: 300ms; /* card entrances, drawers, modals, standard content blocks */
   --duration-page: 600ms; /* page-level elements: navbar, hero paragraph, major section reveals */
   --ease-brand: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Status colors, fixed across themes like the other brand accents. */
   --color-success: #22c55e; /* green-500 */
@@ -73,17 +75,13 @@
   /* Dark theme (default — the original brand look, unchanged values). */
   --canvas: #050505;
   --surface: #0a0a0a;
-  /* Was #020202 — darker than canvas by only 3/255, imperceptible, so
-     every section meant to alternate against canvas (CategoryStrip,
-     ReelsSection, FeaturedReviews, About's section bands) rendered as
-     one continuous slab instead of a visibly distinct band. */
   --surface-alt: #0d0d0d;
   --hover: rgba(255, 255, 255, 0.05);
   --hover-strong: rgba(255, 255, 255, 0.1);
   --ink: #ffffff;
-  --ink-muted: #9ca3af; /* was text-gray-400/300 */
-  --ink-subtle: #6b7280; /* was text-gray-500/600 */
-  --ink-faint: rgba(255, 255, 255, 0.2); /* was text-white/20 */
+  --ink-muted: #9ca3af;
+  --ink-subtle: #6b7280;
+  --ink-faint: rgba(255, 255, 255, 0.2);
   --hairline: rgba(255, 255, 255, 0.1);
   --hairline-strong: rgba(255, 255, 255, 0.2);
   --grid-line: rgba(255, 255, 255, 0.03);
@@ -98,17 +96,9 @@
   --carbon-base: #050505;
   --carbon-weave: #080808;
 
-  /* Thin rim-light outline for flat raster assets (e.g. WheelSpinOverlay's
-     gif) whose own silhouette color can match the canvas closely enough in
-     one theme to lose its edge — a black tire on the near-black dark
-     canvas, for instance. --ink-faint exists for hairlines/dividers at a
-     much lower opacity; this needs to actually read as an edge. */
   --raster-outline: rgba(255, 255, 255, 0.55);
 }
 
-/* Automotive/dealership-derived light palette (not an inverted dark theme):
-   a soft near-white canvas rather than stark #fff, deep slate ink rather
-   than pure black, brand red/blue accents held constant. */
 :root[data-theme="light"] {
   --canvas: #f8fafc;
   --surface: #ffffff;
@@ -123,8 +113,6 @@
   --hairline-strong: rgba(15, 23, 42, 0.18);
   --grid-line: rgba(15, 23, 42, 0.04);
 
-  /* Chrome text needs a darker sheen to read against a light surface —
-     the dark-mode gradient (white-heavy) would nearly disappear here. */
   --chrome-stop-1: #1e293b;
   --chrome-stop-2: #475569;
   --chrome-stop-3: #94a3b8;
@@ -156,7 +144,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(59,130,246,0.06) 50%, transparent 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(201, 24, 43, 0.08) 50%, transparent 100%);
   transform: translateX(-100%);
   transition: none;
 }
@@ -169,6 +157,59 @@
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-fadeInDown { animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scaleIn { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes badgePop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.animate-badge-pop { animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+@keyframes skeletonShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton-box {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 25%,
+    var(--surface-alt) 37%,
+    var(--surface) 63%
+  );
+  background-size: 400% 100%;
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
+}
+
+/* Micro-interaction utilities */
+.interactive-press {
+  transition: transform 150ms var(--ease-smooth), opacity 150ms var(--ease-smooth);
+}
+.interactive-press:active {
+  transform: scale(0.97);
+}
+
+.interactive-lift {
+  transition: transform 300ms var(--ease-brand), box-shadow 300ms var(--ease-brand), border-color 300ms var(--ease-brand);
+}
+.interactive-lift:hover {
+  transform: translateY(-4px);
+}
+
+.smooth-focus {
+  transition: border-color 200ms var(--ease-smooth), box-shadow 200ms var(--ease-smooth);
+}
 
 .bg-carbon {
   background-color: var(--carbon-base);
@@ -195,13 +236,6 @@
   color: transparent;
 }
 
-/* Gradient text for large/bold brand-accent emphasis (headline spans,
-   stat numbers) — NOT for small text (badges, labels, hover states):
-   at small sizes a 2-stop gradient just reads as a color blob, and on the
-   dark canvas the --brand-black tail would fade close to invisible if the
-   glyphs aren't bold/large enough to carry it visually. Small accents
-   should stay solid var(--brand-red) instead — see design-token notes in
-   PrimaryCtaButton.tsx for the token pairing. */
 .text-gradient-brand {
   background: linear-gradient(90deg, var(--brand-red), var(--brand-black));
   -webkit-background-clip: text;
@@ -214,21 +248,15 @@
   display: none;
 }
 
-/* Hide the browser's own page scrollbar site-wide — scrolling itself
-   still works, just without the visible track/thumb chrome. */
 html {
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-behavior: smooth;
 }
 html::-webkit-scrollbar {
   display: none;
 }
 
-/* Wherever the brand red-black gradient is used as a solid background
-   (buttons, badges, icon fills), this makes it "flow" on hover instead
-   of sitting static — an oversized 3-stop gradient sweeps across via
-   background-position rather than animating opacity/color directly,
-   which is what actually reads as motion instead of a flat color swap. */
 .brand-gradient-flow {
   background-image: linear-gradient(
     90deg,
@@ -243,10 +271,6 @@ html::-webkit-scrollbar {
 .brand-gradient-flow:hover {
   background-position: 100% 0%;
 }
-.hide-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
 @keyframes marquee-track {
   from { transform: translateX(0); }
@@ -256,11 +280,6 @@ html::-webkit-scrollbar {
   animation-name: marquee-track;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .animate-marquee {
-    animation: none;
-  }
 }
 
 @keyframes route-progress-fill {
@@ -293,4 +312,14 @@ html::-webkit-scrollbar {
   animation: textShimmer 3.5s ease-in-out infinite;
 }
 
-
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

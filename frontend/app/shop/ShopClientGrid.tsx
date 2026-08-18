@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/app/components/ProductCard";
 import type { ApiProduct } from "@/lib/api";
 
@@ -13,6 +14,19 @@ interface ShopClientGridProps {
   initialLastPage: number;
   category?: string;
   search?: string;
+}
+
+function ProductCardSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse">
+      <div className="aspect-square bg-surface border border-hairline rounded-xl skeleton-box" />
+      <div className="space-y-2">
+        <div className="h-2.5 w-20 bg-surface-alt rounded skeleton-box" />
+        <div className="h-4 w-3/4 bg-surface-alt rounded skeleton-box" />
+        <div className="h-3.5 w-1/3 bg-surface-alt rounded skeleton-box" />
+      </div>
+    </div>
+  );
 }
 
 export function ShopClientGrid({
@@ -50,7 +64,6 @@ export function ShopClientGrid({
       return;
     }
 
-    // Client-side fallback fetch via /api/v1/products
     setIsLoading(true);
     const params = new URLSearchParams();
     if (category) params.set("category", category);
@@ -81,18 +94,22 @@ export function ShopClientGrid({
 
   if (isLoading) {
     return (
-      <div className="py-24 text-center flex flex-col items-center justify-center">
-        <Loader2 className="w-8 h-8 text-red-500 animate-spin mb-4" />
-        <p className="text-xs uppercase font-bold tracking-widest text-ink-muted">
-          Loading Precision Aero Catalog...
-        </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {Array.from({ length: 6 }).map((_, idx) => (
+          <ProductCardSkeleton key={idx} />
+        ))}
       </div>
     );
   }
 
   if (products.length === 0) {
     return (
-      <div className="py-20 text-center border border-hairline bg-surface rounded-lg p-12">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="py-20 text-center border border-hairline bg-surface rounded-2xl p-12 shadow-sm"
+      >
         <h3 className="text-xl font-bold uppercase tracking-tight text-ink mb-2">
           No Products Found
         </h3>
@@ -103,21 +120,34 @@ export function ShopClientGrid({
         </p>
         <Link
           href="/shop"
-          className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-xs font-bold uppercase tracking-widest rounded transition-colors"
+          className="inline-block px-6 py-3 bg-gradient-to-r from-[var(--brand-red)] to-[var(--brand-black)] hover:brightness-110 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-md active:scale-95"
         >
           View All Products
         </Link>
-      </div>
+      </motion.div>
     );
   }
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      <motion.div
+        layout
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        <AnimatePresence mode="popLayout">
+          {products.map((product, index) => (
+            <motion.div
+              key={product.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.35, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <ProductCard product={product} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </motion.div>
 
       {lastPage > 1 && (
         <div className="mt-12 pt-8 border-t border-hairline flex items-center justify-between">
@@ -128,7 +158,7 @@ export function ShopClientGrid({
             {currentPage > 1 && (
               <Link
                 href={buildHref({ page: currentPage - 1 })}
-                className="p-2 border border-hairline bg-surface rounded hover:border-red-500 transition-colors text-ink"
+                className="p-2 border border-hairline bg-surface rounded-lg hover:border-red-500 transition-colors text-ink active:scale-90"
                 aria-label="Previous page"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -137,7 +167,7 @@ export function ShopClientGrid({
             {currentPage < lastPage && (
               <Link
                 href={buildHref({ page: currentPage + 1 })}
-                className="p-2 border border-hairline bg-surface rounded hover:border-red-500 transition-colors text-ink"
+                className="p-2 border border-hairline bg-surface rounded-lg hover:border-red-500 transition-colors text-ink active:scale-90"
                 aria-label="Next page"
               >
                 <ChevronRight className="w-4 h-4" />
