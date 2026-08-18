@@ -143,7 +143,7 @@ export async function Footer() {
             </div>
 
             {/* Contact */}
-            <div className="flex flex-col col-span-2 sm:col-span-1">
+            <div className="flex flex-col col-span-1">
               <h4 className="text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-3 sm:mb-5">
                 Get In Touch
               </h4>
@@ -154,9 +154,9 @@ export async function Footer() {
                 <li>
                   <a
                     href="tel:+918368343232"
-                    className="hover:text-red-500 transition-colors flex items-center gap-1 group"
+                    className="hover:text-red-500 transition-colors flex items-center gap-1 group text-[11px] sm:text-xs"
                   >
-                    Phone: +91 83683 43232
+                    +91 83683 43232
                     <ArrowUpRight className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </li>
@@ -165,22 +165,22 @@ export async function Footer() {
                     href="https://wa.me/918368343232?text=Hi%20RevvMotiv%2C%20I'm%20looking%20for%20styling%20%26%20aero%20parts%20for%20my%20car.%20Can%20you%20assist%20me%3F"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-red-500 transition-colors flex items-center gap-1 group text-emerald-400 font-semibold"
+                    className="hover:text-red-500 transition-colors flex items-center gap-1 group text-emerald-400 font-semibold text-[11px] sm:text-xs"
                   >
-                    WhatsApp Support
+                    WhatsApp
                     <ArrowUpRight className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />
                   </a>
                 </li>
                 <li>
                   <a
                     href="mailto:support@revvmotiv.com"
-                    className="hover:text-red-500 transition-colors"
+                    className="hover:text-red-500 transition-colors text-[11px] sm:text-xs break-all"
                   >
                     support@revvmotiv.com
                   </a>
                 </li>
                 <li>
-                  <div className="text-ink-muted hover:text-red-500 transition-colors pt-1">
+                  <div className="text-ink-muted hover:text-red-500 transition-colors pt-0.5 text-[11px] sm:text-xs">
                     <ConsultantFooterLink />
                   </div>
                 </li>
