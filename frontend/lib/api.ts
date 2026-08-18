@@ -234,13 +234,14 @@ export class ApiRequestError extends Error {
 }
 
 function apiUrl(path: string): string {
-  if (API_URL) {
-    return `${API_URL}${path}`;
+  let base = API_URL || "http://api.revvmotiv.com";
+  if (base.includes("https://api.revvmotiv.com")) {
+    base = base.replace("https://", "http://");
   }
   if (typeof window !== "undefined") {
     return path;
   }
-  return `http://api.revvmotiv.com${path}`;
+  return `${base}${path}`;
 }
 
 // Server-side fetch (product listing, product detail, homepage) — the
