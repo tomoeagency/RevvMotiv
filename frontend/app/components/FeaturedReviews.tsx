@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ShieldCheck, Quote, Camera, Sparkles, X } from "lucide-react";
+import { Quote, Camera, Sparkles, X } from "lucide-react";
 import type { Review } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
 
@@ -32,17 +32,9 @@ function ReviewCard({
       {/* Background ambient red glow on hover */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
-      {/* 1. Header: Stars + Verified Badge + Quote Mark */}
+      {/* 1. Header: Stars + Quote Mark */}
       <div className="flex items-center justify-between flex-none mb-3">
-        <div className="flex items-center gap-2">
-          <StarRating rating={review.rating} />
-          {review.verified_purchase && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 px-2.5 py-0.5 text-[10px] font-bold text-red-500 border border-red-500/20">
-              <ShieldCheck className="w-3 h-3" />
-              Verified Driver
-            </span>
-          )}
-        </div>
+        <StarRating rating={review.rating} />
         <Quote className="w-6 h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors" />
       </div>
 
