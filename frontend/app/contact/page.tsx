@@ -72,7 +72,7 @@ export default async function ContactPage() {
           <div className="flex flex-col gap-4 mb-10">
             {whatsappDigits && (
               <a
-                href={`https://wa.me/${whatsappDigits}`}
+                href={`https://wa.me/${whatsappDigits}?text=${encodeURIComponent("Hi RevvMotiv, I'm looking for styling & aero parts for my car. Can you assist me?")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface hover:border-[#25D366]/60 transition-all group"

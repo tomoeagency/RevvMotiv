@@ -238,17 +238,21 @@ export class ApiRequestError extends Error {
 }
 
 function apiUrl(path: string): string {
+  if (typeof window !== "undefined") {
+    return path;
+  }
+
   let base =
     process.env.API_BASE_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    (typeof window === "undefined" ? "http://127.0.0.1:8000" : "");
+    (process.env.NODE_ENV === "development"
+      ? "http://127.0.0.1:8000"
+      : "http://api.revvmotiv.com");
 
   if (base.includes("https://api.revvmotiv.com")) {
     base = base.replace("https://", "http://");
   }
-  if (typeof window !== "undefined") {
-    return path;
-  }
+
   return `${base}${path}`;
 }
 

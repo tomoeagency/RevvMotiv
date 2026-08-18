@@ -324,7 +324,7 @@ export function TrustPanelClient({
                       </button>
                       {whatsappDigits && (
                         <a
-                          href={`https://wa.me/${whatsappDigits}`}
+                          href={`https://wa.me/${whatsappDigits}?text=${encodeURIComponent("Hi RevvMotiv, I'm looking for styling & aero parts for my car. Can you assist me?")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-xs font-bold text-ink-muted hover:text-[var(--brand-red)] transition-colors"
