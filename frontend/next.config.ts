@@ -24,6 +24,10 @@ const nextConfig: NextConfig = {
         source: "/uploads/:path*",
         destination: `${backendUrl}/uploads/:path*`,
       },
+      {
+        source: "/feed.xml",
+        destination: "/feed",
+      },
     ];
   },
   async redirects() {
