@@ -159,20 +159,24 @@ export default function SubmitReviewPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-carbon text-ink py-12 md:py-20 px-6 relative overflow-hidden">
+    <div className="w-full min-h-screen bg-carbon text-ink pt-6 md:pt-10 pb-20 px-6 relative overflow-hidden">
       {/* Background Gradients */}
       <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:80px_80px] opacity-20 pointer-events-none" />
-      <div className="absolute top-20 left-1/4 w-[500px] h-[400px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-10 left-1/4 w-[500px] h-[350px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-20 right-1/4 w-[500px] h-[400px] bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* 2-Column Split Studio Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
           {/* LEFT COLUMN: Headings, Highlights & Trust Badges */}
-          <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-8">
+          <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
             <div>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink leading-[1.05] mb-4">
+              <div className="text-[11px] font-bold text-red-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                <span>Customer Build Verification</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink leading-[1.05] mb-3">
                 Share Your Build Experience.
               </h1>
               <p className="text-sm md:text-base text-ink-muted leading-relaxed">
