@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   // /[slug] (product detail) is untouched and still lives here, this only
   // redirects the exact listing route. Query params (e.g. ?category=x)
   // carry over automatically since `source` doesn't declare/consume them.
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "http://118.139.162.193/api/:path*",
+      },
+    ];
+  },
   async redirects() {
     return [
       {

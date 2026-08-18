@@ -234,10 +234,13 @@ export class ApiRequestError extends Error {
 }
 
 function apiUrl(path: string): string {
-  if (!API_URL) {
-    throw new Error("NEXT_PUBLIC_API_URL is not set — see .env.local");
+  if (API_URL) {
+    return `${API_URL}${path}`;
   }
-  return `${API_URL}${path}`;
+  if (typeof window !== "undefined") {
+    return path;
+  }
+  return `http://118.139.162.193${path}`;
 }
 
 // Server-side fetch (product listing, product detail, homepage) — the
