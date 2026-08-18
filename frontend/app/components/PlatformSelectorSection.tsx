@@ -189,16 +189,16 @@ export function PlatformSelectorSection() {
         </div>
       </div>
 
-      {/* Horizontal Carousel Track with Snap Scrolling */}
+      {/* Horizontal Carousel Track */}
       <div
         ref={scrollRef}
-        className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-6 hide-scrollbar relative z-10 -mx-6 px-6"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="flex gap-6 overflow-x-auto pb-6 hide-scrollbar relative z-10 -mx-6 px-6 scroll-smooth"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none", touchAction: "pan-y" }}
       >
-        {PLATFORMS.map((platform, idx) => (
+        {PLATFORMS.map((platform) => (
           <div
             key={platform.id}
-            className="flex-none w-[85vw] sm:w-[380px] md:w-[420px] snap-center group border border-hairline bg-surface rounded-2xl overflow-hidden hover:border-red-500/50 transition-all duration-500 flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-red-500/10"
+            className="flex-none w-[85vw] sm:w-[380px] md:w-[420px] group border border-hairline bg-surface rounded-2xl overflow-hidden hover:border-red-500/50 transition-all duration-500 flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-red-500/10"
           >
             <div>
               {/* Image Preview with Badges */}

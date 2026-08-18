@@ -96,7 +96,7 @@ export function FitmentProcessSection() {
   const IconComponent = current.icon;
 
   return (
-    <div ref={containerRef} className="relative h-[340vh] bg-surface-alt">
+    <div ref={containerRef} className="relative h-[260vh] bg-surface-alt">
       {/* Sticky Fullscreen Frame */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden border-y border-hairline z-10 px-6 lg:px-12 py-6">
         {/* Background Grid Pattern & Ambient Glow */}
