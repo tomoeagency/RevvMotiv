@@ -253,6 +253,8 @@ function apiUrl(path: string): string {
     base = base.replace("https://", "http://");
   }
 
+  base = base.replace(/\/api(\/v1)?\/?$/, "").replace(/\/+$/, "");
+
   return `${base}${path}`;
 }
 

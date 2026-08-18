@@ -17,6 +17,8 @@ const nextConfig: NextConfig = {
       backendUrl = backendUrl.replace("https://", "http://");
     }
 
+    backendUrl = backendUrl.replace(/\/api(\/v1)?\/?$/, "").replace(/\/+$/, "");
+
     return [
       {
         source: "/uploads/:path*",

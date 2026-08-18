@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_BASE = (
+const rawBase =
   process.env.API_BASE_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
   (process.env.NODE_ENV === "development"
     ? "http://127.0.0.1:8000"
-    : "http://api.revvmotiv.com")
-).replace(/^https:\/\/api\.revvmotiv\.com/, "http://api.revvmotiv.com");
+    : "http://api.revvmotiv.com");
+
+const BACKEND_BASE = rawBase
+  .replace(/^https:\/\/api\.revvmotiv\.com/, "http://api.revvmotiv.com")
+  .replace(/\/api(\/v1)?\/?$/, "")
+  .replace(/\/+$/, "");
 
 async function proxyRequest(req: NextRequest, rawPath: string[]) {
   let cleanPath = [...rawPath];
