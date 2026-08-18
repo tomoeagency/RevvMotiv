@@ -7,28 +7,9 @@
 
         <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <!-- Left: Welcome & Brand Greeting -->
-            <div class="space-y-3">
-                <div class="flex flex-wrap items-center gap-2.5">
-                    <!-- Tomoe Emblem Badge -->
-                    <div class="inline-flex items-center gap-1.5 rounded-lg border border-sky-400/30 bg-sky-500/15 px-2.5 py-1 text-xs font-bold text-sky-300">
-                        <svg class="h-3.5 w-3.5" viewBox="0 0 100 100" fill="currentColor">
-                            <rect x="32" y="31" width="7" height="7" rx="1.5" />
-                            <rect x="50" y="28" width="9" height="9" rx="1.5" />
-                        </svg>
-                        <span>Tomoe Engine</span>
-                    </div>
-
-                    <!-- System Status Live Pulse -->
-                    <div class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-400/30 bg-emerald-500/15 px-2.5 py-1 text-xs font-bold text-emerald-300">
-                        <span class="relative flex h-2 w-2">
-                            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                        </span>
-                        <span>Console Active</span>
-                    </div>
-
-                    <span class="text-slate-500">·</span>
-                    <span class="text-xs font-semibold font-mono text-slate-400" id="liveClock">{{ now()->format('D, d M Y · H:i') }} IST</span>
+            <div class="space-y-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-semibold font-mono text-slate-400" id="liveClock">{{ now()->format('l, d F Y · H:i') }} IST</span>
                 </div>
 
                 <div>
@@ -114,7 +95,7 @@
         <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Revenue</span>
             <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">₹{{ number_format($totalRevenue, 2) }}</p>
-            <p class="mt-1.5 text-xs text-slate-500">{{ $orderCount }} order{{ $orderCount === 1 ? '' : 's' }} (excludes cancelled)</p>
+            <p class="mt-1.5 text-xs text-slate-500">{{ $orderCount }} confirmed order{{ $orderCount === 1 ? '' : 's' }}</p>
         </div>
         <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
             <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Gross Profit</span>

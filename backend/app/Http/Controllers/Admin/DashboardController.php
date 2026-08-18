@@ -23,8 +23,6 @@ class DashboardController extends Controller
 
     private const DEFAULT_TREND_MONTHS = 6;
 
-    // Guards the custom range against something like 2015-01 to now — the
-    // chart and query both degrade past this many points.
     private const MAX_CUSTOM_TREND_MONTHS = 36;
 
     public function __invoke(Request $request): View
@@ -48,10 +46,6 @@ class DashboardController extends Controller
             $trendMonths
         );
 
-        // Empty/blank = "All" — every order counts by default, manual
-        // (Instagram/call/WhatsApp) included alongside website, since
-        // they're all real sales. Picking one channel here narrows every
-        // figure and chart below to just that source.
         $source = $request->string('source')->toString();
         if ($source !== '' && ! in_array($source, self::SOURCES, true)) {
             $source = '';
@@ -59,7 +53,13 @@ class DashboardController extends Controller
 
         [$start, $end] = $this->rangeToDates($range);
 
-        $ordersInRange = Order::when($start, fn ($q) => $q->whereBetween('created_at', [$start, $end]))
+        // Valid orders: must be paid (advance_paid or fully_paid) or a manual order entered by admin.
+        // Unpaid/abandoned website checkout attempts are excluded.
+        $ordersInRange = Order::where(function ($q) {
+                $q->whereIn('payment_status', ['advance_paid', 'fully_paid'])
+                  ->orWhere('source', '!=', 'website');
+            })
+            ->when($start, fn ($q) => $q->whereBetween('created_at', [$start, $end]))
             ->when($source !== '', fn ($q) => $q->where('source', $source));
 
         $orderCount = (clone $ordersInRange)->count();
@@ -69,15 +69,8 @@ class DashboardController extends Controller
             ->groupBy('order_status')
             ->pluck('count', 'order_status');
 
-        // Revenue: total_amount is already post-discount (see coupon logic in
-        // OrderController@store) — this is what was actually charged.
         $totalRevenue = (clone $ordersInRange)->where('order_status', '!=', 'cancelled')->sum('total_amount');
 
-        // Gross profit only counts `delivered` orders — the strongest signal
-        // in this flow that a sale is real and won't be reversed (cancelled
-        // orders never reach this status, and COD-remainder timing means
-        // requiring payment_status = fully_paid too would under-count valid
-        // deliveries where the COD leg hasn't been reconciled yet).
         $deliveredOrderIds = (clone $ordersInRange)->where('order_status', 'delivered')->pluck('id');
 
         $profitRow = OrderItem::whereIn('order_id', $deliveredOrderIds)
@@ -104,7 +97,11 @@ class DashboardController extends Controller
             'trendTo' => $trendTo,
             'isCustomTrend' => $isCustomTrend,
             'productCount' => Product::count(),
-            'pendingOrderCount' => Order::where('order_status', 'pending')->count(),
+            'pendingOrderCount' => Order::where('order_status', 'pending')
+                ->where(function ($q) {
+                    $q->whereIn('payment_status', ['advance_paid', 'fully_paid'])
+                      ->orWhere('source', '!=', 'website');
+                })->count(),
             'pendingReviewCount' => Review::where('status', 'pending')->count(),
             'lowStockProducts' => Product::where('stock', '>', 0)->where('stock', '<', 5)->orderBy('stock')->get(),
             'outOfStockProducts' => Product::where('stock', 0)->get(),
@@ -123,12 +120,6 @@ class DashboardController extends Controller
         ]);
     }
 
-    // Resolves the Trends section's period to a concrete [months, since,
-    // until] triple. A valid trend_from/trend_to pair (both "Y-m", from <=
-    // to) wins over the 3/6/12-month preset; anything invalid or partial
-    // falls back to the preset silently rather than erroring, since this
-    // only ever comes from the dashboard's own date inputs.
-    /** @return array{0: array<int, string>, 1: Carbon, 2: Carbon, 3: bool} */
     private function resolveTrendPeriod(string $trendFrom, string $trendTo, int $presetMonths): array
     {
         if ($trendFrom !== '' && $trendTo !== '') {
@@ -155,7 +146,6 @@ class DashboardController extends Controller
         return [$this->monthsBetween($since, $until), $since, $until, false];
     }
 
-    /** @return array<int, string> "Y-m" strings, oldest first, inclusive of both ends. */
     private function monthsBetween(Carbon $since, Carbon $until): array
     {
         $months = [];
@@ -170,12 +160,6 @@ class DashboardController extends Controller
         return $months;
     }
 
-    // Current inventory snapshot — not time-range filtered, unlike the sales
-    // figures above, since "how much stock is on hand right now" has no
-    // meaningful "this week vs this month" dimension. `price` is whatever
-    // the admin currently has listed (already reflects any active sale via
-    // compare_at_price), so the retail-value figure is automatically
-    // sale/discount-aware without any extra logic here.
     private function inventoryValuationData(): array
     {
         $row = Product::where('status', 'active')
@@ -195,14 +179,13 @@ class DashboardController extends Controller
         ];
     }
 
-    /** @return array{0: ?Carbon, 1: ?Carbon} */
     private function rangeToDates(string $range): array
     {
         return match ($range) {
             'today' => [now()->startOfDay(), now()->endOfDay()],
             'week' => [now()->startOfWeek(), now()->endOfWeek()],
             'month' => [now()->startOfMonth(), now()->endOfMonth()],
-            default => [null, null], // all-time — no filter
+            default => [null, null],
         };
     }
 
@@ -213,13 +196,14 @@ class DashboardController extends Controller
             : "DATE_FORMAT({$column}, '%Y-%m')";
     }
 
-    // Monthly revenue, one grouped query, no N+1. $months/$since/$until come
-    // from resolveTrendPeriod() — either the 3/6/12-month preset or a custom
-    // range, the query logic doesn't care which.
     private function salesTrendData(array $months, Carbon $since, Carbon $until, string $source = ''): array
     {
         $monthExpr = $this->monthFormatSql('created_at');
         $rows = Order::where('order_status', '!=', 'cancelled')
+            ->where(function ($q) {
+                $q->whereIn('payment_status', ['advance_paid', 'fully_paid'])
+                  ->orWhere('source', '!=', 'website');
+            })
             ->whereBetween('created_at', [$since, $until])
             ->when($source !== '', fn ($q) => $q->where('source', $source))
             ->selectRaw("{$monthExpr} as month, SUM(total_amount) as revenue")
@@ -232,8 +216,6 @@ class DashboardController extends Controller
         ];
     }
 
-    // Monthly gross profit (delivered orders, cost-aware) vs monthly expenses.
-    // Two separate grouped queries (orders+items, expenses) merged by month in PHP.
     private function profitExpenseTrendData(array $months, Carbon $since, Carbon $until, string $source = ''): array
     {
         $orderMonthExpr = $this->monthFormatSql('orders.created_at');
@@ -241,6 +223,10 @@ class DashboardController extends Controller
 
         $profitRows = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.order_status', 'delivered')
+            ->where(function ($q) {
+                $q->whereIn('orders.payment_status', ['advance_paid', 'fully_paid'])
+                  ->orWhere('orders.source', '!=', 'website');
+            })
             ->whereBetween('orders.created_at', [$since, $until])
             ->when($source !== '', fn ($q) => $q->where('orders.source', $source))
             ->selectRaw("
@@ -262,13 +248,16 @@ class DashboardController extends Controller
         ];
     }
 
-    // Revenue per category for the current range filter — one grouped join query.
     private function categorySalesData(?Carbon $start, ?Carbon $end, string $source = ''): array
     {
         $rows = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
             ->join('products', 'products.id', '=', 'order_items.product_id')
             ->join('categories', 'categories.id', '=', 'products.category_id')
             ->where('orders.order_status', '!=', 'cancelled')
+            ->where(function ($q) {
+                $q->whereIn('orders.payment_status', ['advance_paid', 'fully_paid'])
+                  ->orWhere('orders.source', '!=', 'website');
+            })
             ->when($start, fn ($q) => $q->whereBetween('orders.created_at', [$start, $end]))
             ->when($source !== '', fn ($q) => $q->where('orders.source', $source))
             ->selectRaw('categories.name as category, SUM(order_items.subtotal) as revenue')
@@ -282,11 +271,14 @@ class DashboardController extends Controller
         ];
     }
 
-    // Top products by revenue for the current range filter — one grouped join query.
     private function topProductsData(?Carbon $start, ?Carbon $end, string $source = ''): array
     {
         $rows = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.order_status', '!=', 'cancelled')
+            ->where(function ($q) {
+                $q->whereIn('orders.payment_status', ['advance_paid', 'fully_paid'])
+                  ->orWhere('orders.source', '!=', 'website');
+            })
             ->when($start, fn ($q) => $q->whereBetween('orders.created_at', [$start, $end]))
             ->when($source !== '', fn ($q) => $q->where('orders.source', $source))
             ->selectRaw('order_items.product_title as product, SUM(order_items.quantity) as units, SUM(order_items.subtotal) as revenue')

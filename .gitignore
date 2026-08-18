@@ -30,8 +30,10 @@ backend/public/storage
 backend/public/build
 backend/public/hot
 
-# Logs and system files
+# Logs, archives, and system files
 *.log
+*.zip
+scratch_*.py
 .DS_Store
 Thumbs.db
 .idea/
