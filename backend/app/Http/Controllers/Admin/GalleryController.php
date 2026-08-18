@@ -30,10 +30,7 @@ class GalleryController extends Controller
 
         GalleryItem::create([
             'media_url' => $upload['secure_url'],
-            // Cloudinary's own classification of what it just received —
-            // more reliable than re-deriving from the upload mime type a
-            // second time here.
-            'media_type' => $upload['resource_type'] === 'video' ? 'video' : 'image',
+            'media_type' => ($upload['resource_type'] ?? 'image') === 'video' ? 'video' : 'image',
             'caption' => $request->validated('caption'),
             'sort_order' => $request->validated('sort_order') ?? 0,
         ]);

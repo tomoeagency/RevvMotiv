@@ -66,8 +66,6 @@ class ReviewController extends Controller
     {
         $reviews = Review::with('product')
             ->where('status', 'approved')
-            ->whereNotNull('media_urls')
-            ->whereRaw('JSON_LENGTH(media_urls) > 0')
             ->orderByDesc('rating')
             ->latest()
             ->limit(10)

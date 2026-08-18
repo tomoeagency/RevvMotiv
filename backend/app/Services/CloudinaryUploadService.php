@@ -18,29 +18,35 @@ class CloudinaryUploadService
         $apiKey = config('services.cloudinary.api_key');
         $apiSecret = config('services.cloudinary.api_secret');
 
+        $mime = (string) ($file->getClientMimeType() ?: '');
+        $resourceType = str_starts_with($mime, 'video') ? 'video' : 'image';
+
         // If Cloudinary credentials are configured, attempt Cloudinary upload
         if ($cloudName && $apiKey && $apiSecret) {
             try {
-                $timestamp = time();
-                $paramsToSign = ['folder' => $folder, 'timestamp' => $timestamp];
-                ksort($paramsToSign);
-                $signable = collect($paramsToSign)
-                    ->map(fn ($value, $key) => "{$key}={$value}")
-                    ->implode('&');
-                $signature = sha1($signable.$apiSecret);
+                $realPath = $file->getRealPath() ?: $file->getPathname();
+                if ($realPath && file_exists($realPath)) {
+                    $timestamp = time();
+                    $paramsToSign = ['folder' => $folder, 'timestamp' => $timestamp];
+                    ksort($paramsToSign);
+                    $signable = collect($paramsToSign)
+                        ->map(fn ($value, $key) => "{$key}={$value}")
+                        ->implode('&');
+                    $signature = sha1($signable.$apiSecret);
 
-                $resourceType = str_starts_with((string) $file->getMimeType(), 'video') ? 'video' : 'image';
+                    $response = Http::attach('file', file_get_contents($realPath), $file->getClientOriginalName())
+                        ->post("https://api.cloudinary.com/v1_1/{$cloudName}/{$resourceType}/upload", [
+                            'api_key' => $apiKey,
+                            'timestamp' => $timestamp,
+                            'folder' => $folder,
+                            'signature' => $signature,
+                        ]);
 
-                $response = Http::attach('file', file_get_contents($file->getRealPath()), $file->getClientOriginalName())
-                    ->post("https://api.cloudinary.com/v1_1/{$cloudName}/{$resourceType}/upload", [
-                        'api_key' => $apiKey,
-                        'timestamp' => $timestamp,
-                        'folder' => $folder,
-                        'signature' => $signature,
-                    ]);
-
-                if ($response->successful()) {
-                    return $response->json();
+                    if ($response->successful()) {
+                        $data = $response->json();
+                        $data['resource_type'] = $data['resource_type'] ?? $resourceType;
+                        return $data;
+                    }
                 }
             } catch (\Throwable $e) {
                 report($e);
@@ -48,13 +54,13 @@ class CloudinaryUploadService
         }
 
         // Fallback: Store locally in public/uploads/{folder}
-        return $this->uploadLocally($file, $folder);
+        return $this->uploadLocally($file, $folder, $resourceType);
     }
 
     /**
      * Store file locally and return Cloudinary-compatible array structure.
      */
-    protected function uploadLocally(UploadedFile $file, string $folder): array
+    protected function uploadLocally(UploadedFile $file, string $folder, string $resourceType = 'image'): array
     {
         $targetDir = public_path("uploads/{$folder}");
         File::ensureDirectoryExists($targetDir);
@@ -72,6 +78,7 @@ class CloudinaryUploadService
             'url' => $fullUrl,
             'public_id' => "local_{$folder}_{$filename}",
             'relative_path' => $relativeUrl,
+            'resource_type' => $resourceType,
         ];
     }
 

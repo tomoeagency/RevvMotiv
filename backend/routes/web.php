@@ -74,6 +74,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('leads-enquiries/leads/export', [LeadEnquiryController::class, 'exportLeads'])->name('leads-enquiries.export-leads');
         Route::get('leads-enquiries/enquiries/export', [LeadEnquiryController::class, 'exportEnquiries'])->name('leads-enquiries.export-enquiries');
 
+        Route::get('system/sync-database', function() {
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\ProjectDemoSeeder', '--force' => true]);
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\Seeders\ReviewDemoSeeder', '--force' => true]);
+            \App\Models\Review::where('status', '!=', 'approved')->update(['status' => 'approved']);
+            return response()->json([
+                'status' => 'success',
+                'projects_count' => \App\Models\Project::count(),
+                'reviews_count' => \App\Models\Review::count(),
+                'approved_reviews' => \App\Models\Review::where('status', 'approved')->count(),
+            ]);
+        })->name('system.sync-database');
+
         Route::get('settings', [SettingsController::class, 'edit'])->name('settings.edit');
         Route::put('settings/razorpay-advance-percent', [SettingsController::class, 'update'])->name('settings.update');
         Route::put('settings/announcement', [SettingsController::class, 'updateAnnouncement'])->name('settings.update-announcement');
