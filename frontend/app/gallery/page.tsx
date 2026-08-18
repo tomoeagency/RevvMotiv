@@ -4,6 +4,8 @@ import { getGallery } from "@/lib/api";
 import { GalleryGrid } from "@/app/components/GalleryGrid";
 import { ClosingCta } from "@/app/components/ClosingCta";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Build Gallery & Installation Media — RevvMotiv",
   description:
