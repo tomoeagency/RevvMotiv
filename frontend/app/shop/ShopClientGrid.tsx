@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ProductCard } from "@/app/components/ProductCard";
+import { Pagination } from "@/app/components/Pagination";
 import type { ApiProduct } from "@/lib/api";
 
 interface ShopClientGridProps {
@@ -43,13 +43,11 @@ export function ShopClientGrid({
   const [lastPage, setLastPage] = useState(initialLastPage);
   const [isLoading, setIsLoading] = useState(initialProducts.length === 0);
 
-  const buildHref = (overrides: { category?: string; page?: number }) => {
+  const buildHref = (page: number) => {
     const params = new URLSearchParams();
-    const nextCat = "category" in overrides ? overrides.category : category;
-    if (nextCat) params.set("category", nextCat);
+    if (category) params.set("category", category);
     if (search) params.set("search", search);
-    const nextPage = overrides.page ?? 1;
-    if (nextPage > 1) params.set("page", String(nextPage));
+    if (page > 1) params.set("page", String(page));
     const qs = params.toString();
     return `/shop${qs ? `?${qs}` : ""}`;
   };
@@ -149,33 +147,13 @@ export function ShopClientGrid({
         </AnimatePresence>
       </motion.div>
 
-      {lastPage > 1 && (
-        <div className="mt-12 pt-8 border-t border-hairline flex items-center justify-between">
-          <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
-            Page {currentPage} of {lastPage}
-          </div>
-          <div className="flex items-center gap-2">
-            {currentPage > 1 && (
-              <Link
-                href={buildHref({ page: currentPage - 1 })}
-                className="p-2 border border-hairline bg-surface rounded-lg hover:border-red-500 transition-colors text-ink active:scale-90"
-                aria-label="Previous page"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </Link>
-            )}
-            {currentPage < lastPage && (
-              <Link
-                href={buildHref({ page: currentPage + 1 })}
-                className="p-2 border border-hairline bg-surface rounded-lg hover:border-red-500 transition-colors text-ink active:scale-90"
-                aria-label="Next page"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={lastPage}
+        totalItems={total}
+        itemsPerPage={12}
+        buildHref={buildHref}
+      />
     </>
   );
 }

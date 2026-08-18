@@ -1,9 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Play, Loader2 } from "lucide-react";
 import type { GalleryItem } from "@/lib/api";
 import { GalleryLightbox } from "@/app/components/GalleryLightbox";
+import { Pagination } from "@/app/components/Pagination";
+
+const ITEMS_PER_PAGE = 12;
 
 export function normalizeMediaUrl(url: string): string {
   if (!url) return "";
@@ -17,6 +20,8 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
   const [items, setItems] = useState<GalleryItem[]>(propItems);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(propItems.length === 0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const gridTopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/v1/gallery")
@@ -29,6 +34,17 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    if (gridTopRef.current) {
+      gridTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   if (loading && items.length === 0) {
     return (
@@ -49,16 +65,18 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
 
   return (
     <>
+      <div ref={gridTopRef} className="scroll-mt-24" />
       <div className="columns-2 sm:columns-3 lg:columns-4 gap-4">
-        {items.map((item, i) => {
+        {currentItems.map((item, i) => {
           const mediaSrc = normalizeMediaUrl(item.media_url);
+          const globalIndex = startIndex + i;
 
           return (
             <button
               key={item.id}
-              onClick={() => setActiveIndex(i)}
+              onClick={() => setActiveIndex(globalIndex)}
               aria-label={item.caption ? `Open: ${item.caption}` : "Open gallery item"}
-              className="block w-full mb-4 break-inside-avoid relative group overflow-hidden bg-surface border border-hairline-strong text-left rounded-xl"
+              className="block w-full mb-4 break-inside-avoid relative group overflow-hidden bg-surface border border-hairline-strong text-left rounded-xl hover:border-red-500/50 transition-colors cursor-pointer shadow-sm"
             >
               {item.media_type === "video" ? (
                 <>
@@ -71,7 +89,7 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
                     preload="metadata"
                   />
                   <span className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
-                    <span className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center">
+                    <span className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg">
                       <Play className="w-4 h-4 text-white fill-white ml-0.5" />
                     </span>
                   </span>
@@ -85,7 +103,7 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
                 />
               )}
               {item.caption && (
-                <span className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent text-xs font-bold text-white">
+                <span className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 via-black/40 to-transparent text-xs font-bold text-white drop-shadow">
                   {item.caption}
                 </span>
               )}
@@ -93,6 +111,14 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
           );
         })}
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={items.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={handlePageChange}
+      />
 
       <GalleryLightbox
         items={items}
