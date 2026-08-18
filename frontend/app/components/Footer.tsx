@@ -80,9 +80,12 @@ export async function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/review" className="hover:text-red-500 transition-colors text-red-400 font-semibold flex items-center gap-1">
+                  <Link href="/review" className="hover:text-red-500 transition-colors flex items-center gap-2 group">
                     <span>Leave a Review</span>
-                    <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded font-bold">New</span>
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500" />
+                    </span>
                   </Link>
                 </li>
               </ul>
