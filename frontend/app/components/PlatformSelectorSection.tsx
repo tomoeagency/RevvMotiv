@@ -186,8 +186,9 @@ export function PlatformSelectorSection() {
       {/* Horizontal Carousel Track */}
       <div
         ref={scrollRef}
-        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-6 hide-scrollbar relative z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 scroll-smooth snap-x snap-mandatory"
-        style={{ scrollbarWidth: "none", msOverflowStyle: "none", touchAction: "pan-y" }}
+        data-lenis-prevent
+        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-6 hide-scrollbar relative z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 snap-x snap-mandatory touch-pan-x overscroll-x-contain"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {PLATFORMS.map((platform) => (
           <div
