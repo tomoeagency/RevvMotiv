@@ -8,8 +8,13 @@ const BACKEND_BASE = (
     : "http://api.revvmotiv.com")
 ).replace(/^https:\/\/api\.revvmotiv\.com/, "http://api.revvmotiv.com");
 
-async function proxyRequest(req: NextRequest, path: string[]) {
-  const targetPath = `/api/v1/${path.join("/")}`;
+async function proxyRequest(req: NextRequest, rawPath: string[]) {
+  let cleanPath = [...rawPath];
+  while (cleanPath.length > 0 && (cleanPath[0] === "api" || cleanPath[0] === "v1")) {
+    cleanPath.shift();
+  }
+
+  const targetPath = `/api/v1/${cleanPath.join("/")}`;
   const searchParams = req.nextUrl.searchParams.toString();
   const targetUrl = `${BACKEND_BASE}${targetPath}${searchParams ? `?${searchParams}` : ""}`;
 
