@@ -370,7 +370,7 @@ export default function SubmitReviewPage() {
                                 <div className="text-xs font-bold text-ink truncate">{product.title}</div>
                                 <div className="text-[10px] text-ink-muted">₹{product.price.toLocaleString("en-IN")}</div>
                               </div>
-                              <Check className={`w-3.5 h-3.5 text-amber-400 ${selectedProduct?.id === product.id ? "opacity-100" : "opacity-0"}`} />
+                              <Check className="w-3.5 h-3.5 text-amber-400 opacity-0" />
                             </button>
                           ))}
                         </div>

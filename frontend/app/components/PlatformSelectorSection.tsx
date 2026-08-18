@@ -182,7 +182,6 @@ export function PlatformSelectorSection() {
             </button>
           </div>
         </div>
-      </div>
 
       {/* Horizontal Carousel Track */}
       <div
