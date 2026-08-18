@@ -25,9 +25,7 @@ class OrderController extends Controller
             ], 403);
         }
 
-        return response()->json([
-            'data' => new OrderResource($order),
-        ]);
+        return new OrderResource($order);
     }
 
     public function store(StoreOrderRequest $request)
@@ -50,9 +48,7 @@ class OrderController extends Controller
             ], 500);
         }
 
-        return response()->json([
-            'data' => new OrderResource($order),
-        ], 201);
+        return (new OrderResource($order))->response()->setStatusCode(201);
     }
 
     public function invoice(\Illuminate\Http\Request $request, Order $order)

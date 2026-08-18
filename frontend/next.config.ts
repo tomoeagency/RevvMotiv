@@ -6,14 +6,18 @@ const nextConfig: NextConfig = {
   // redirects the exact listing route. Query params (e.g. ?category=x)
   // carry over automatically since `source` doesn't declare/consume them.
   async rewrites() {
+    const backendUrl =
+      process.env.API_BASE_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://127.0.0.1:8000";
     return [
       {
         source: "/api/:path*",
-        destination: "http://api.revvmotiv.com/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
       },
       {
         source: "/uploads/:path*",
-        destination: "http://api.revvmotiv.com/uploads/:path*",
+        destination: `${backendUrl}/uploads/:path*`,
       },
     ];
   },
