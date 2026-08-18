@@ -258,12 +258,14 @@
       <div class="email-brand-header">
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
-            <td>
-              <h1 class="brand-logo">REVV<span>MOTIV</span></h1>
+            <td style="vertical-align: middle;">
+              <a href="https://revvmotiv.com" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="https://revvmotiv.com/logo-white.png" alt="RevvMotiv" height="28" style="height: 28px; width: auto; max-height: 28px; display: block; border: 0;" />
+              </a>
               <div class="brand-tagline">Custom Car Styling &amp; Aero Parts</div>
             </td>
-            <td style="text-align: right; vertical-align: top;">
-              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; background-color: #dc2626; padding: 4px 10px; border-radius: 3px;">
+            <td style="text-align: right; vertical-align: middle;">
+              <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; background-color: #dc2626; padding: 6px 12px; border-radius: 4px; display: inline-block;">
                 Order #{{ $order->id }}
               </span>
             </td>
