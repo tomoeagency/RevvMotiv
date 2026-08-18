@@ -99,6 +99,7 @@ export default async function ContactPage() {
                   <div className="text-xs text-ink-muted">Email support & technical inquiries</div>
                 </div>
               </a>
+            </div>
 
             {/* Address */}
             <div className="flex items-center gap-4 p-4 rounded border border-hairline bg-surface">
