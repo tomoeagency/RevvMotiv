@@ -251,6 +251,10 @@
   </style>
 </head>
 <body>
+  <!-- Anti-Trimming Preheader -->
+  <div style="display: none; font-size: 1px; color: #0b0d10; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all;">
+    RevvMotiv Performance Parts Order #{{ $order->id }} Verified. Thank you for your purchase! &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
   <div class="email-wrapper">
     <div class="invoice-container">
       

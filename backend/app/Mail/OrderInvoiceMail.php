@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Headers;
 use Illuminate\Queue\SerializesModels;
 
 class OrderInvoiceMail extends Mailable
@@ -22,7 +23,19 @@ class OrderInvoiceMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: "RevvMotiv Tax Invoice & Confirmation — Order #{$this->order->id}",
+            subject: "Your RevvMotiv Order Confirmation — #{$this->order->id} (Verified)",
+        );
+    }
+
+    public function headers(): Headers
+    {
+        $uniqueId = 'RM-' . $this->order->id . '-' . time() . '@revvmotiv.com';
+        return new Headers(
+            messageId: $uniqueId,
+            text: [
+                'X-Entity-Ref-ID' => $uniqueId,
+                'X-Auto-Response-Suppress' => 'All',
+            ],
         );
     }
 
