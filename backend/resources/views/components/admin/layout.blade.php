@@ -11,6 +11,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        *::-webkit-scrollbar, html::-webkit-scrollbar, body::-webkit-scrollbar, nav::-webkit-scrollbar, aside::-webkit-scrollbar, div::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
+        }
+        * {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+        }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased font-sans flex flex-col min-h-full">
     <div class="flex flex-1 min-h-screen">

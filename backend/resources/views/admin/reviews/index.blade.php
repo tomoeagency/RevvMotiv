@@ -46,24 +46,29 @@
         <x-admin.data-table :headers="['Media', 'Customer', 'Product', 'Rating', 'Comment', 'Verified', 'Status', '']" :paginator="$reviews">
             @foreach ($reviews as $review)
                 <tr class="hover:bg-slate-50/70 transition-colors">
-                    <td class="px-4 py-3">
+                    <td class="px-4 py-3 w-24">
                         @if (! empty($review->media_urls))
-                            <div class="flex gap-1.5">
-                                @foreach (array_slice($review->media_urls, 0, 3) as $url)
+                            <div class="flex items-center -space-x-2">
+                                @foreach (array_slice($review->media_urls, 0, 2) as $url)
                                     @if (str_contains($url, '/video/'))
-                                        <video src="{{ $url }}" class="h-9 w-9 rounded-lg object-cover border border-slate-200" muted></video>
+                                        <video src="{{ $url }}" class="h-8 w-8 rounded-lg object-cover ring-2 ring-white border border-slate-200 shadow-2xs" muted></video>
                                     @else
-                                        <img src="{{ $url }}" alt="" class="h-9 w-9 rounded-lg object-cover border border-slate-200">
+                                        <img src="{{ $url }}" alt="" class="h-8 w-8 rounded-lg object-cover ring-2 ring-white border border-slate-200 shadow-2xs">
                                     @endif
                                 @endforeach
+                                @if (count($review->media_urls) > 2)
+                                    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-[10px] font-bold text-white ring-2 ring-white shadow-2xs">
+                                        +{{ count($review->media_urls) - 2 }}
+                                    </span>
+                                @endif
                             </div>
                         @else
                             <span class="text-xs text-slate-400">No media</span>
                         @endif
                     </td>
-                    <td class="px-4 py-3">
-                        <span class="font-bold text-slate-900 block text-xs">{{ $review->customer_name }}</span>
-                        <span class="text-[11px] text-slate-400 font-mono">{{ $review->customer_email }}</span>
+                    <td class="px-4 py-3 min-w-[160px]">
+                        <span class="font-bold text-slate-900 block text-xs whitespace-nowrap">{{ $review->customer_name }}</span>
+                        <span class="text-[11px] text-slate-400 font-mono block whitespace-nowrap">{{ $review->customer_email }}</span>
                     </td>
                     <td class="px-4 py-3 text-xs font-medium text-slate-700 max-w-[180px] truncate" title="{{ $review->product?->title ?? '—' }}">
                         {{ $review->product?->title ?? '—' }}
