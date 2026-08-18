@@ -7,8 +7,8 @@ import type { ApiProduct } from "@/lib/api";
 import { ProductCard } from "@/app/components/ProductCard";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 
-export function FeaturedProducts({ products: initialProducts }: { products: ApiProduct[] }) {
-  const [products, setProducts] = useState<ApiProduct[]>(initialProducts);
+export function FeaturedProducts({ products: initialProducts = [] }: { products?: ApiProduct[] }) {
+  const [products, setProducts] = useState<ApiProduct[]>(initialProducts || []);
 
   useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
@@ -17,7 +17,7 @@ export function FeaturedProducts({ products: initialProducts }: { products: ApiP
     }
 
     fetch("/api/v1/products?per_page=4")
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : { data: [] }))
       .then((json) => {
         if (json?.data && Array.isArray(json.data) && json.data.length > 0) {
           setProducts(json.data.slice(0, 4));

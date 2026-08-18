@@ -106,6 +106,11 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
   const [activePhoto, setActivePhoto] = useState<{ url: string; name: string } | null>(null);
 
   useEffect(() => {
+    if (initialReviews && initialReviews.length > 0) {
+      setReviews(initialReviews);
+      return;
+    }
+
     fetch("/api/v1/reviews/featured")
       .then((res) => (res.ok ? res.json() : { data: [] }))
       .then((body) => {
@@ -114,7 +119,7 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
         }
       })
       .catch(() => {});
-  }, []);
+  }, [initialReviews]);
 
   if (!reviews || reviews.length === 0) return null;
   const canLoop = reviews.length >= 4;

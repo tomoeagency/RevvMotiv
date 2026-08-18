@@ -238,7 +238,11 @@ export class ApiRequestError extends Error {
 }
 
 function apiUrl(path: string): string {
-  let base = API_URL || "http://api.revvmotiv.com";
+  let base =
+    process.env.API_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    (typeof window === "undefined" ? "http://127.0.0.1:8000" : "");
+
   if (base.includes("https://api.revvmotiv.com")) {
     base = base.replace("https://", "http://");
   }
