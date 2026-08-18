@@ -1,23 +1,20 @@
 @props(['source'])
 @php
-    // Separate from status-badge on purpose — these are sales-channel
-    // labels, not status semantics, so reusing the same color vocabulary
-    // (e.g. blue = "confirmed") would misleadingly imply a status meaning.
-    $classes = match ($source) {
-        'instagram' => 'bg-fuchsia-100 text-fuchsia-800',
-        'call' => 'bg-sky-100 text-sky-800',
-        'whatsapp' => 'bg-emerald-100 text-emerald-800',
-        'other' => 'bg-amber-100 text-amber-800',
-        default => 'bg-slate-100 text-slate-700', // website
+    $config = match ($source) {
+        'instagram' => 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-700',
+        'call' => 'bg-sky-50 border-sky-200 text-sky-700',
+        'whatsapp' => 'bg-emerald-50 border-emerald-200 text-emerald-700',
+        'other' => 'bg-amber-50 border-amber-200 text-amber-700',
+        default => 'bg-slate-50 border-slate-200 text-slate-700', // website
     };
     $labels = [
         'website' => 'Website',
         'instagram' => 'Instagram',
-        'call' => 'Call',
+        'call' => 'Phone Call',
         'whatsapp' => 'WhatsApp',
-        'other' => 'Other',
+        'other' => 'Other Channel',
     ];
 @endphp
-<span {{ $attributes->merge(['class' => "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium $classes"]) }}>
+<span {{ $attributes->merge(['class' => "inline-flex items-center rounded-md border px-2 py-0.5 text-xs font-semibold $config shadow-2xs"]) }}>
     {{ $labels[$source] ?? ucfirst($source) }}
 </span>

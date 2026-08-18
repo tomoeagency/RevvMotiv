@@ -40,24 +40,72 @@ sftp = client.open_sftp()
 print('Connected successfully!')
 
 files_to_sync = [
-    ('backend/app/Http/Controllers/Api/V1/ReviewController.php', 'public_html/app/Http/Controllers/Api/V1/ReviewController.php'),
-    ('backend/app/Services/CloudinaryUploadService.php', 'public_html/app/Services/CloudinaryUploadService.php'),
-    ('backend/app/Http/Controllers/Admin/GalleryController.php', 'public_html/app/Http/Controllers/Admin/GalleryController.php'),
-    ('backend/routes/web.php', 'public_html/routes/web.php'),
-    ('backend/public/.user.ini', 'public_html/.user.ini'),
-    ('backend/public/.user.ini', 'public_html/public/.user.ini'),
-    ('backend/database/seeders/ProjectDemoSeeder.php', 'public_html/database/seeders/ProjectDemoSeeder.php'),
-    ('backend/database/seeders/ReviewDemoSeeder.php', 'public_html/database/seeders/ReviewDemoSeeder.php'),
-    ('backend/resources/views/admin/auth/login.blade.php', 'public_html/resources/views/admin/auth/login.blade.php'),
-    ('backend/resources/views/admin/dashboard.blade.php', 'public_html/resources/views/admin/dashboard.blade.php'),
+    # Core Components
     ('backend/resources/views/components/admin/layout.blade.php', 'public_html/resources/views/components/admin/layout.blade.php'),
+    ('backend/resources/views/components/admin/data-table.blade.php', 'public_html/resources/views/components/admin/data-table.blade.php'),
+    ('backend/resources/views/components/admin/status-badge.blade.php', 'public_html/resources/views/components/admin/status-badge.blade.php'),
+    ('backend/resources/views/components/admin/source-badge.blade.php', 'public_html/resources/views/components/admin/source-badge.blade.php'),
+    ('backend/resources/views/components/admin/delete-button.blade.php', 'public_html/resources/views/components/admin/delete-button.blade.php'),
+    ('backend/resources/views/components/admin/form-field.blade.php', 'public_html/resources/views/components/admin/form-field.blade.php'),
+    
+    # Dashboard & Auth
+    ('backend/resources/views/admin/dashboard.blade.php', 'public_html/resources/views/admin/dashboard.blade.php'),
+    ('backend/resources/views/admin/auth/login.blade.php', 'public_html/resources/views/admin/auth/login.blade.php'),
+    
+    # Products
     ('backend/resources/views/admin/products/index.blade.php', 'public_html/resources/views/admin/products/index.blade.php'),
+    ('backend/resources/views/admin/products/_form.blade.php', 'public_html/resources/views/admin/products/_form.blade.php'),
+    
+    # Categories
+    ('backend/resources/views/admin/categories/index.blade.php', 'public_html/resources/views/admin/categories/index.blade.php'),
+    ('backend/resources/views/admin/categories/_form.blade.php', 'public_html/resources/views/admin/categories/_form.blade.php'),
+    
+    # Orders
+    ('backend/resources/views/admin/orders/index.blade.php', 'public_html/resources/views/admin/orders/index.blade.php'),
+    ('backend/resources/views/admin/orders/show.blade.php', 'public_html/resources/views/admin/orders/show.blade.php'),
+    
+    # Coupons
+    ('backend/resources/views/admin/coupons/index.blade.php', 'public_html/resources/views/admin/coupons/index.blade.php'),
+    ('backend/resources/views/admin/coupons/_form.blade.php', 'public_html/resources/views/admin/coupons/_form.blade.php'),
+    
+    # Reviews
+    ('backend/resources/views/admin/reviews/index.blade.php', 'public_html/resources/views/admin/reviews/index.blade.php'),
+    
+    # Projects
     ('backend/resources/views/admin/projects/index.blade.php', 'public_html/resources/views/admin/projects/index.blade.php'),
+    ('backend/resources/views/admin/projects/edit.blade.php', 'public_html/resources/views/admin/projects/edit.blade.php'),
+    ('backend/resources/views/admin/projects/_form.blade.php', 'public_html/resources/views/admin/projects/_form.blade.php'),
+    ('backend/resources/views/admin/projects/views/_form.blade.php', 'public_html/resources/views/admin/projects/views/_form.blade.php'),
+    
+    # Gallery
     ('backend/resources/views/admin/gallery/index.blade.php', 'public_html/resources/views/admin/gallery/index.blade.php'),
     ('backend/resources/views/admin/gallery/create.blade.php', 'public_html/resources/views/admin/gallery/create.blade.php'),
     ('backend/app/Http/Requests/Admin/GalleryItemStoreRequest.php', 'public_html/app/Http/Requests/Admin/GalleryItemStoreRequest.php'),
-    ('backend/resources/views/admin/reviews/index.blade.php', 'public_html/resources/views/admin/reviews/index.blade.php'),
-    ('backend/resources/views/admin/categories/index.blade.php', 'public_html/resources/views/admin/categories/index.blade.php'),
+    ('backend/app/Http/Controllers/Admin/GalleryController.php', 'public_html/app/Http/Controllers/Admin/GalleryController.php'),
+    
+    # Announcements
+    ('backend/resources/views/admin/announcements/index.blade.php', 'public_html/resources/views/admin/announcements/index.blade.php'),
+    ('backend/resources/views/admin/announcements/_form.blade.php', 'public_html/resources/views/admin/announcements/_form.blade.php'),
+    
+    # Policies
+    ('backend/resources/views/admin/policies/index.blade.php', 'public_html/resources/views/admin/policies/index.blade.php'),
+    ('backend/resources/views/admin/policies/_form.blade.php', 'public_html/resources/views/admin/policies/_form.blade.php'),
+    
+    # Expenses
+    ('backend/resources/views/admin/expenses/index.blade.php', 'public_html/resources/views/admin/expenses/index.blade.php'),
+    ('backend/resources/views/admin/expenses/_form.blade.php', 'public_html/resources/views/admin/expenses/_form.blade.php'),
+    
+    # Leads & Enquiries
+    ('backend/resources/views/admin/leads-enquiries/index.blade.php', 'public_html/resources/views/admin/leads-enquiries/index.blade.php'),
+    
+    # Settings & Account
+    ('backend/resources/views/admin/settings/edit.blade.php', 'public_html/resources/views/admin/settings/edit.blade.php'),
+    ('backend/resources/views/admin/account/edit.blade.php', 'public_html/resources/views/admin/account/edit.blade.php'),
+    
+    # API & Core Services
+    ('backend/app/Http/Controllers/Api/V1/ReviewController.php', 'public_html/app/Http/Controllers/Api/V1/ReviewController.php'),
+    ('backend/app/Services/CloudinaryUploadService.php', 'public_html/app/Services/CloudinaryUploadService.php'),
+    ('backend/routes/web.php', 'public_html/routes/web.php'),
 ]
 
 for local_path, remote_path in files_to_sync:
@@ -68,6 +116,26 @@ for local_path, remote_path in files_to_sync:
             print(f'  ✓ Done')
         except Exception as e:
             print(f'  ✗ Failed: {e}')
+
+# Sync build manifest and css/js assets
+build_dir = 'backend/public/build'
+if os.path.exists(build_dir):
+    print('Syncing public/build assets...')
+    for root, dirs, files in os.walk(build_dir):
+        rel_root = os.path.relpath(root, 'backend')
+        remote_root = f'public_html/{rel_root}'.replace('\\', '/')
+        try:
+            sftp.mkdir(remote_root)
+        except Exception:
+            pass
+        for f in files:
+            local_f = os.path.join(root, f)
+            remote_f = f'{remote_root}/{f}'.replace('\\', '/')
+            try:
+                sftp.put(local_f, remote_f)
+                print(f'  ✓ Uploaded build asset: {remote_f}')
+            except Exception as e:
+                print(f'  ✗ Failed asset {f}: {e}')
 
 # Clear compiled view cache on remote server
 print('Clearing compiled view cache on GoDaddy...')
@@ -99,4 +167,4 @@ except Exception as e:
 
 sftp.close()
 client.close()
-print('\n🎉 DEPLOYMENT TO GODADDY COMPLETE!')
+print('\n🎉 COMPLETE FULL SYNC TO GODADDY LIVE SERVER!')
