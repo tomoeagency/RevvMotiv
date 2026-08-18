@@ -26,16 +26,26 @@ class GalleryController extends Controller
 
     public function store(GalleryItemStoreRequest $request, CloudinaryUploadService $uploader): RedirectResponse
     {
-        $upload = $uploader->upload($request->file('media'), 'revvmotiv/gallery');
+        $rawMedia = $request->file('media');
+        $files = is_array($rawMedia) ? $rawMedia : [$rawMedia];
+        $count = 0;
+        $startOrder = (int) ($request->validated('sort_order') ?? 0);
 
-        GalleryItem::create([
-            'media_url' => $upload['secure_url'],
-            'media_type' => ($upload['resource_type'] ?? 'image') === 'video' ? 'video' : 'image',
-            'caption' => $request->validated('caption'),
-            'sort_order' => $request->validated('sort_order') ?? 0,
-        ]);
+        foreach ($files as $index => $file) {
+            if ($file && $file->isValid()) {
+                $upload = $uploader->upload($file, 'revvmotiv/gallery');
+                GalleryItem::create([
+                    'media_url' => $upload['secure_url'],
+                    'media_type' => ($upload['resource_type'] ?? 'image') === 'video' ? 'video' : 'image',
+                    'caption' => $request->validated('caption'),
+                    'sort_order' => $startOrder + $index,
+                    'active' => true,
+                ]);
+                $count++;
+            }
+        }
 
-        return redirect()->route('admin.gallery.index')->with('status', 'Gallery item added.');
+        return redirect()->route('admin.gallery.index')->with('status', "{$count} gallery item(s) uploaded successfully.");
     }
 
     public function edit(GalleryItem $galleryItem): View
