@@ -14,7 +14,7 @@ export function ProjectCard({ project }: { project: ProjectListItem }) {
           alt={project.title}
           fill
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover object-center grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+          className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
         />
 
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
