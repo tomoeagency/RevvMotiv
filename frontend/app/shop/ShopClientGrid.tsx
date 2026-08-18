@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
+import { LayoutGrid, List, Square } from "lucide-react";
 import { ProductCard } from "@/app/components/ProductCard";
 import { Pagination } from "@/app/components/Pagination";
 import type { ApiProduct } from "@/lib/api";
+
+type LayoutMode = "single" | "grid" | "list";
 
 interface ShopClientGridProps {
   initialProducts: ApiProduct[];
@@ -42,6 +45,24 @@ export function ShopClientGrid({
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [lastPage, setLastPage] = useState(initialLastPage);
   const [isLoading, setIsLoading] = useState(initialProducts.length === 0);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid");
+
+  // Load user view preference from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("revvmotiv_shop_view") as LayoutMode;
+      if (saved === "single" || saved === "grid" || saved === "list") {
+        setLayoutMode(saved);
+      }
+    } catch {}
+  }, []);
+
+  const handleLayoutChange = (mode: LayoutMode) => {
+    setLayoutMode(mode);
+    try {
+      localStorage.setItem("revvmotiv_shop_view", mode);
+    } catch {}
+  };
 
   const buildHref = (page: number) => {
     const params = new URLSearchParams();
@@ -92,7 +113,7 @@ export function ShopClientGrid({
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
         {Array.from({ length: 6 }).map((_, idx) => (
           <ProductCardSkeleton key={idx} />
         ))}
@@ -126,22 +147,86 @@ export function ShopClientGrid({
     );
   }
 
+  // Dynamic layout grid classes depending on selected mobile mode
+  const gridClasses =
+    layoutMode === "list"
+      ? "flex flex-col gap-3 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6"
+      : layoutMode === "grid"
+      ? "grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6"
+      : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6";
+
   return (
     <>
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
+      {/* Mobile-Only View Switcher Bar (< md) */}
+      <div className="md:hidden flex items-center justify-between mb-4 pb-3 border-b border-hairline">
+        <div className="text-[11px] font-bold text-ink-muted uppercase tracking-wider">
+          <span>{total} Products</span>
+        </div>
+
+        {/* 3 View Mode Toggle Buttons */}
+        <div className="flex items-center gap-1 bg-surface border border-hairline p-1 rounded-xl shadow-2xs">
+          {/* 1. Large Single Card */}
+          <button
+            type="button"
+            onClick={() => handleLayoutChange("single")}
+            aria-label="Single Large Card View"
+            title="Single Large Card View"
+            className={`p-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
+              layoutMode === "single"
+                ? "bg-red-600 text-white shadow-sm font-bold"
+                : "text-ink-muted hover:text-ink hover:bg-hover"
+            }`}
+          >
+            <Square className="w-3.5 h-3.5" />
+            <span className="text-[10px] hidden xs:inline">Large</span>
+          </button>
+
+          {/* 2. Compact Grid (2x2 / 4 items) */}
+          <button
+            type="button"
+            onClick={() => handleLayoutChange("grid")}
+            aria-label="4-Grid 2x2 View"
+            title="4-Grid 2x2 View"
+            className={`p-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
+              layoutMode === "grid"
+                ? "bg-red-600 text-white shadow-sm font-bold"
+                : "text-ink-muted hover:text-ink hover:bg-hover"
+            }`}
+          >
+            <LayoutGrid className="w-3.5 h-3.5" />
+            <span className="text-[10px] hidden xs:inline">Grid 4</span>
+          </button>
+
+          {/* 3. List Row View */}
+          <button
+            type="button"
+            onClick={() => handleLayoutChange("list")}
+            aria-label="List Row View"
+            title="List Row View"
+            className={`p-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
+              layoutMode === "list"
+                ? "bg-red-600 text-white shadow-sm font-bold"
+                : "text-ink-muted hover:text-ink hover:bg-hover"
+            }`}
+          >
+            <List className="w-3.5 h-3.5" />
+            <span className="text-[10px] hidden xs:inline">List</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Products Grid */}
+      <motion.div layout className={gridClasses}>
         <AnimatePresence mode="popLayout">
           {products.map((product, index) => (
             <motion.div
               key={product.id}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.35, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.3), ease: [0.16, 1, 0.3, 1] }}
             >
-              <ProductCard product={product} />
+              <ProductCard product={product} layoutMode={layoutMode} />
             </motion.div>
           ))}
         </AnimatePresence>
