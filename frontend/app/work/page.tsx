@@ -5,6 +5,8 @@ import { getProjects } from "@/lib/api";
 import { ProjectCard } from "@/app/components/ProjectCard";
 import { ClosingCta } from "@/app/components/ClosingCta";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Our Work — Customer Builds & Workshop Fitting | RevvMotiv",
   description:

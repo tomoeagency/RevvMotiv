@@ -46,21 +46,16 @@ export const metadata: Metadata = {
   },
 };
 
+import { SmoothScrollProvider } from "@/app/components/SmoothScrollProvider";
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${orbitron.variable} ${inter.variable} h-full antialiased`}
-      // The theme-init script below sets data-theme on this element before
-      // React hydrates (to avoid a flash of the wrong theme) — that's a
-      // legitimate, intentional client/server mismatch on this one
-      // attribute, not a real bug, so React shouldn't warn about it.
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-carbon font-sans text-ink">
-        {/* Blocking, runs before paint — without this, a returning visitor
-            with light mode saved would see a flash of the dark theme
-            (the default in :root) before React hydrates and applies it. */}
         <Script id="theme-init" strategy="beforeInteractive">
           {`try {
             if (localStorage.getItem("revvmotiv-theme") === "light") {
@@ -68,21 +63,23 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             }
           } catch (e) {}`}
         </Script>
-        <CartProvider>
-          <ConsultantProvider>
-            <AnnouncementStrip />
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <CartDrawer />
-            <TrustPanel />
-            <RouteLoader />
-            <ConsultantModal />
-            <ConsultantFabTrigger />
-            <WhatsAppButton />
-            <CookieConsent />
-          </ConsultantProvider>
-        </CartProvider>
+        <SmoothScrollProvider>
+          <CartProvider>
+            <ConsultantProvider>
+              <AnnouncementStrip />
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              <CartDrawer />
+              <TrustPanel />
+              <RouteLoader />
+              <ConsultantModal />
+              <ConsultantFabTrigger />
+              <WhatsAppButton />
+              <CookieConsent />
+            </ConsultantProvider>
+          </CartProvider>
+        </SmoothScrollProvider>
       </body>
     </html>
   );
