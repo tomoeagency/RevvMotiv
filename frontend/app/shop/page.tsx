@@ -41,6 +41,17 @@ export async function generateMetadata({
   };
 }
 
+const DEFAULT_CATEGORIES = [
+  { id: 1, name: "Batman Cover", slug: "batman-cover" },
+  { id: 2, name: "Car Audio & Utilities", slug: "car-audio-utilities" },
+  { id: 3, name: "Combo", slug: "combo" },
+  { id: 4, name: "Diffusers", slug: "diffusers" },
+  { id: 5, name: "Lights & Flashers", slug: "lights-flashers" },
+  { id: 6, name: "Splitters/Side Skirts", slug: "splitters-side-skirts" },
+  { id: 7, name: "Spoilers", slug: "spoilers" },
+  { id: 8, name: "Tyre Stickers", slug: "tyre-stickers" },
+];
+
 export default async function ShopPage({
   searchParams,
 }: {
@@ -49,10 +60,12 @@ export default async function ShopPage({
   const { category, search, page: pageParam, focus } = await searchParams;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
-  const [{ data: products, meta }, { data: categories }] = await Promise.all([
+  const [{ data: products, meta }, { data: apiCategories }] = await Promise.all([
     getProducts({ category, search, page, perPage: PER_PAGE }),
     getCategories(),
   ]);
+
+  const categories = apiCategories && apiCategories.length > 0 ? apiCategories : DEFAULT_CATEGORIES;
 
   const activeCategory = category
     ? categories.find((c) => c.slug === category)
