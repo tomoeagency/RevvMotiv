@@ -30,33 +30,46 @@
             <!-- Right: Quick Executive Action Deck -->
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.orders.index') }}?status=pending" 
-                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105">
-                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400">
+                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105 hover:border-amber-500/50">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-500/15 text-amber-400 group-hover:bg-amber-500/25">
                         <x-admin.icon name="orders" class="h-4.5 w-4.5" />
                     </span>
                     <div>
-                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Order Queue</span>
+                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-slate-300">Order Queue</span>
                         <span class="block text-lg font-extrabold tabular-nums text-white">{{ $pendingOrderCount }} <span class="text-xs font-normal text-amber-400">pending</span></span>
                     </div>
                 </a>
 
                 <a href="{{ route('admin.reviews.index') }}?status=pending" 
-                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105">
-                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/15 text-sky-400">
+                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105 hover:border-sky-500/50">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-sky-500/15 text-sky-400 group-hover:bg-sky-500/25">
                         <x-admin.icon name="reviews" class="h-4.5 w-4.5" />
                     </span>
                     <div>
-                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400">Review Moderation</span>
+                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-slate-300">Review Moderation</span>
                         <span class="block text-lg font-extrabold tabular-nums text-white">{{ $pendingReviewCount }} <span class="text-xs font-normal text-sky-400">new</span></span>
                     </div>
                 </a>
 
-                <a href="https://www.revvmotiv.com" target="_blank" rel="noopener noreferrer"
-                   class="group flex items-center gap-2 rounded-xl border border-red-500/50 bg-red-600/20 px-4 py-3 text-xs font-bold text-red-200 shadow-md backdrop-blur-sm transition-all hover:scale-105">
-                    <span>Live Store</span>
-                    <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <a href="{{ route('admin.leads-enquiries.index') }}" 
+                   class="group flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-3 shadow-md backdrop-blur-sm transition-all hover:scale-105 hover:border-emerald-500/50">
+                    <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-400 group-hover:bg-emerald-500/25">
+                        <svg class="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </span>
+                    <div>
+                        <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 group-hover:text-slate-300">Leads &amp; Enquiries</span>
+                        <span class="block text-lg font-extrabold tabular-nums text-white">{{ $newLeadsCount }} <span class="text-xs font-normal text-emerald-400">total</span></span>
+                    </div>
+                </a>
+
+                <a href="{{ route('admin.orders.create') }}" 
+                   class="group flex items-center gap-2 rounded-xl border border-red-500 bg-gradient-to-r from-red-600 to-red-700 px-4 py-3 text-xs font-bold text-white shadow-lg backdrop-blur-sm transition-all hover:scale-105 hover:from-red-500 hover:to-red-600">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
+                    <span>+ New Order</span>
                 </a>
             </div>
         </div>
@@ -90,48 +103,76 @@
         </div>
     </div>
 
-    <!-- Metrics Stat Deck -->
+    <!-- Metrics Stat Deck (Clickable Links) -->
     <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Revenue</span>
+        <a href="{{ route('admin.orders.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md flex flex-col justify-between cursor-pointer">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Total Revenue</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">₹{{ number_format($totalRevenue, 2) }}</p>
             <p class="mt-1.5 text-xs text-slate-500">{{ $orderCount }} confirmed order{{ $orderCount === 1 ? '' : 's' }}</p>
-        </div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Gross Profit</span>
+        </a>
+
+        <a href="{{ route('admin.orders.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md flex flex-col justify-between cursor-pointer">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Gross Profit</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums {{ $grossProfit < 0 ? 'text-rose-600' : 'text-emerald-600' }}">₹{{ number_format($grossProfit, 2) }}</p>
             <p class="mt-1.5 text-xs text-slate-500">
                 Delivered orders
                 @if ($unitsMissingCost > 0)
-                    · {{ $unitsMissingCost }} unit{{ $unitsMissingCost === 1 ? '' : 's' }} excluded (no cost)
+                    · {{ $unitsMissingCost }} unit{{ $unitsMissingCost === 1 ? '' : 's' }} excluded
                 @endif
             </p>
-        </div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Recorded Expenses</span>
+        </a>
+
+        <a href="{{ route('admin.expenses.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md flex flex-col justify-between cursor-pointer">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Recorded Expenses</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">₹{{ number_format($expensesTotal, 2) }}</p>
-            <p class="mt-1.5 text-xs text-slate-500">Operational & marketing costs</p>
-        </div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Net Estimated Profit</span>
+            <p class="mt-1.5 text-xs text-slate-500">Operational &amp; marketing costs</p>
+        </a>
+
+        <a href="{{ route('admin.expenses.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md flex flex-col justify-between cursor-pointer">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Net Estimated Profit</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums {{ $netProfit < 0 ? 'text-rose-600' : 'text-emerald-600' }}">₹{{ number_format($netProfit, 2) }}</p>
             <p class="mt-1.5 text-xs text-slate-500">Gross profit minus recorded expenses</p>
-        </div>
+        </a>
     </div>
 
-    <!-- Section 2: Inventory Snapshot -->
+    <!-- Section 2: Inventory Snapshot (Clickable Links) -->
     <div class="mb-4">
         <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">Live Inventory Snapshot</h2>
         <p class="text-xs text-slate-500">Current warehouse stock levels and stock valuation.</p>
     </div>
     <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Units On Hand</span>
+        <a href="{{ route('admin.products.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md cursor-pointer block">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Total Units On Hand</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">{{ number_format($inventory['totalUnits']) }} <span class="text-xs font-normal text-slate-400">units</span></p>
             <p class="mt-1.5 text-xs text-slate-500">Physical stock across all catalog items</p>
-        </div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Inventory Cost Value</span>
+        </a>
+
+        <a href="{{ route('admin.products.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md cursor-pointer block">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Inventory Cost Value</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">₹{{ number_format($inventory['totalCostValue'], 2) }}</p>
             <p class="mt-1.5 text-xs text-slate-500">
                 Acquisition cost of stock on hand
@@ -139,12 +180,17 @@
                     · {{ $inventory['unitsMissingCost'] }} unit{{ $inventory['unitsMissingCost'] === 1 ? '' : 's' }} excluded
                 @endif
             </p>
-        </div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs">
-            <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Retail Sales Valuation</span>
+        </a>
+
+        <a href="{{ route('admin.products.index') }}" 
+           class="group rounded-xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-slate-400 hover:shadow-md cursor-pointer block">
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 group-hover:text-slate-900">Retail Sales Valuation</span>
+                <span class="text-slate-400 group-hover:text-slate-700 transition-transform group-hover:translate-x-0.5">→</span>
+            </div>
             <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-600">₹{{ number_format($inventory['totalRetailValue'], 2) }}</p>
             <p class="mt-1.5 text-xs text-slate-500">Estimated value at listed storefront prices</p>
-        </div>
+        </a>
     </div>
 
     @php

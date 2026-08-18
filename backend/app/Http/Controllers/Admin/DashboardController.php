@@ -103,6 +103,8 @@ class DashboardController extends Controller
                       ->orWhere('source', '!=', 'website');
                 })->count(),
             'pendingReviewCount' => Review::where('status', 'pending')->count(),
+            'newLeadsCount' => \App\Models\Lead::count() + \App\Models\Enquiry::count(),
+            'lowStockCount' => Product::where('stock', '<', 5)->count(),
             'lowStockProducts' => Product::where('stock', '>', 0)->where('stock', '<', 5)->orderBy('stock')->get(),
             'outOfStockProducts' => Product::where('stock', 0)->get(),
             'orderCount' => $orderCount,
