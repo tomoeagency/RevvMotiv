@@ -259,10 +259,16 @@
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="vertical-align: middle;">
-              <div style="font-size: 24px; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-transform: uppercase; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.1;">
-                REVV<span style="color: #dc2626;">MOTIV</span>
-              </div>
-              <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; font-weight: 700;">
+              @php
+                  $logoPath = public_path('images/logo-white.png');
+                  $logoSrc = (isset($message) && file_exists($logoPath)) 
+                      ? $message->embed($logoPath) 
+                      : 'https://revvmotiv.com/logo-white.png';
+              @endphp
+              <a href="https://revvmotiv.com" target="_blank" style="text-decoration: none; display: inline-block;">
+                <img src="{{ $logoSrc }}" alt="RevvMotiv" height="30" style="height: 30px; max-height: 30px; width: auto; max-width: 200px; display: block; border: 0;" />
+              </a>
+              <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 6px; font-weight: 700;">
                 Custom Car Styling &amp; Aero Parts
               </div>
             </td>
