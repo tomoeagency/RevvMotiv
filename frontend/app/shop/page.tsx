@@ -7,6 +7,7 @@ import { getProducts, getCategories } from "@/lib/api";
 import { ProductCard } from "@/app/components/ProductCard";
 import { ClosingCta } from "@/app/components/ClosingCta";
 import { ShopSearchBar } from "@/app/shop/ShopSearchBar";
+import { ShopClientGrid } from "@/app/shop/ShopClientGrid";
 
 export const dynamic = "force-dynamic";
 
@@ -164,55 +165,15 @@ export default async function ShopPage({
               <ShopSearchBar autoFocus={focus === "search"} />
             </Suspense>
 
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-hairline">
-              <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
-                {meta.total === 0 ? (
-                  "No Products"
-                ) : (
-                  <>
-                    Showing <span className="text-ink">{products.length}</span> of{" "}
-                    <span className="text-ink">{meta.total}</span> Products
-                    {search && (
-                      <>
-                        {" "}for "<span className="text-ink">{search}</span>"
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
-            {products.length === 0 ? (
-              <div className="p-12 border border-hairline bg-surface rounded text-center">
-                <p className="text-sm font-bold text-ink uppercase tracking-widest mb-2">
-                  No Products Found
-                </p>
-                <p className="text-xs text-ink-muted mb-6">
-                  {search
-                    ? `Nothing matched "${search}". Try a different search term.`
-                    : "There are currently no items in this category."}
-                </p>
-                <Link
-                  href="/shop"
-                  className="px-6 py-2.5 brand-gradient-flow text-white font-bold text-xs uppercase tracking-widest rounded"
-                >
-                  View All Products
-                </Link>
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-                  {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
-                </div>
-                <ShopPagination
-                  currentPage={meta.current_page}
-                  lastPage={meta.last_page}
-                  buildHref={(p) => buildHref({ page: p })}
-                />
-              </>
-            )}
+            <ShopClientGrid
+              initialProducts={products}
+              initialTotal={meta.total}
+              initialPage={meta.current_page}
+              initialLastPage={meta.last_page}
+              category={category}
+              search={search}
+              buildHref={buildHref}
+            />
           </div>
         </div>
       </section>
