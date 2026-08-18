@@ -83,19 +83,19 @@
   }
 
   .char-stage {
-    width: 240px;
-    height: 240px;
+    width: 340px;
+    height: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
-    perspective: 1000px;
+    perspective: 1100px;
     cursor: grab;
   }
   .char-stage:active { cursor: grabbing; }
 
   .float-container {
-    width: 240px;
-    height: 240px;
+    width: 340px;
+    height: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -105,7 +105,7 @@
 
   @keyframes gentleFloat {
     0%, 100% { transform: translateY(0px); }
-    50%      { transform: translateY(-9px); }
+    50%      { transform: translateY(-12px); }
   }
 
   .shake-layer {
@@ -119,8 +119,8 @@
 
   .tilt-layer {
     position: relative;
-    width: 220px;
-    height: 220px;
+    width: 310px;
+    height: 310px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,29 +130,29 @@
 
   .mark-shadow {
     position: absolute;
-    bottom: -16px;
-    width: 140px;
-    height: 20px;
+    bottom: -22px;
+    width: 200px;
+    height: 28px;
     border-radius: 50%;
     background: rgba(34, 64, 94, 0.16);
-    filter: blur(10px);
+    filter: blur(14px);
     transform: translateZ(-40px);
   }
 
   .ambient-glow {
     position: absolute;
-    width: 220px;
-    height: 220px;
+    width: 310px;
+    height: 310px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(34,64,94,0.12) 0%, rgba(201,24,43,0.04) 40%, rgba(34,64,94,0) 72%);
-    filter: blur(10px);
+    background: radial-gradient(circle, rgba(34,64,94,0.14) 0%, rgba(201,24,43,0.04) 40%, rgba(34,64,94,0) 72%);
+    filter: blur(14px);
   }
 
   .mark-svg {
     position: relative;
-    width: 190px;
-    height: 190px;
-    filter: drop-shadow(0 14px 22px rgba(34, 64, 94, 0.22));
+    width: 270px;
+    height: 270px;
+    filter: drop-shadow(0 16px 26px rgba(34, 64, 94, 0.22));
     will-change: transform;
     transition: transform 0.1s ease-out;
   }
@@ -165,12 +165,12 @@
   }
 
   .status-text {
-    height: 24px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: rgba(26, 42, 56, 0.45);
-    margin-top: 10px;
+    height: 26px;
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: rgba(26, 42, 56, 0.5);
+    margin-top: 14px;
     text-align: center;
     transition: color 0.2s ease;
     text-transform: uppercase;
