@@ -79,6 +79,12 @@ export async function Footer() {
                     Contact Us
                   </Link>
                 </li>
+                <li>
+                  <Link href="/review" className="hover:text-red-500 transition-colors text-red-400 font-semibold flex items-center gap-1">
+                    <span>Leave a Review</span>
+                    <span className="text-[10px] bg-red-500/20 text-red-400 px-1.5 py-0.5 rounded font-bold">New</span>
+                  </Link>
+                </li>
               </ul>
             </div>
 
