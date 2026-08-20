@@ -33,6 +33,12 @@ interface RazorpayOptions {
   order_id?: string;
   name: string;
   description: string;
+  image?: string;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+  };
   handler: () => void;
   modal?: { ondismiss?: () => void };
   theme?: { color?: string };
@@ -234,6 +240,12 @@ export default function CheckoutPage() {
       order_id: order.razorpay.order_id ?? undefined,
       name: "RevvMotiv",
       description: `Advance payment — Order #${order.id}`,
+      image: "https://revvmotiv.com/icon.png",
+      prefill: {
+        name: form.customer_name.trim() || undefined,
+        email: form.customer_email.trim() || undefined,
+        contact: form.customer_phone.trim() || undefined,
+      },
       handler: () => {
         clearCart();
         router.push(`/order-confirmation/${order.id}?just_paid=1${tokenParam}`);
