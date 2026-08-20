@@ -74,7 +74,11 @@
                         {{ $review->product?->title ?? '—' }}
                     </td>
                     <td class="px-4 py-3 text-amber-500 font-bold font-mono text-xs whitespace-nowrap">
-                        ★ {{ $review->rating }}/5
+                        <div class="flex items-center gap-0.5">
+                            @for ($s = 1; $s <= 5; $s++)
+                                <svg class="w-3.5 h-3.5 {{ $s <= $review->rating ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200' }}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                            @endfor
+                        </div>
                     </td>
                     <td class="px-4 py-3 max-w-xs truncate text-xs text-slate-600" title="{{ $review->comment }}">
                         {{ $review->comment }}
@@ -135,9 +139,11 @@
 
                         <!-- Rating Stars & Product -->
                         <div class="mb-2 flex items-center justify-between text-xs">
-                            <span class="font-bold text-amber-500">
-                                {{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}
-                            </span>
+                            <div class="flex items-center gap-0.5">
+                                @for ($s = 1; $s <= 5; $s++)
+                                    <svg class="w-3.5 h-3.5 {{ $s <= $review->rating ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200' }}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                @endfor
+                            </div>
                             <span class="font-medium text-slate-500 truncate max-w-[140px] text-[11px]">{{ $review->product?->title ?? 'General Review' }}</span>
                         </div>
 

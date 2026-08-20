@@ -25,7 +25,7 @@ class ReviewInvitationMail extends Mailable
         $productTitle = $firstItem?->product?->title ?? 'Your Upgrade';
 
         return new Envelope(
-            subject: "Your Build Has Landed! 🏁 How's the {$productTitle}?",
+            subject: "Your Build Has Landed — How's the {$productTitle}?",
         );
     }
 

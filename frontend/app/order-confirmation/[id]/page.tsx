@@ -477,8 +477,9 @@ function OrderTotals({ order }: { order: ApiOrder }) {
               <span className="text-ink-muted font-bold block">
                 Balance Due on Delivery (COD)
               </span>
-              <span className="text-[10px] text-emerald-400 font-semibold">
-                ✓ Fully Settled — Nothing to pay at doorstep
+              <span className="text-[10px] text-emerald-400 font-semibold inline-flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                Fully Settled — Nothing to pay at doorstep
               </span>
             </div>
             <span className="text-emerald-400 font-bold text-sm">

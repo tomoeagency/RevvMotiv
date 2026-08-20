@@ -145,7 +145,7 @@
 
                     const badge = document.createElement('span');
                     badge.className = 'absolute bottom-1 right-1 rounded bg-black/80 px-1.5 py-0.5 text-[9px] font-bold text-white';
-                    badge.textContent = '🎬 VIDEO';
+                    badge.textContent = 'VIDEO';
                     mediaPreview.appendChild(badge);
                 } else {
                     const img = document.createElement('img');

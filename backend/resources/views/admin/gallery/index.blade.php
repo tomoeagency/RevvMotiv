@@ -65,8 +65,9 @@
                     <div class="relative aspect-square w-full overflow-hidden bg-slate-100">
                         @if ($item->media_type === 'video')
                             <video src="{{ $item->media_url }}" class="h-full w-full object-cover" muted></video>
-                            <span class="absolute bottom-2 right-2 rounded bg-black/80 px-2 py-0.5 text-[10px] font-bold uppercase text-white backdrop-blur-sm">
-                                🎬 Video
+                            <span class="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded bg-black/80 px-2 py-0.5 text-[10px] font-bold uppercase text-white backdrop-blur-sm">
+                                <svg class="w-3 h-3 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                Video
                             </span>
                         @else
                             <img src="{{ $item->media_url }}" alt="{{ $item->caption ?? 'Gallery Item' }}"

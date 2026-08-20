@@ -171,7 +171,7 @@
       <div class="content">
         <div class="badge">Verified Delivery</div>
         
-        <h1 class="title">How Did The Install Turn Out? 🏁</h1>
+        <h1 class="title">How Did The Install Turn Out?</h1>
         <p class="lead">
           Hey <strong>{{ $order->customer_name }}</strong>, your package (Order #{{ $order->id }}) has been delivered! We’d love to see how it looks on your machine.
         </p>
@@ -189,7 +189,7 @@
           <div>
             @for ($i = 5; $i >= 1; $i--)
               <a href="{{ $reviewLinkBase }}&rating={{ $i }}" class="star-btn" title="{{ $i }} Stars">
-                {{ str_repeat('★', $i) }}
+                {{ $i }} ★
               </a>
             @endfor
           </div>
@@ -204,9 +204,9 @@
 
         <!-- Community Showcase Highlights -->
         <div class="perks-row">
-          <div class="perk-item">📸 <strong>Build Showcase:</strong> Approved photos are featured on our website gallery and official @revvmotiv Instagram page.</div>
-          <div class="perk-item">🛡️ <strong>Verified Badge:</strong> Your review receives an official <em>Verified Purchase</em> badge.</div>
-          <div class="perk-item">🏎️ <strong>Community Impact:</strong> Helps fellow enthusiasts dial in their fitment and stance.</div>
+          <div class="perk-item">• <strong>Build Showcase:</strong> Approved photos are featured on our website gallery and official @revvmotiv Instagram page.</div>
+          <div class="perk-item">• <strong>Verified Badge:</strong> Your review receives an official <em>Verified Purchase</em> badge.</div>
+          <div class="perk-item">• <strong>Community Impact:</strong> Helps fellow enthusiasts dial in their fitment and stance.</div>
         </div>
       </div>
 
