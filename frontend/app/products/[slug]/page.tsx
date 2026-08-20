@@ -172,7 +172,10 @@ export default async function ProductDetailPage({
           <span className="text-ink font-semibold truncate max-w-[200px] sm:max-w-xs">{product.title}</span>
         </nav>
 
-        <ProductDetailInteractive product={product} />
+        <ProductDetailInteractive
+          product={product}
+          reviewsMeta={reviews?.meta}
+        />
 
         {/* Product FAQ Accordion / Quick Answers (AEO) */}
         <section className="mt-16 pt-12 border-t border-hairline max-w-3xl">
@@ -213,7 +216,11 @@ export default async function ProductDetailPage({
           </div>
         </section>
 
-        <ReviewsSection reviews={reviews} />
+        <ReviewsSection
+          productId={product.id}
+          productTitle={product.title}
+          reviews={reviews}
+        />
 
         {relatedProducts.length > 0 && (
           <section className="mt-20 pt-16 border-t border-hairline">

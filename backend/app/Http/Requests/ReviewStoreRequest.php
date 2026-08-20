@@ -24,7 +24,7 @@ class ReviewStoreRequest extends FormRequest
             // Client-side checks are never trusted for a money-adjacent,
             // publicly-writable endpoint — mime/size validated server-side too.
             'media' => ['nullable', 'array', 'max:5'],
-            'media.*' => ['file', 'mimes:jpg,jpeg,png,mp4,mov', 'max:25600'],
+            'media.*' => ['file', 'mimes:jpg,jpeg,png,webp,mp4,mov', 'max:25600'],
         ];
     }
 }

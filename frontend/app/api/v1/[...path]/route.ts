@@ -23,7 +23,10 @@ async function proxyRequest(req: NextRequest) {
       headers.set("Accept", "application/json");
     }
 
-    const body = req.method !== "GET" && req.method !== "HEAD" ? await req.text() : undefined;
+    const body =
+      req.method !== "GET" && req.method !== "HEAD"
+        ? await req.arrayBuffer()
+        : undefined;
 
     const backendRes = await fetch(targetUrl, {
       method: req.method,

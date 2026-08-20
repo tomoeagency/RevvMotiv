@@ -1,13 +1,19 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { CheckCircle2, ShieldCheck, Truck, Video, XCircle } from "lucide-react";
+import { CheckCircle2, ShieldCheck, Truck, Video, XCircle, Star } from "lucide-react";
 import type { ApiProduct, ProductVariant } from "@/lib/api";
 import { formatPrice } from "@/lib/api";
 import { ProductGallery } from "@/app/components/ProductGallery";
 import { AddToCartButton } from "@/app/components/AddToCartButton";
 
-export function ProductDetailInteractive({ product }: { product: ApiProduct }) {
+export function ProductDetailInteractive({
+  product,
+  reviewsMeta,
+}: {
+  product: ApiProduct;
+  reviewsMeta?: { average_rating?: number; total?: number };
+}) {
   const variants = product.variants ?? [];
   const defaultVariant = useMemo(() => {
     if (!variants.length) return null;
@@ -77,9 +83,35 @@ export function ProductDetailInteractive({ product }: { product: ApiProduct }) {
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-3">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-2">
           {product.title}
         </h1>
+
+        {/* Product-Specific Average Rating Badge */}
+        {reviewsMeta && typeof reviewsMeta.total === "number" && reviewsMeta.total > 0 ? (
+          <a
+            href="#reviews"
+            className="inline-flex items-center gap-2 mb-4 text-xs text-ink-muted hover:text-ink transition-colors w-fit group"
+          >
+            <div className="flex items-center text-amber-400">
+              <Star className="w-3.5 h-3.5 fill-amber-400" />
+            </div>
+            <span className="font-bold font-mono text-ink text-xs">
+              {reviewsMeta.average_rating?.toFixed(1) || "5.0"}
+            </span>
+            <span className="text-ink-subtle underline underline-offset-4 group-hover:text-red-400">
+              ({reviewsMeta.total} {reviewsMeta.total === 1 ? "review" : "reviews"})
+            </span>
+          </a>
+        ) : (
+          <a
+            href="#reviews"
+            className="inline-flex items-center gap-1.5 mb-4 text-[11px] font-bold text-ink-subtle hover:text-red-400 transition-colors w-fit"
+          >
+            <Star className="w-3.5 h-3.5 text-amber-400/60" />
+            <span className="underline underline-offset-4">Be the first to review</span>
+          </a>
+        )}
 
         <div className="flex items-baseline gap-3 mb-1">
           <span className="text-2xl sm:text-3xl font-bold text-ink font-mono">
