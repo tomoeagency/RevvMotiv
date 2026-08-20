@@ -24,13 +24,11 @@ type TrustCard =
 // from under the visitor mid-read.
 const REVIEW_ROTATE_MS = 15_000;
 
-// How many review cards show at once — most of the panel's real estate,
-// since social proof is the main point of this whole thing.
-const REVIEW_CARD_COUNT = 5;
+// How many review cards show at once — balanced so cards don't overflow the viewport
+const REVIEW_CARD_COUNT = 3;
 
-// Upper bound on total cards in the panel regardless of type mix — keeps
-// the masonry columns from growing unbounded on a very tall viewport.
-const MAX_CARDS = 8;
+// Upper bound on total cards (3 reviews + 3 action cards = 6 cards = exactly 2 per column)
+const MAX_CARDS = 6;
 
 // Which content leads depends on what the visitor is actually doing:
 // evaluating products wants social proof first, general browsing wants the
