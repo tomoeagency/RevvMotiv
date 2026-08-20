@@ -86,10 +86,13 @@ upload_dir('backend/resources', 'public_html/resources')
 print("\n--- Uploading Public Images (Logos, Projects PNGs) ---")
 upload_dir('backend/public/images', 'public_html/public/images')
 
+print("\n--- Uploading Database Migrations ---")
+upload_dir('backend/database/migrations', 'public_html/database/migrations')
+
 print("\n--- Uploading Database Seeders ---")
 upload_dir('backend/database/seeders', 'public_html/database/seeders')
 
-# Now run a sync script to clear views, clear config, and seed database
+# Now run a sync script to clear views, clear config, and run migrations
 sync_script = """<?php
 require __DIR__ . '/../vendor/autoload.php';
 $app = require_once __DIR__ . '/../bootstrap/app.php';
@@ -97,6 +100,9 @@ $kernel = $app->make(Illuminate\\Contracts\\Console\\Kernel::class);
 $kernel->bootstrap();
 
 date_default_timezone_set('Asia/Kolkata');
+
+Illuminate\\Support\\Facades\\Artisan::call('migrate', ['--force' => true]);
+$migrateOut = Illuminate\\Support\\Facades\\Artisan::output();
 
 Illuminate\\Support\\Facades\\Artisan::call('view:clear');
 $viewClear = Illuminate\\Support\\Facades\\Artisan::output();
@@ -107,18 +113,19 @@ $configClear = Illuminate\\Support\\Facades\\Artisan::output();
 Illuminate\\Support\\Facades\\Artisan::call('cache:clear');
 $cacheClear = Illuminate\\Support\\Facades\\Artisan::output();
 
-Illuminate\\Support\\Facades\\Artisan::call('db:seed', ['--class' => 'Database\\\\Seeders\\\\ProjectDemoSeeder', '--force' => true]);
-$seederOut = Illuminate\\Support\\Facades\\Artisan::output();
+Illuminate\\Support\\Facades\\Artisan::call('route:clear');
+$routeClear = Illuminate\\Support\\Facades\\Artisan::output();
 
 header('Content-Type: application/json');
 echo json_encode([
     'status' => 'DEPLOYMENT_SUCCESS',
     'timezone' => date_default_timezone_get(),
     'now_ist' => date('l, d F Y · H:i:s T'),
+    'migrate' => trim($migrateOut),
     'view_clear' => trim($viewClear),
     'config_clear' => trim($configClear),
-    'seeder' => trim($seederOut),
-    'projects' => App\\Models\\Project::select('id', 'title', 'cover_image')->get(),
+    'cache_clear' => trim($cacheClear),
+    'route_clear' => trim($routeClear),
 ]);
 """
 
