@@ -26,7 +26,7 @@ class ReviewController extends Controller
             'comment' => $validated['comment'],
             'media_urls' => $uploader->uploadMany($request->file('media', []), 'revvmotiv/reviews'),
             'verified_purchase' => $this->isVerifiedPurchase($validated),
-            'status' => 'pending',
+            'status' => 'approved',
         ]);
 
         return response()->json([
