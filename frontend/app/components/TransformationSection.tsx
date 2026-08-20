@@ -153,7 +153,6 @@ export function TransformationSection() {
                   fill
                   sizes="(min-width: 1024px) 45vw, 100vw"
                   className="object-cover object-center pointer-events-none"
-                  priority
                 />
 
                 {/* BEFORE IMAGE (Stock Factory — Clipped Overlay Layer) */}
@@ -169,7 +168,6 @@ export function TransformationSection() {
                     fill
                     sizes="(min-width: 1024px) 45vw, 100vw"
                     className="object-cover object-center"
-                    priority
                   />
                   <div className="absolute inset-0 bg-black/10" />
                 </div>

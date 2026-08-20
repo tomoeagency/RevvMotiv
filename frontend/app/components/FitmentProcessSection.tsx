@@ -230,7 +230,6 @@ export function FitmentProcessSection() {
                       fill
                       sizes="(min-width: 1024px) 50vw, 100vw"
                       className="object-cover object-center scale-105 hover:scale-100 transition-transform duration-700"
-                      priority
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
 
