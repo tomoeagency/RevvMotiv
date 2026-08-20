@@ -104,7 +104,7 @@ export function ProductGallery({
   };
 
   return (
-    <div className="flex flex-col gap-3 sm:gap-4">
+    <div className="w-full max-w-lg lg:max-w-xl mx-auto flex flex-col gap-3 sm:gap-4">
       {/* Main Feature Display with Hover Magnify & Fullscreen Click */}
       <div
         ref={containerRef}
@@ -115,7 +115,7 @@ export function ProductGallery({
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="aspect-square bg-surface border border-hairline rounded-2xl relative overflow-hidden shadow-lg group select-none touch-pan-y cursor-zoom-in"
+        className="aspect-square w-full max-h-[520px] bg-surface border border-hairline rounded-2xl relative overflow-hidden shadow-lg group select-none touch-pan-y cursor-zoom-in flex items-center justify-center mx-auto"
       >
         <AnimatePresence mode="wait">
           <motion.div

@@ -158,7 +158,7 @@ export default async function ProductDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-4 sm:px-6 max-w-screen-2xl mx-auto w-full">
+      <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
         {/* Visual Breadcrumb Navigation */}
         <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-xs text-ink-subtle mb-8">
           <Link href="/" className="hover:text-ink transition-colors">Home</Link>
