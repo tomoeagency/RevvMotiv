@@ -380,7 +380,7 @@ export function ReviewsSection({
                         required
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
-                        placeholder="e.g. Sujeet Kansal"
+                        placeholder="e.g. Rahul Sharma"
                         className="w-full h-11 px-3.5 rounded-xl border border-hairline bg-surface-alt text-ink text-xs focus:border-red-500 focus:outline-none transition-colors"
                       />
                     </div>
