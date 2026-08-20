@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Film, MessageCircle, Wrench } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { useConsultant } from "@/lib/consultant-context";
-import { getFeaturedReviewsClient, type Review } from "@/lib/api";
+import { getFeaturedReviewsClient, parseReviewComment, type Review } from "@/lib/api";
 import { GARAGE_GALLERY } from "@/lib/garage-gallery";
 import { StarRating } from "@/app/components/StarRating";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
@@ -244,25 +244,27 @@ export function TrustPanelClient({
                         />
                       </div>
                     )}
-                    <div className="mb-2">
-                      <StarRating rating={card.review.rating} size="w-3.5 h-3.5" />
-                    </div>
-                    {/* Full text, no hover-expand — in the masonry
-                        (CSS columns) layout, a hover-triggered height
-                        change can shift this card into a different column
-                        during rebalancing, moving it out from under the
-                        cursor and causing a mouseenter/mouseleave
-                        thrash-loop (expand -> leave -> shrink -> enter ->
-                        expand...) that pegs the CPU. Masonry already
-                        accommodates variable card heights fine at layout
-                        time; the bug was specifically a height change
-                        *after* layout. */}
-                    <p className="text-sm text-ink leading-snug mb-3">
-                      &ldquo;{card.review.comment}&rdquo;
-                    </p>
-                    <p className="text-xs font-bold text-ink-muted uppercase tracking-widest">
-                      {card.review.customer_name}
-                    </p>
+                    {(() => {
+                      const { carModel, comment: cleanComment } = parseReviewComment(card.review.comment);
+                      return (
+                        <>
+                          <div className="mb-2 flex items-center gap-2">
+                            <StarRating rating={card.review.rating} size="w-3.5 h-3.5" />
+                            {carModel && (
+                              <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/25 text-[9px] font-black text-red-500 uppercase tracking-wider">
+                                {carModel}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-ink leading-snug mb-3">
+                            &ldquo;{cleanComment}&rdquo;
+                          </p>
+                          <p className="text-xs font-bold text-ink-muted uppercase tracking-widest">
+                            {card.review.customer_name}
+                          </p>
+                        </>
+                      );
+                    })()}
                   </div>
                 )}
 

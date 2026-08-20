@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Quote, Camera, Sparkles, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Review } from "@/lib/api";
+import { parseReviewComment } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
 
 function ReviewCard({
@@ -19,6 +20,8 @@ function ReviewCard({
       ? review.media_urls[0].replace(/^https?:\/\/api\.revvmotiv\.com/, "")
       : null;
 
+  const { carModel, comment: cleanComment } = parseReviewComment(review.comment);
+
   // Generate 2-letter avatar initials
   const initials = (review.customer_name || "Driver")
     .split(" ")
@@ -32,16 +35,23 @@ function ReviewCard({
       {/* Background ambient red glow on hover */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
-      {/* 1. Header: Stars + Quote Mark */}
-      <div className="flex items-center justify-between flex-none mb-2 sm:mb-3">
-        <StarRating rating={review.rating} />
-        <Quote className="w-5 h-5 sm:w-6 sm:h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors" />
+      {/* 1. Header: Stars + Car Badge + Quote Mark */}
+      <div className="flex items-center justify-between flex-none mb-2 sm:mb-3 gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <StarRating rating={review.rating} />
+          {carModel && (
+            <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/25 text-[10px] font-black text-red-500 uppercase tracking-wider">
+              {carModel}
+            </span>
+          )}
+        </div>
+        <Quote className="w-5 h-5 sm:w-6 sm:h-6 text-hairline-strong group-hover/card:text-red-500/40 transition-colors flex-none" />
       </div>
 
-      {/* 2. Full Review Comment Text (100% Unclipped & Complete) */}
+      {/* 2. Full Review Comment Text (Cleaned without [Car: ...] technical brackets) */}
       <div className="flex-1 flex items-start py-1">
         <p className="text-xs sm:text-sm text-ink-muted group-hover/card:text-ink leading-relaxed font-normal transition-colors duration-200 line-clamp-4 sm:line-clamp-none">
-          &ldquo;{review.comment}&rdquo;
+          &ldquo;{cleanComment}&rdquo;
         </p>
       </div>
 
@@ -62,8 +72,10 @@ function ReviewCard({
                   {review.product.title}
                 </Link>
               </span>
+            ) : carModel ? (
+              <span className="text-[10px] font-medium text-ink-muted block">{carModel} Build</span>
             ) : (
-              <span className="text-[10px] text-ink-muted block">RevvMotiv Community</span>
+              <span className="text-[10px] text-ink-muted block">Verified Buyer</span>
             )}
           </div>
         </div>

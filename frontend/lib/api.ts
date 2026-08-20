@@ -99,6 +99,20 @@ export interface Review {
   created_at: string;
 }
 
+export function parseReviewComment(rawComment: string): { carModel: string | null; comment: string } {
+  if (!rawComment) return { carModel: null, comment: "" };
+  const carMatch =
+    rawComment.match(/^\[(?:Car|Vehicle):\s*([^\]]+)\]\s*/i) ||
+    rawComment.match(/^\((?:Car|Vehicle):\s*([^)]+)\)\s*/i);
+  if (carMatch) {
+    return {
+      carModel: carMatch[1].trim(),
+      comment: rawComment.replace(carMatch[0], "").trim(),
+    };
+  }
+  return { carModel: null, comment: rawComment.trim() };
+}
+
 export interface ProductReviewsResponse {
   data: Review[];
   meta: {

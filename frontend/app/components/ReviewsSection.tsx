@@ -14,6 +14,7 @@ import {
   Loader2,
 } from "lucide-react";
 import type { ProductReviewsResponse } from "@/lib/api";
+import { parseReviewComment } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
 import { PrimaryCtaButton } from "@/app/components/PrimaryCtaButton";
 import { motion, AnimatePresence } from "motion/react";
@@ -213,28 +214,40 @@ export function ReviewsSection({
                 key={review.id}
                 className="p-6 bg-surface border border-hairline rounded-2xl space-y-3"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
-                      <span className="text-sm font-bold text-ink">
-                        {review.customer_name}
-                      </span>
-                      {review.verified_purchase && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                          <ShieldCheck className="w-3 h-3" /> Verified Purchase
+                {(() => {
+                  const { carModel, comment: cleanComment } = parseReviewComment(review.comment);
+                  return (
+                    <>
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+                            <span className="text-sm font-bold text-ink">
+                              {review.customer_name}
+                            </span>
+                            {carModel && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-black text-red-500 uppercase tracking-wider bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/25">
+                                {carModel}
+                              </span>
+                            )}
+                            {review.verified_purchase && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                                <ShieldCheck className="w-3 h-3" /> Verified Purchase
+                              </span>
+                            )}
+                          </div>
+                          <StarRating rating={review.rating} size="w-4 h-4" />
+                        </div>
+                        <span className="text-[11px] font-mono text-ink-subtle flex-none">
+                          {formatReviewDate(review.created_at)}
                         </span>
-                      )}
-                    </div>
-                    <StarRating rating={review.rating} size="w-4 h-4" />
-                  </div>
-                  <span className="text-[11px] font-mono text-ink-subtle flex-none">
-                    {formatReviewDate(review.created_at)}
-                  </span>
-                </div>
+                      </div>
 
-                <p className="text-sm text-ink-muted leading-relaxed">
-                  {review.comment}
-                </p>
+                      <p className="text-sm text-ink-muted leading-relaxed">
+                        {cleanComment}
+                      </p>
+                    </>
+                  );
+                })()}
 
                 {review.media_urls && review.media_urls.length > 0 && (
                   <div className="flex gap-2.5 flex-wrap pt-2">
