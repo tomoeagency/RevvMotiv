@@ -196,7 +196,7 @@ export function ProductGallery({
 
       {/* Thumbnails row if multiple images exist */}
       {safeImages.length > 1 && (
-        <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 hide-scrollbar snap-x snap-mandatory touch-pan-y touch-pan-x overscroll-x-contain" data-lenis-prevent>
+        <div className="flex gap-2.5 sm:gap-3 overflow-x-auto pb-2 hide-scrollbar snap-x snap-mandatory touch-pan-y">
           {safeImages.map((img, idx) => {
             const isSelected = idx === selectedIndex;
             return (

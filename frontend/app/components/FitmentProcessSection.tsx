@@ -91,8 +91,7 @@ export function FitmentProcessSection() {
 
         {/* MOBILE VIEW (< lg): Horizontal Swipeable Cards */}
         <div
-          data-lenis-prevent
-          className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-x hide-scrollbar -mx-4 px-4 overscroll-x-contain"
+          className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-y hide-scrollbar -mx-4 px-4"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {STEPS.map((step, idx) => {

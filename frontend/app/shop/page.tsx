@@ -185,7 +185,7 @@ export default async function ShopPage({
       {/* 2. Main Shop Area */}
       <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20">
         {/* Mobile/Tablet Category Filter Scrollbar */}
-        <div data-lenis-prevent className="lg:hidden -mx-4 px-4 sm:-mx-6 sm:px-6 mb-6 sm:mb-8 flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2 touch-pan-x overscroll-x-contain">
+        <div className="lg:hidden -mx-4 px-4 sm:-mx-6 sm:px-6 mb-6 sm:mb-8 flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2 touch-pan-y">
           <CategoryChip href={buildHref({ category: undefined })} label="All Products" active={!category} />
           {categories.map((cat) => (
             <CategoryChip

@@ -144,7 +144,6 @@ export function TransformationSection() {
                 onMouseMove={handleMouseMove}
                 onTouchStart={handleTouchMove}
                 onTouchMove={handleTouchMove}
-                data-lenis-prevent
                 className="relative aspect-[4/3] rounded-lg overflow-hidden border border-hairline select-none cursor-ew-resize bg-neutral-900 touch-pan-y"
               >
                 {/* AFTER IMAGE (RevvMotiv Tuned - Base Layer) */}

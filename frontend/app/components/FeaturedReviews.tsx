@@ -212,8 +212,7 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
           <div
             ref={mobileScrollRef}
             onScroll={checkMobileScroll}
-            data-lenis-prevent
-            className="flex items-center gap-4 overflow-x-auto hide-scrollbar pb-4 pt-1 snap-x snap-mandatory touch-pan-x -mx-4 px-4 overscroll-x-contain"
+            className="flex items-center gap-4 overflow-x-auto hide-scrollbar pb-4 pt-1 snap-x snap-mandatory touch-pan-y -mx-4 px-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {reviews.map((review) => (
