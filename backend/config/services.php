@@ -47,4 +47,13 @@ return [
         'api_secret' => env('CLOUDINARY_API_SECRET'),
     ],
 
+    'icarry' => [
+        'api_key' => env('ICARRY_API_KEY'),
+        'api_secret' => env('ICARRY_API_SECRET'),
+        'base_url' => env('ICARRY_BASE_URL', 'https://api.icarry.in/v1'),
+        'webhook_secret' => env('ICARRY_WEBHOOK_SECRET'),
+        'pickup_pincode' => env('ICARRY_PICKUP_PINCODE', '201009'),
+        'auto_fulfill' => env('ICARRY_AUTO_FULFILL', false),
+    ],
+
 ];

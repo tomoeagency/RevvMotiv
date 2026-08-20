@@ -59,6 +59,9 @@ Route::prefix('v1')->group(function () {
     // protects it from abuse, not rate limiting.
     Route::post('/razorpay/webhook', [RazorpayWebhookController::class, 'handle']);
 
+    // iCarry.in Courier Logistics Webhook (Automated delivery status updates + post-delivery review email trigger)
+    Route::post('/webhooks/icarry', [\App\Http\Controllers\Api\V1\ICarryWebhookController::class, 'handle']);
+
     // Admin auth (Sanctum token issuance). Throttled to blunt brute-force
     // password guessing against the single admin account.
     Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,1');

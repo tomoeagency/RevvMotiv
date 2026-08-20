@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import {
   ShieldCheck,
@@ -12,6 +12,8 @@ import {
   AlertCircle,
   PenLine,
   Loader2,
+  Share2,
+  Check,
 } from "lucide-react";
 import type { ProductReviewsResponse, Review } from "@/lib/api";
 import { parseReviewComment } from "@/lib/api";
@@ -48,6 +50,30 @@ export function ReviewsSection({
     }
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  // Auto-open review modal if direct review link is opened
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (
+        url.searchParams.get("review") === "true" ||
+        window.location.hash === "#write-review" ||
+        window.location.hash === "#review"
+      ) {
+        setIsModalOpen(true);
+      }
+    }
+  }, []);
+
+  const handleCopyDirectReviewLink = () => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("review", "true");
+    navigator.clipboard.writeText(url.toString());
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2500);
+  };
 
   // Form State
   const [rating, setRating] = useState(5);
@@ -177,18 +203,39 @@ export function ReviewsSection({
           </h2>
         </div>
 
-        <PrimaryCtaButton
-          type="button"
-          onClick={() => {
-            setIsModalOpen(true);
-            setSubmitSuccess(false);
-            setSubmitError(null);
-          }}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs w-fit cursor-pointer"
-        >
-          <PenLine className="w-4 h-4" />
-          <span>Write a Review</span>
-        </PrimaryCtaButton>
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            type="button"
+            onClick={handleCopyDirectReviewLink}
+            title="Copy direct link to share with client on WhatsApp, SMS or Email"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-surface border border-hairline hover:border-red-500/50 hover:bg-surface-alt transition-all text-xs font-bold text-ink-muted hover:text-ink cursor-pointer shadow-sm"
+          >
+            {copiedLink ? (
+              <>
+                <Check className="w-4 h-4 text-emerald-400" />
+                <span className="text-emerald-400">Direct Link Copied!</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-4 h-4 text-red-500" />
+                <span>Share Review Link</span>
+              </>
+            )}
+          </button>
+
+          <PrimaryCtaButton
+            type="button"
+            onClick={() => {
+              setIsModalOpen(true);
+              setSubmitSuccess(false);
+              setSubmitError(null);
+            }}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs w-fit cursor-pointer"
+          >
+            <PenLine className="w-4 h-4" />
+            <span>Write a Review</span>
+          </PrimaryCtaButton>
+        </div>
       </div>
 
       {reviewMeta.total === 0 ? (

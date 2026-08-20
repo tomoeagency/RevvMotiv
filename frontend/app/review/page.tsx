@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -38,12 +39,24 @@ const HIGHLIGHTS = [
   },
 ];
 
-export default function SubmitReviewPage() {
-  const [rating, setRating] = useState<number>(5);
+function SubmitReviewForm() {
+  const searchParams = useSearchParams();
+  const paramProduct = searchParams.get("product") || searchParams.get("product_id") || "";
+  const paramRating = searchParams.get("rating");
+  const paramName = searchParams.get("name") || "";
+  const paramEmail = searchParams.get("email") || "";
+  const paramCar = searchParams.get("car") || "";
+  const paramOrderId = searchParams.get("order_id") || "";
+
+  const [rating, setRating] = useState<number>(() => {
+    const r = Number(paramRating);
+    return r >= 1 && r <= 5 ? r : 5;
+  });
   const [hoverRating, setHoverRating] = useState<number>(0);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [carModel, setCarModel] = useState("");
+  const [name, setName] = useState(paramName);
+  const [email, setEmail] = useState(paramEmail);
+  const [carModel, setCarModel] = useState(paramCar);
+  const [orderId, setOrderId] = useState(paramOrderId);
   const [comment, setComment] = useState("");
 
   // Product Selection with Search
@@ -63,17 +76,25 @@ export default function SubmitReviewPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Fetch products for searchable selector
+  // Fetch products for searchable selector and auto-match URL param
   useEffect(() => {
     fetch("/api/v1/products?per_page=50")
       .then((res) => res.json())
       .then((json) => {
         if (json?.data && Array.isArray(json.data)) {
           setProducts(json.data);
+          if (paramProduct) {
+            const matched = json.data.find(
+              (p: ApiProduct) =>
+                p.slug.toLowerCase() === paramProduct.toLowerCase() ||
+                String(p.id) === paramProduct
+            );
+            if (matched) setSelectedProduct(matched);
+          }
         }
       })
       .catch(() => {});
-  }, []);
+  }, [paramProduct]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -127,6 +148,10 @@ export default function SubmitReviewPage() {
 
       if (selectedProduct) {
         formData.append("product_id", String(selectedProduct.id));
+      }
+
+      if (orderId) {
+        formData.append("order_id", String(orderId));
       }
 
       if (selectedImage) {
@@ -509,5 +534,19 @@ export default function SubmitReviewPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SubmitReviewPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full min-h-screen bg-carbon flex items-center justify-center">
+          <Loader2 className="w-8 h-8 text-red-500 animate-spin" />
+        </div>
+      }
+    >
+      <SubmitReviewForm />
+    </Suspense>
   );
 }
