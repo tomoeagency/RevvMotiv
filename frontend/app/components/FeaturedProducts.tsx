@@ -112,7 +112,8 @@ export function FeaturedProducts({
       {/* Responsive Carousel Track: Seamless for 4, 8, 12+ items */}
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto pb-4 pt-1 gap-4 sm:gap-6 snap-x snap-mandatory hide-scrollbar touch-pan-y -mx-4 px-4 sm:mx-0 sm:px-0"
+        className="flex overflow-x-auto pb-4 pt-1 gap-4 sm:gap-6 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y -mx-4 px-4 sm:mx-0 sm:px-0"
+        style={{ WebkitOverflowScrolling: "touch" }}
       >
         {products.map((item) => (
           <div

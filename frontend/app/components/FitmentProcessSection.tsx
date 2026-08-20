@@ -91,8 +91,8 @@ export function FitmentProcessSection() {
 
         {/* MOBILE VIEW (< lg): Horizontal Swipeable Cards */}
         <div
-          className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-y hide-scrollbar -mx-4 px-4"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          className="lg:hidden flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory touch-pan-x touch-pan-y hide-scrollbar -mx-4 px-4"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none", WebkitOverflowScrolling: "touch" }}
         >
           {STEPS.map((step, idx) => {
             const StepIcon = step.icon;

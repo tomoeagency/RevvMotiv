@@ -12,7 +12,10 @@ export function CategoryStrip({ categories }: { categories: Category[] }) {
   return (
     <div className="border-b border-hairline bg-surface-alt relative z-20">
       {/* Mobile: Sleek Touch-Swipeable Category Chips Bar */}
-      <div className="md:hidden py-3 px-4 overflow-x-auto hide-scrollbar flex items-center gap-2 snap-x snap-mandatory scroll-smooth touch-pan-x" data-lenis-prevent>
+      <div
+        className="md:hidden py-3 px-4 overflow-x-auto hide-scrollbar flex items-center gap-2 snap-x snap-mandatory scroll-smooth touch-pan-x touch-pan-y"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
         <div className="flex-none flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-600/10 border border-red-500/20 text-[10px] font-black text-red-500 uppercase tracking-wider">
           <Sparkles className="w-3 h-3" />
           <span>Categories</span>
