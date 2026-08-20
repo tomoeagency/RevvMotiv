@@ -174,7 +174,7 @@ export function ProductCard({
           sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 360px"
           placeholder="blur"
           blurDataURL={PRODUCT_IMAGE_BLUR_DATA_URL}
-          className={`object-cover object-center transition-all duration-500 ease-out group-hover:scale-105 pointer-events-none ${
+          className={`object-cover object-center transition-transform transition-opacity duration-500 ease-out group-hover:scale-105 pointer-events-none ${
             hasSecondaryImage && isHovered ? "opacity-0 scale-100" : "opacity-100"
           }`}
         />
@@ -186,7 +186,7 @@ export function ProductCard({
             alt={`${product.title} alternate view`}
             fill
             sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 360px"
-            className={`object-cover object-center transition-all duration-500 ease-out group-hover:scale-105 pointer-events-none ${
+            className={`object-cover object-center transition-transform transition-opacity duration-500 ease-out group-hover:scale-105 pointer-events-none ${
               isHovered ? "opacity-100 scale-105" : "opacity-0 scale-100"
             }`}
           />

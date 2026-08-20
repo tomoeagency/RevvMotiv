@@ -236,7 +236,7 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
                 aria-label={`Go to review ${i + 1}`}
               >
                 <span
-                  className={`h-1.5 rounded-full transition-all duration-300 block ${
+                  className={`h-1.5 rounded-full transition-[width,background-color] duration-300 block ${
                     i === activeMobileIndex
                       ? "w-6 bg-red-600"
                       : "w-2 bg-surface border border-hairline hover:bg-hover"

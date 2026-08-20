@@ -266,7 +266,7 @@ export function PlatformSelectorSection() {
             aria-label={`Jump to platform ${i + 1}`}
           >
             <span
-              className={`block h-1.5 rounded-full transition-all duration-300 ${
+              className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ${
                 i === activeIndex
                   ? "w-8 bg-red-600"
                   : "w-2 bg-surface-alt border border-hairline hover:bg-hover"

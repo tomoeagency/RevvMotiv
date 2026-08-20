@@ -73,7 +73,8 @@ export function Hero() {
               fill
               priority
               fetchPriority="high"
-              sizes="100vw"
+              quality={80}
+              sizes="(max-width: 768px) 100vw, 1920px"
               className="object-cover object-center"
             />
           </motion.div>
@@ -215,14 +216,14 @@ export function Hero() {
       </div>
 
       {/* 3. Slide Indicator Bar with Smooth Active Bar Transition */}
-      <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-6 pb-6 pt-4 flex items-center justify-between gap-4 border-t border-hairline">
+      <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-6 pb-6 pt-4 min-h-[56px] flex items-center justify-between gap-4 border-t border-hairline">
         <AnimatePresence mode="wait">
           <motion.span
             key={currentSlide}
-            initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="text-[11px] font-mono font-bold uppercase tracking-widest text-ink-muted"
           >
             0{currentSlide + 1} / 0{HERO_SLIDES.length} — {HERO_SLIDES[currentSlide].caption}
