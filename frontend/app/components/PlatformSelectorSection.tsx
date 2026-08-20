@@ -152,13 +152,13 @@ export function PlatformSelectorSection() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-black uppercase tracking-widest mb-2 sm:mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            Popular Indian Cars
+            Workshop Projects
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink">
-            Choose Your Car
+            Featured Builds
           </h2>
           <p className="text-xs sm:text-sm text-ink-muted max-w-lg mt-1.5 font-medium">
-            Explore custom aerodynamic and styling packages made for popular Indian hatchbacks, sedans, and SUVs.
+            Explore custom aerodynamic transformations, aggressive splitters, and track-ready styling packages built in our workshop.
           </p>
         </div>
 
