@@ -16,7 +16,7 @@ class ProjectController extends Controller
 {
     public function index(): View
     {
-        $projects = Project::withCount('views')->orderBy('sort_order')->orderByDesc('created_at')->paginate(15);
+        $projects = Project::withCount('views')->orderBy('sort_order')->orderByDesc('created_at')->paginate(16);
 
         return view('admin.projects.index', compact('projects'));
     }

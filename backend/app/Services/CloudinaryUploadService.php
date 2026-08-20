@@ -14,56 +14,21 @@ class CloudinaryUploadService
 {
     public function upload(UploadedFile $file, string $folder): array
     {
-        $cloudName = config('services.cloudinary.cloud_name');
-        $apiKey = config('services.cloudinary.api_key');
-        $apiSecret = config('services.cloudinary.api_secret');
-
-        $mime = (string) ($file->getClientMimeType() ?: '');
-        $resourceType = str_starts_with($mime, 'video') ? 'video' : 'image';
-
-        // If Cloudinary credentials are configured, attempt Cloudinary upload
-        if ($cloudName && $apiKey && $apiSecret) {
-            try {
-                $realPath = $file->getRealPath() ?: $file->getPathname();
-                if ($realPath && file_exists($realPath)) {
-                    $timestamp = time();
-                    $paramsToSign = ['folder' => $folder, 'timestamp' => $timestamp];
-                    ksort($paramsToSign);
-                    $signable = collect($paramsToSign)
-                        ->map(fn ($value, $key) => "{$key}={$value}")
-                        ->implode('&');
-                    $signature = sha1($signable.$apiSecret);
-
-                    $response = Http::attach('file', file_get_contents($realPath), $file->getClientOriginalName())
-                        ->post("https://api.cloudinary.com/v1_1/{$cloudName}/{$resourceType}/upload", [
-                            'api_key' => $apiKey,
-                            'timestamp' => $timestamp,
-                            'folder' => $folder,
-                            'signature' => $signature,
-                        ]);
-
-                    if ($response->successful()) {
-                        $data = $response->json();
-                        $data['resource_type'] = $data['resource_type'] ?? $resourceType;
-                        return $data;
-                    }
-                }
-            } catch (\Throwable $e) {
-                report($e);
-            }
-        }
-
-        // Fallback: Store locally in public/uploads/{folder}
-        return $this->uploadLocally($file, $folder, $resourceType);
+        return $this->uploadLocally($file, $folder);
     }
 
     /**
-     * Store file locally and return Cloudinary-compatible array structure.
+     * Store file locally in public/uploads/{folder} and ensure web accessibility.
      */
     protected function uploadLocally(UploadedFile $file, string $folder, string $resourceType = 'image'): array
     {
+        $mime = (string) ($file->getClientMimeType() ?: '');
+        if (str_starts_with($mime, 'video')) {
+            $resourceType = 'video';
+        }
+
         $targetDir = public_path("uploads/{$folder}");
-        File::ensureDirectoryExists($targetDir);
+        File::ensureDirectoryExists($targetDir, 0777, true);
 
         $realPath = $file->getRealPath() ?: $file->getPathname();
         $detectedMime = $realPath && file_exists($realPath) ? (mime_content_type($realPath) ?: '') : '';
@@ -83,7 +48,22 @@ class CloudinaryUploadService
         $safeBase = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'upload';
         $filename = "{$safeBase}-" . Str::random(12) . '.' . $extension;
 
+        $targetFile = $targetDir . DIRECTORY_SEPARATOR . $filename;
         $file->move($targetDir, $filename);
+        @chmod($targetFile, 0644);
+
+        // Also sync to base_path('public_html/uploads/...') if running under cPanel structure
+        $altTargetDir = base_path("uploads/{$folder}");
+        if ($altTargetDir !== $targetDir) {
+            File::ensureDirectoryExists($altTargetDir, 0777, true);
+            @copy($targetFile, $altTargetDir . DIRECTORY_SEPARATOR . $filename);
+        }
+
+        $cpanelPublicDir = base_path("public_html/uploads/{$folder}");
+        if ($cpanelPublicDir !== $targetDir) {
+            File::ensureDirectoryExists($cpanelPublicDir, 0777, true);
+            @copy($targetFile, $cpanelPublicDir . DIRECTORY_SEPARATOR . $filename);
+        }
 
         $relativeUrl = "/uploads/{$folder}/{$filename}";
         $fullUrl = asset("uploads/{$folder}/{$filename}");

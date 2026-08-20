@@ -30,7 +30,7 @@ class ProductController extends Controller
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
             ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->integer('category')))
             ->orderByDesc('created_at')
-            ->paginate(15)
+            ->paginate(16)
             ->withQueryString();
 
         $categories = Category::orderBy('name')->get();
