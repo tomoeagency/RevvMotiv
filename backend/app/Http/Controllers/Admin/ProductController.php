@@ -74,12 +74,35 @@ class ProductController extends Controller
             'images' => $newImages,
         ]);
 
+        if (! empty($validated['variants'])) {
+            $variantImages = $request->file('variant_images', []);
+            foreach ($validated['variants'] as $idx => $vData) {
+                $varImgPath = $vData['image'] ?? null;
+                if (isset($variantImages[$idx]) && $variantImages[$idx]->isValid()) {
+                    $uploadedVar = $uploader->upload($variantImages[$idx], 'revvmotiv/products/variants');
+                    $varImgPath = $uploadedVar['relative_path'] ?? $uploadedVar['secure_url'] ?? null;
+                }
+
+                $product->variants()->create([
+                    'name' => $vData['name'],
+                    'sku' => $vData['sku'] ?? null,
+                    'price' => $vData['price'],
+                    'compare_at_price' => $vData['compare_at_price'] ?? null,
+                    'stock' => $vData['stock'] ?? 0,
+                    'image' => $varImgPath,
+                    'attributes' => ! empty($vData['attributes']) ? (is_array($vData['attributes']) ? $vData['attributes'] : json_decode($vData['attributes'], true)) : null,
+                    'is_default' => ! empty($vData['is_default']),
+                    'sort_order' => $idx,
+                ]);
+            }
+        }
+
         return redirect()->route('admin.products.index')->with('status', "Product \"{$product->title}\" created.");
     }
 
     public function edit(int $product): View
     {
-        $product = Product::findOrFail($product);
+        $product = Product::with('variants')->findOrFail($product);
         $categories = Category::orderBy('name')->get();
 
         return view('admin.products.edit', compact('product', 'categories'));
@@ -121,6 +144,42 @@ class ProductController extends Controller
             'status' => $validated['status'],
             'images' => $images,
         ]);
+
+        if (! empty($validated['delete_variant_ids'])) {
+            $product->variants()->whereIn('id', $validated['delete_variant_ids'])->delete();
+        }
+
+        if (isset($validated['variants'])) {
+            $variantImages = $request->file('variant_images', []);
+            foreach ($validated['variants'] as $idx => $vData) {
+                $varImgPath = $vData['image'] ?? null;
+                if (isset($variantImages[$idx]) && $variantImages[$idx]->isValid()) {
+                    $uploadedVar = $uploader->upload($variantImages[$idx], 'revvmotiv/products/variants');
+                    $varImgPath = $uploadedVar['relative_path'] ?? $uploadedVar['secure_url'] ?? null;
+                }
+
+                $variantPayload = [
+                    'name' => $vData['name'],
+                    'sku' => $vData['sku'] ?? null,
+                    'price' => $vData['price'],
+                    'compare_at_price' => $vData['compare_at_price'] ?? null,
+                    'stock' => $vData['stock'] ?? 0,
+                    'attributes' => ! empty($vData['attributes']) ? (is_array($vData['attributes']) ? $vData['attributes'] : json_decode($vData['attributes'], true)) : null,
+                    'is_default' => ! empty($vData['is_default']),
+                    'sort_order' => $idx,
+                ];
+
+                if ($varImgPath !== null) {
+                    $variantPayload['image'] = $varImgPath;
+                }
+
+                if (! empty($vData['id'])) {
+                    $product->variants()->where('id', $vData['id'])->update($variantPayload);
+                } else {
+                    $product->variants()->create($variantPayload);
+                }
+            }
+        }
 
         return redirect()->route('admin.products.index')->with('status', "Product \"{$product->title}\" updated.");
     }

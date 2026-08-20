@@ -61,6 +61,11 @@ export async function Footer() {
               </h3>
               <ul className="flex flex-col gap-2.5 sm:gap-3.5 text-xs sm:text-sm font-medium text-ink-muted">
                 <li>
+                  <Link href="/faq" className="hover:text-red-500 transition-colors">
+                    FAQ &amp; Fitment Guide
+                  </Link>
+                </li>
+                <li>
                   <Link href="/policies/shipping-policy" className="hover:text-red-500 transition-colors">
                     Shipping Policy
                   </Link>

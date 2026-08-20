@@ -37,7 +37,7 @@ export function FeaturedProducts({ products: initialProducts = [] }: { products?
       >
         <div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-1 sm:mb-2">
-            Engineered Parts
+            Customised Parts
           </h2>
           <p className="text-xs sm:text-sm text-ink-muted font-medium tracking-wide">
             Select upgrades for maximum visual and functional impact.
@@ -52,7 +52,7 @@ export function FeaturedProducts({ products: initialProducts = [] }: { products?
       </motion.div>
 
       {/* Horizontal Swipe on Mobile / Grid on Desktop */}
-      <div className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div data-lenis-prevent className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x overscroll-x-contain sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
         {products.map((item, i) => (
           <motion.div
             key={item.id}

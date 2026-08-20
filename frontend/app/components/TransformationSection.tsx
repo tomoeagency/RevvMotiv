@@ -98,11 +98,11 @@ export function TransformationSection() {
                     Interactive Spec Comparison
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 bg-surface-alt border border-hairline rounded-lg p-1">
+                <div className="flex items-center gap-1 sm:gap-1.5 bg-surface-alt border border-hairline rounded-lg p-1">
                   <button
                     type="button"
                     onClick={() => setSliderPos(0)}
-                    className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded transition-all ${
+                    className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
                       sliderPos <= 10
                         ? "bg-neutral-800 text-white shadow-sm"
                         : "text-ink-muted hover:text-ink"
@@ -113,7 +113,7 @@ export function TransformationSection() {
                   <button
                     type="button"
                     onClick={() => setSliderPos(50)}
-                    className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded transition-all ${
+                    className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
                       sliderPos > 35 && sliderPos < 65
                         ? "bg-red-600 text-white shadow-sm"
                         : "text-ink-muted hover:text-ink"
@@ -124,7 +124,7 @@ export function TransformationSection() {
                   <button
                     type="button"
                     onClick={() => setSliderPos(100)}
-                    className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded transition-all ${
+                    className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
                       sliderPos >= 90
                         ? "bg-red-600 text-white shadow-sm"
                         : "text-ink-muted hover:text-ink"
@@ -142,6 +142,7 @@ export function TransformationSection() {
                 onMouseUp={() => setIsDragging(false)}
                 onMouseLeave={() => setIsDragging(false)}
                 onMouseMove={handleMouseMove}
+                onTouchStart={handleTouchMove}
                 onTouchMove={handleTouchMove}
                 data-lenis-prevent
                 className="relative aspect-[4/3] rounded-lg overflow-hidden border border-hairline select-none cursor-ew-resize bg-neutral-900 touch-pan-y"

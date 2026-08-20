@@ -85,7 +85,7 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
         {embeds.length > 0 ? (
           <InstagramReelsRow embeds={embeds} />
         ) : (
-          <div className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory scrollbar-none sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div data-lenis-prevent className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x overscroll-x-contain sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
             {GARAGE_GALLERY.map((reel, i) => (
               <motion.div
                 key={reel.id}

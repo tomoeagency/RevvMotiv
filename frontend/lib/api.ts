@@ -1,4 +1,4 @@
-import { FALLBACK_CATEGORIES } from "@/lib/constants";
+import { FALLBACK_CATEGORIES, FALLBACK_REVIEWS } from "@/lib/constants";
 
 // Central client for the Laravel backend — see
 // .claude/skills/api-integration/SKILL.md for the fetch pattern and
@@ -18,6 +18,21 @@ export interface Category {
   slug: string;
 }
 
+export interface ProductVariant {
+  id: number;
+  product_id?: number;
+  name: string;
+  sku?: string | null;
+  price: number;
+  compare_at_price?: number | null;
+  stock?: number;
+  in_stock?: boolean;
+  image?: string | null;
+  attributes?: Record<string, string> | null;
+  is_default?: boolean;
+  sort_order?: number;
+}
+
 export interface ApiProduct {
   id: number;
   title: string;
@@ -29,6 +44,7 @@ export interface ApiProduct {
   is_featured: boolean;
   images: string[];
   category: Category;
+  variants?: ProductVariant[];
   created_at: string;
 }
 
@@ -196,6 +212,8 @@ export interface EnquiryPayload {
 
 export interface OrderItemPayload {
   product_id: number;
+  variant_id?: number | null;
+  variant_name?: string | null;
   quantity: number;
 }
 
@@ -355,12 +373,13 @@ export async function getFeaturedReviews(): Promise<ApiResponse<Review[]>> {
     });
 
     if (!res.ok) {
-      return { data: [] };
+      return { data: FALLBACK_REVIEWS };
     }
 
-    return res.json();
+    const body = await res.json();
+    return body.data && body.data.length > 0 ? body : { data: FALLBACK_REVIEWS };
   } catch {
-    return { data: [] };
+    return { data: FALLBACK_REVIEWS };
   }
 }
 

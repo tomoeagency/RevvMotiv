@@ -20,6 +20,7 @@ import { FALLBACK_CATEGORIES } from "@/lib/constants";
 const PAGE_LINKS = [
   { href: "/work", label: "Our Work" },
   { href: "/gallery", label: "Gallery" },
+  { href: "/faq", label: "FAQ" },
   { href: "/about", label: "About Us" },
   { href: "/contact", label: "Contact Us" },
 ] as const;
@@ -171,11 +172,11 @@ export function Navbar() {
           })}
         </div>
 
-        <div className="flex items-center gap-4 flex-none ml-4">
+        <div className="flex items-center gap-1 sm:gap-2 flex-none ml-2 sm:ml-4">
           <Link
             href="/shop?focus=search"
             aria-label="Search products"
-            className="text-ink hover:text-[var(--brand-red)] transition-colors"
+            className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-ink hover:text-[var(--brand-red)] hover:bg-hover rounded-lg transition-colors cursor-pointer"
           >
             <Search className="w-5 h-5" />
           </Link>
@@ -183,11 +184,11 @@ export function Navbar() {
           <button
             onClick={openDrawer}
             aria-label={itemCount > 0 ? `${itemCount} ${itemCount === 1 ? "item" : "items"} in cart, open cart` : "Open cart (empty)"}
-            className="relative text-ink hover:text-[var(--brand-red)] transition-colors"
+            className="relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-ink hover:text-[var(--brand-red)] hover:bg-hover rounded-lg transition-colors cursor-pointer"
           >
             <ShoppingCart className="w-5 h-5" />
             {itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-[var(--brand-red)] to-[var(--brand-black)] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+              <span className="absolute top-1 right-1 bg-gradient-to-r from-[var(--brand-red)] to-[var(--brand-black)] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
                 {itemCount}
               </span>
             )}
@@ -196,7 +197,7 @@ export function Navbar() {
             onClick={() => setIsMenuOpen((v) => !v)}
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
-            className="md:hidden text-ink"
+            className="md:hidden w-9 h-9 flex items-center justify-center text-ink hover:bg-hover rounded-lg transition-colors cursor-pointer"
           >
             {isMenuOpen ? (
               <X className="w-6 h-6" />

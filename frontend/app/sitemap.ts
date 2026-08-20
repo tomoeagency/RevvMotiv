@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getProducts, getProjects } from "@/lib/api";
+import { getProducts, getProjects, getCategories } from "@/lib/api";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://revvmotiv.com";
 
-  // Static routes
+  // 1. Static Core Landing Pages
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}`,
@@ -13,16 +13,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/about`,
+      url: `${baseUrl}/shop`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/gallery`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     {
       url: `${baseUrl}/work`,
@@ -31,10 +25,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/shop`,
+      url: `${baseUrl}/about`,
       lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/faq`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/gallery`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/contact`,
@@ -80,7 +86,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic Product routes with complete pagination
+  // 2. Dynamic Category Routes
+  let categoryRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const { data: categories } = await getCategories();
+    if (categories && Array.isArray(categories)) {
+      categoryRoutes = categories.map((cat) => ({
+        url: `${baseUrl}/shop?category=${encodeURIComponent(cat.slug)}`,
+        lastModified: new Date(),
+        changeFrequency: "daily",
+        priority: 0.85,
+      }));
+    }
+  } catch (error) {
+    console.error("Failed to fetch categories for sitemap:", error);
+  }
+
+  // 3. Dynamic Product routes with complete pagination
   let productRoutes: MetadataRoute.Sitemap = [];
   try {
     let page = 1;
@@ -107,7 +129,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Failed to fetch products for sitemap:", error);
   }
 
-  // Dynamic Work Project routes
+  // 4. Dynamic Work Project routes
   let projectRoutes: MetadataRoute.Sitemap = [];
   try {
     const { data: projects } = await getProjects();
@@ -121,5 +143,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Failed to fetch projects for sitemap:", error);
   }
 
-  return [...staticRoutes, ...productRoutes, ...projectRoutes];
+  return [...staticRoutes, ...categoryRoutes, ...productRoutes, ...projectRoutes];
 }

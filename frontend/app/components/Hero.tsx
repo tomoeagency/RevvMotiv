@@ -38,7 +38,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative w-full min-h-[85vh] border-b border-hairline overflow-hidden bg-canvas flex flex-col justify-between">
+    <section className="relative w-full min-h-[85dvh] border-b border-hairline overflow-hidden bg-canvas flex flex-col justify-between">
       {/* 1. Full-Bleed Background Photo Layer */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {HERO_SLIDES.map((slide, idx) => (
@@ -167,13 +167,13 @@ export function Hero() {
           </motion.span>
         </AnimatePresence>
 
-        <div className="flex gap-2 flex-none">
+        <div className="flex gap-1.5 sm:gap-2 flex-none">
           {HERO_SLIDES.map((_, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentSlide(idx)}
               aria-label={`Go to slide ${idx + 1}`}
-              className="py-2 flex items-center"
+              className="p-2 sm:py-2 flex items-center justify-center cursor-pointer min-w-[32px] min-h-[32px]"
             >
               <motion.div
                 animate={{ width: idx === currentSlide ? 36 : 10 }}

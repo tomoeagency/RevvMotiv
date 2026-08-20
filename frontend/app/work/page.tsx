@@ -79,31 +79,31 @@ export default async function WorkPage() {
       </section>
 
       {/* 2. Build Metrics Highlights Bar */}
-      <section className="border-b border-hairline bg-surface-alt py-10">
-        <div className="max-w-screen-2xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="border-b border-hairline bg-surface-alt py-8 sm:py-10">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
           <div>
-            <div className="text-3xl font-black text-ink mb-1">
+            <div className="text-2xl sm:text-3xl font-black text-ink mb-1">
               {projects && projects.length > 0 ? projects.length : 6}
             </div>
-            <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
+            <div className="text-[10px] sm:text-xs font-bold text-ink-muted uppercase tracking-widest">
               Featured Builds
             </div>
           </div>
           <div>
-            <div className="text-3xl font-black text-ink mb-1">14+</div>
-            <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
+            <div className="text-2xl sm:text-3xl font-black text-ink mb-1">14+</div>
+            <div className="text-[10px] sm:text-xs font-bold text-ink-muted uppercase tracking-widest">
               Angle Views Documented
             </div>
           </div>
           <div>
-            <div className="text-3xl font-black text-ink mb-1">100%</div>
-            <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
+            <div className="text-2xl sm:text-3xl font-black text-ink mb-1">100%</div>
+            <div className="text-[10px] sm:text-xs font-bold text-ink-muted uppercase tracking-widest">
               Pre-Preg Carbon Fiber
             </div>
           </div>
           <div>
-            <div className="text-3xl font-black text-ink mb-1">0%</div>
-            <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
+            <div className="text-2xl sm:text-3xl font-black text-ink mb-1">0%</div>
+            <div className="text-[10px] sm:text-xs font-bold text-ink-muted uppercase tracking-widest">
               Drop-Shipping / 100% Fitted
             </div>
           </div>
@@ -111,7 +111,7 @@ export default async function WorkPage() {
       </section>
 
       {/* 3. Main Projects Grid */}
-      <section className="max-w-screen-2xl mx-auto px-6 py-20">
+      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-12 gap-4">
           <div>
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1">

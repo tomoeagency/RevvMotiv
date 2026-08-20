@@ -27,7 +27,7 @@ export function CategoryStrip({ categories }: { categories: Category[] }) {
           <Link
             key={cat.id}
             href={`/shop?category=${cat.slug}`}
-            className="flex-none snap-start px-3.5 py-1.5 rounded-lg bg-surface border border-hairline text-ink-muted hover:text-ink hover:border-red-500 text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-2xs active:scale-95"
+            className="flex-none snap-start min-h-[36px] px-3.5 py-1.5 rounded-lg bg-surface border border-hairline text-ink-muted hover:text-ink hover:border-red-500 text-[11px] font-bold uppercase tracking-wider transition-all flex items-center gap-1.5 shadow-2xs active:scale-95 cursor-pointer"
           >
             <span>{cat.name}</span>
             <ChevronRight className="w-3 h-3 text-ink-subtle" />

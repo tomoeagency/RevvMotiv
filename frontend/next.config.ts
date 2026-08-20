@@ -79,7 +79,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: "Content-Security-Policy",
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com; connect-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://lumberjack.razorpay.com https://api.revvmotiv.com http://api.revvmotiv.com http://127.0.0.1:8000; frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com; img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com https://api.revvmotiv.com http://api.revvmotiv.com https://*.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.razorpay.com; frame-ancestors 'none';",
+            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://api.razorpay.com; connect-src 'self' https://checkout.razorpay.com https://api.razorpay.com https://lumberjack.razorpay.com https://api.revvmotiv.com http://api.revvmotiv.com http://127.0.0.1:8000 http://localhost:8000; frame-src 'self' https://checkout.razorpay.com https://api.razorpay.com; img-src 'self' data: blob: https://images.unsplash.com https://res.cloudinary.com https://api.revvmotiv.com http://api.revvmotiv.com https://revvmotiv.com http://revvmotiv.com https://www.revvmotiv.com http://www.revvmotiv.com https://3xe.b8b.mytemp.website http://3xe.b8b.mytemp.website http://127.0.0.1:* http://localhost:* https://*.razorpay.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; object-src 'none'; base-uri 'self'; form-action 'self' https://checkout.razorpay.com; frame-ancestors 'none';",
           },
         ],
       },
@@ -117,12 +117,36 @@ const nextConfig: NextConfig = {
         hostname: "api.revvmotiv.com",
       },
       {
+        protocol: "https",
+        hostname: "revvmotiv.com",
+      },
+      {
+        protocol: "http",
+        hostname: "revvmotiv.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.revvmotiv.com",
+      },
+      {
+        protocol: "http",
+        hostname: "www.revvmotiv.com",
+      },
+      {
         protocol: "http",
         hostname: "3xe.b8b.mytemp.website",
       },
       {
         protocol: "https",
         hostname: "3xe.b8b.mytemp.website",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
       },
     ],
   },

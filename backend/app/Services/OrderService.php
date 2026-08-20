@@ -38,6 +38,11 @@ class OrderService
                 ->get()
                 ->keyBy('id');
 
+            $variantIds = collect($input['items'])->pluck('variant_id')->filter()->unique();
+            $variants = $variantIds->isNotEmpty()
+                ? \App\Models\ProductVariant::whereIn('id', $variantIds)->lockForUpdate()->get()->keyBy('id')
+                : collect();
+
             foreach ($input['items'] as $item) {
                 if (! $products->has($item['product_id'])) {
                     throw ValidationException::withMessages([
@@ -46,16 +51,28 @@ class OrderService
                 }
 
                 $product = $products[$item['product_id']];
-                if ($product->stock < $item['quantity']) {
+                $variant = ! empty($item['variant_id']) ? $variants->get($item['variant_id']) : null;
+
+                if ($variant) {
+                    if ($variant->stock < $item['quantity']) {
+                        throw ValidationException::withMessages([
+                            'items' => ["\"{$product->title} ({$variant->name})\" only has {$variant->stock} in stock."],
+                        ]);
+                    }
+                } elseif ($product->stock < $item['quantity']) {
                     throw ValidationException::withMessages([
                         'items' => ["\"{$product->title}\" only has {$product->stock} in stock."],
                     ]);
                 }
             }
 
-            $subtotal = collect($input['items'])->sum(
-                fn ($item) => ($item['admin_unit_price'] ?? $item['unit_price'] ?? $products[$item['product_id']]->price) * $item['quantity']
-            );
+            $subtotal = collect($input['items'])->sum(function ($item) use ($products, $variants) {
+                $product = $products[$item['product_id']];
+                $variant = ! empty($item['variant_id']) ? $variants->get($item['variant_id']) : null;
+                $defaultPrice = $variant ? $variant->price : $product->price;
+                $price = $item['admin_unit_price'] ?? $item['unit_price'] ?? $defaultPrice;
+                return $price * $item['quantity'];
+            });
 
             // Coupon is validated and discount applied
             $coupon = null;
@@ -101,12 +118,16 @@ class OrderService
 
             foreach ($input['items'] as $item) {
                 $product = $products[$item['product_id']];
+                $variant = ! empty($item['variant_id']) ? $variants->get($item['variant_id']) : null;
+                $defaultPrice = $variant ? $variant->price : $product->price;
                 // Authoritative price: customer requests cannot override price; admin_unit_price allowed for manual orders
-                $unitPrice = $item['admin_unit_price'] ?? $item['unit_price'] ?? $product->price;
+                $unitPrice = $item['admin_unit_price'] ?? $item['unit_price'] ?? $defaultPrice;
 
                 $order->items()->create([
                     'product_id' => $product->id,
+                    'variant_id' => $variant?->id,
                     'product_title' => $product->title,
+                    'variant_name' => $variant?->name ?? ($item['variant_name'] ?? null),
                     'quantity' => $item['quantity'],
                     'unit_price' => $unitPrice,
                     'cost_price_applied' => $product->cost_price,
@@ -115,6 +136,9 @@ class OrderService
 
                 // Only decrement stock immediately for manual admin offline sales
                 if (! $withRazorpay) {
+                    if ($variant) {
+                        $variant->decrement('stock', $item['quantity']);
+                    }
                     $product->decrement('stock', $item['quantity']);
                 }
             }
@@ -161,7 +185,15 @@ class OrderService
                     ->get()
                     ->keyBy('id');
 
+                $itemVariantIds = $order->items->pluck('variant_id')->filter()->unique();
+                $lockedVariants = $itemVariantIds->isNotEmpty()
+                    ? \App\Models\ProductVariant::whereIn('id', $itemVariantIds)->lockForUpdate()->get()->keyBy('id')
+                    : collect();
+
                 foreach ($order->items as $item) {
+                    if ($item->variant_id && $lockedVariants->has($item->variant_id)) {
+                        $lockedVariants[$item->variant_id]->decrement('stock', $item->quantity);
+                    }
                     if ($lockedProducts->has($item->product_id)) {
                         $lockedProducts[$item->product_id]->decrement('stock', $item->quantity);
                     }

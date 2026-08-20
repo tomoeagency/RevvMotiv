@@ -215,19 +215,23 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
           </div>
 
           {/* Mobile Slide Dots */}
-          <div className="flex items-center justify-center gap-1.5 mt-4">
+          <div className="flex items-center justify-center gap-1 mt-4">
             {reviews.map((_, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => scrollMobileToIndex(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === activeMobileIndex
-                    ? "w-6 bg-red-600"
-                    : "w-1.5 bg-surface border border-hairline hover:bg-hover"
-                }`}
+                className="p-2 flex items-center justify-center focus:outline-hidden touch-manipulation cursor-pointer"
                 aria-label={`Go to review ${i + 1}`}
-              />
+              >
+                <span
+                  className={`h-1.5 rounded-full transition-all duration-300 block ${
+                    i === activeMobileIndex
+                      ? "w-6 bg-red-600"
+                      : "w-2 bg-surface border border-hairline hover:bg-hover"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>

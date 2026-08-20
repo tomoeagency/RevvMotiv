@@ -22,9 +22,9 @@ export function WhatsAppFab({ digits }: { digits: string }) {
       style={{ pointerEvents: visible ? "auto" : "none" }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.96 }}
-      className="fixed right-6 bottom-[88px] z-40 w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_0_30px_rgba(37,211,102,0.4)]"
+      className="fixed right-4 sm:right-6 bottom-20 sm:bottom-[88px] z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-[0_0_30px_rgba(37,211,102,0.4)] cursor-pointer"
     >
-      <WhatsAppIcon className="w-7 h-7" />
+      <WhatsAppIcon className="w-6 h-6 sm:w-7 sm:h-7" />
     </motion.a>
   );
 }

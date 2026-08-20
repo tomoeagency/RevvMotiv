@@ -20,9 +20,9 @@ export function ConsultantFabTrigger() {
       whileTap={{ scale: 0.96 }}
       onClick={open}
       aria-label="Talk to our consultant"
-      className="fixed right-6 bottom-6 z-40 w-14 h-14 rounded-full brand-gradient-flow text-white flex items-center justify-center shadow-[0_0_30px_rgba(201,24,43,0.35)]"
+      className="fixed right-4 sm:right-6 bottom-4 sm:bottom-6 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full brand-gradient-flow text-white flex items-center justify-center shadow-[0_0_30px_rgba(201,24,43,0.35)] cursor-pointer"
     >
-      <Headset className="w-6 h-6" />
+      <Headset className="w-5 h-5 sm:w-6 sm:h-6" />
     </motion.button>
   );
 }

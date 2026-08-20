@@ -3,8 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ShieldCheck, Truck, Video, CheckCircle2 } from "lucide-react";
 import { getProduct, getProducts, getProductReviews, formatPrice } from "@/lib/api";
-import { AddToCartButton } from "@/app/components/AddToCartButton";
-import { ProductGallery } from "@/app/components/ProductGallery";
+import { ProductDetailInteractive } from "@/app/components/ProductDetailInteractive";
 import { ReviewsSection } from "@/app/components/ReviewsSection";
 import { ClosingCta } from "@/app/components/ClosingCta";
 import { ProductCard } from "@/app/components/ProductCard";
@@ -61,23 +60,91 @@ export default async function ProductDetailPage({
     .filter((p) => p.id !== product.id)
     .slice(0, RELATED_COUNT);
 
-  const productSchema = {
+  const hasRealReviews = reviews?.data && reviews.data.length > 0;
+  const reviewCount = reviews?.meta?.total || reviews?.data?.length || 0;
+  const avgRating = reviews?.meta?.average_rating || 5;
+
+  const productSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title,
     description: product.description,
     image: product.images,
     sku: `RM-${product.id}`,
+    category: product.category.name,
+    brand: {
+      "@type": "Brand",
+      name: "RevvMotiv",
+    },
     offers: {
       "@type": "Offer",
+      url: `https://revvmotiv.com/products/${product.slug}`,
       price: product.price,
       priceCurrency: "INR",
-      availability: "https://schema.org/InStock",
+      priceValidUntil: "2026-12-31",
+      itemCondition: "https://schema.org/NewCondition",
+      availability: product.in_stock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "RevvMotiv",
       },
     },
+  };
+
+  if (hasRealReviews) {
+    productSchema.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: avgRating,
+      reviewCount: reviewCount,
+      bestRating: "5",
+      worstRating: "1",
+    };
+    productSchema.review = reviews.data.slice(0, 5).map((rev) => ({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: rev.customer_name || "Verified Customer",
+      },
+      datePublished: rev.created_at || new Date().toISOString(),
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: rev.rating,
+        bestRating: "5",
+        worstRating: "1",
+      },
+      reviewBody: rev.comment,
+    }));
+  }
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://revvmotiv.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Shop",
+        item: "https://revvmotiv.com/shop",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.category.name,
+        item: `https://revvmotiv.com/shop?category=${encodeURIComponent(product.category.slug)}`,
+      },
+      {
+        "@type": "ListItem",
+        position: 4,
+        name: product.title,
+        item: `https://revvmotiv.com/products/${product.slug}`,
+      },
+    ],
   };
 
   return (
@@ -86,72 +153,65 @@ export default async function ProductDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
-      <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-6 max-w-screen-2xl mx-auto w-full">
-        <Link
-          href="/shop"
-          className="inline-flex items-center gap-2 text-xs font-bold text-ink-muted uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors mb-10 group"
-        >
-          <ArrowLeft className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" /> Back to Catalog
-        </Link>
+      <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-4 sm:px-6 max-w-screen-2xl mx-auto w-full">
+        {/* Visual Breadcrumb Navigation */}
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-xs text-ink-subtle mb-8">
+          <Link href="/" className="hover:text-ink transition-colors">Home</Link>
+          <span>/</span>
+          <Link href="/shop" className="hover:text-ink transition-colors">Shop</Link>
+          <span>/</span>
+          <Link href={`/shop?category=${product.category.slug}`} className="hover:text-ink transition-colors">
+            {product.category.name}
+          </Link>
+          <span>/</span>
+          <span className="text-ink font-semibold truncate max-w-[200px] sm:max-w-xs">{product.title}</span>
+        </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-          <ProductGallery images={product.images} title={product.title} />
+        <ProductDetailInteractive product={product} />
 
-          <div className="flex flex-col justify-center sticky top-28">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest">
-                {product.category.name}
-              </span>
-              <span className="text-ink-subtle">·</span>
-              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" /> In Stock & Ready to Dispatch
-              </span>
+        {/* Product FAQ Accordion / Quick Answers (AEO) */}
+        <section className="mt-16 pt-12 border-t border-hairline max-w-3xl">
+          <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
+            Product Questions & Answers
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight mb-6 text-ink">
+            Frequently Asked About This Upgrade
+          </h2>
+
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl border border-hairline bg-surface">
+              <h3 className="text-sm font-bold text-ink mb-1.5">
+                Does this {product.title} require bumper cutting or drilling?
+              </h3>
+              <p className="text-xs text-ink-muted leading-relaxed">
+                Most RevvMotiv splitters and diffusers use factory underbody clips and mounting holes for direct bolt-on fitment. For high-downforce applications, optional stainless steel support hardware is included.
+              </p>
             </div>
 
-            <h1 className="text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-4">
-              {product.title}
-            </h1>
-
-            <div className="flex items-baseline gap-3 mb-2">
-              <span className="text-2xl sm:text-3xl font-bold text-ink font-mono">
-                {formatPrice(product.price)}
-              </span>
-              {product.compare_at_price &&
-                product.compare_at_price > product.price && (
-                  <span className="text-sm text-ink-subtle line-through">
-                    {formatPrice(product.compare_at_price)}
-                  </span>
-                )}
+            <div className="p-4 rounded-xl border border-hairline bg-surface">
+              <h3 className="text-sm font-bold text-ink mb-1.5">
+                How long will it take to arrive at my address?
+              </h3>
+              <p className="text-xs text-ink-muted leading-relaxed">
+                Orders are dispatched within 24–48 hours in reinforced protective crating. Transit time is 3–5 business days for major metropolitan areas and 5–7 business days for all other PIN codes across India.
+              </p>
             </div>
 
-            <p className="text-[11px] text-ink-subtle uppercase tracking-wider mb-6">
-              All prices are final — no hidden charges.
-            </p>
-
-            <p className="text-sm text-ink-muted font-medium leading-relaxed mb-6 max-w-md">
-              {product.description}
-            </p>
-
-            {/* Quality & Policy Badges */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-3.5 rounded border border-hairline bg-surface mb-8 max-w-md text-xs">
-              <div className="flex items-center gap-2 text-ink">
-                <ShieldCheck className="w-4 h-4 text-red-500 flex-none" />
-                <span>100% Fitment Guarantee</span>
-              </div>
-              <div className="flex items-center gap-2 text-ink">
-                <Truck className="w-4 h-4 text-emerald-400 flex-none" />
-                <span>Standard Tracked Courier (5–7 Days)</span>
-              </div>
-              <div className="flex items-center gap-2 text-ink-muted col-span-full pt-1 border-t border-hairline text-[11px]">
-                <Video className="w-3.5 h-3.5 text-ink-subtle flex-none" />
-                <span>Note: Uninterrupted unboxing video required for damage claims.</span>
-              </div>
+            <div className="p-4 rounded-xl border border-hairline bg-surface">
+              <h3 className="text-sm font-bold text-ink mb-1.5">
+                Can I pay partially online and balance on Cash on Delivery?
+              </h3>
+              <p className="text-xs text-ink-muted leading-relaxed">
+                Yes. At checkout, you can choose to pay a 20% advance online via Razorpay (UPI, Credit/Debit card, Net Banking) and the remaining 80% balance on delivery.
+              </p>
             </div>
-
-            <AddToCartButton product={product} />
           </div>
-        </div>
+        </section>
 
         <ReviewsSection reviews={reviews} />
 
@@ -163,7 +223,7 @@ export default async function ProductDetailPage({
             <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tight mb-8 text-ink">
               You May Also Like
             </h2>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 md:gap-8">
               {relatedProducts.map((related) => (
                 <ProductCard key={related.id} product={related} />
               ))}

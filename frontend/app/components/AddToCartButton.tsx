@@ -3,27 +3,37 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
-import type { ApiProduct } from "@/lib/api";
+import type { ApiProduct, ProductVariant } from "@/lib/api";
 import { useCart, MAX_CART_QUANTITY } from "@/lib/cart-context";
 import { PrimaryCtaButton } from "@/app/components/PrimaryCtaButton";
 
-export function AddToCartButton({ product }: { product: ApiProduct }) {
+export function AddToCartButton({
+  product,
+  selectedVariant = null,
+}: {
+  product: ApiProduct;
+  selectedVariant?: ProductVariant | null;
+}) {
   const { addItem, openDrawer } = useCart();
   const [quantity, setQuantity] = useState(1);
 
-  if (!product.in_stock) {
+  const isAvailable = selectedVariant
+    ? (selectedVariant.in_stock !== false && (selectedVariant.stock ?? 1) > 0)
+    : product.in_stock;
+
+  if (!isAvailable) {
     return (
       <button
         disabled
         className="w-full sm:w-auto px-12 py-4 border border-hairline text-ink-subtle text-sm font-bold uppercase tracking-widest cursor-not-allowed rounded-xl"
       >
-        Out of Stock
+        {selectedVariant ? "Selected Option Out of Stock" : "Out of Stock"}
       </button>
     );
   }
 
   function handleAdd() {
-    addItem(product, quantity);
+    addItem(product, quantity, selectedVariant);
     openDrawer();
   }
 

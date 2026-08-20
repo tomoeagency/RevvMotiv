@@ -10,13 +10,15 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { ApiProduct } from "@/lib/api";
+import type { ApiProduct, ProductVariant } from "@/lib/api";
 
 export interface CartItem {
   productId: number;
+  variantId?: number | null;
+  variantName?: string | null;
   slug: string;
   title: string;
-  price: number; // rupees, snapshot at add-time
+  price: number; // rupees, snapshot at add-time (variant price if present)
   image: string;
   quantity: number;
 }
@@ -26,10 +28,14 @@ interface CartState {
   isDrawerOpen: boolean;
 }
 
+function getItemKey(item: { productId: number; variantId?: number | null }): string {
+  return `${item.productId}-${item.variantId || "default"}`;
+}
+
 type CartAction =
-  | { type: "ADD_ITEM"; product: ApiProduct; quantity: number }
-  | { type: "REMOVE_ITEM"; productId: number }
-  | { type: "UPDATE_QUANTITY"; productId: number; quantity: number }
+  | { type: "ADD_ITEM"; product: ApiProduct; quantity: number; variant?: ProductVariant | null }
+  | { type: "REMOVE_ITEM"; productId: number; variantId?: number | null }
+  | { type: "UPDATE_QUANTITY"; productId: number; quantity: number; variantId?: number | null }
   | { type: "CLEAR_CART" }
   | { type: "OPEN_DRAWER" }
   | { type: "CLOSE_DRAWER" }
@@ -37,61 +43,75 @@ type CartAction =
 
 const STORAGE_KEY = "revvmotiv-cart";
 
-// Matches the backend's hard cap (StoreOrderRequest: items.*.quantity max:99)
-// — the API only exposes an `in_stock` boolean, not a real stock count, so
-// this is the only per-line-item limit the client can actually enforce.
 export const MAX_CART_QUANTITY = 99;
 
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "ADD_ITEM": {
-      const { product, quantity } = action;
-      const existing = state.items.find((i) => i.productId === product.id);
+      const { product, quantity, variant } = action;
+      const targetKey = `${product.id}-${variant?.id || "default"}`;
+      const existingIndex = state.items.findIndex(
+        (i) => `${i.productId}-${i.variantId || "default"}` === targetKey
+      );
 
-      const items = existing
-        ? state.items.map((i) =>
-            i.productId === product.id
-              ? {
-                  ...i,
-                  quantity: Math.min(
-                    i.quantity + quantity,
-                    MAX_CART_QUANTITY
-                  ),
-                }
-              : i
-          )
-        : [
-            ...state.items,
-            {
-              productId: product.id,
-              slug: product.slug,
-              title: product.title,
-              price: product.price,
-              image: product.images[0] ?? "",
-              quantity: Math.min(quantity, MAX_CART_QUANTITY),
-            },
-          ];
+      const price = variant?.price ?? product.price;
+      const image = variant?.image || product.images[0] || "";
+      const variantName = variant?.name || null;
+      const variantId = variant?.id || null;
+
+      let items: CartItem[];
+      if (existingIndex > -1) {
+        items = state.items.map((item, idx) =>
+          idx === existingIndex
+            ? {
+                ...item,
+                quantity: Math.min(item.quantity + quantity, MAX_CART_QUANTITY),
+              }
+            : item
+        );
+      } else {
+        items = [
+          ...state.items,
+          {
+            productId: product.id,
+            variantId,
+            variantName,
+            slug: product.slug,
+            title: product.title,
+            price,
+            image,
+            quantity: Math.min(quantity, MAX_CART_QUANTITY),
+          },
+        ];
+      }
 
       return { ...state, items };
     }
 
-    case "REMOVE_ITEM":
+    case "REMOVE_ITEM": {
+      const targetKey = `${action.productId}-${action.variantId || "default"}`;
       return {
         ...state,
-        items: state.items.filter((i) => i.productId !== action.productId),
+        items: state.items.filter(
+          (i) => `${i.productId}-${i.variantId || "default"}` !== targetKey
+        ),
       };
+    }
 
     case "UPDATE_QUANTITY": {
+      const targetKey = `${action.productId}-${action.variantId || "default"}`;
       if (action.quantity <= 0) {
         return {
           ...state,
-          items: state.items.filter((i) => i.productId !== action.productId),
+          items: state.items.filter(
+            (i) => `${i.productId}-${i.variantId || "default"}` !== targetKey
+          ),
         };
       }
       return {
         ...state,
         items: state.items.map((i) =>
-          i.productId === action.productId
+          `${i.productId}-${i.variantId || "default"}` === targetKey
             ? { ...i, quantity: Math.min(action.quantity, MAX_CART_QUANTITY) }
             : i
         ),
@@ -119,20 +139,13 @@ interface CartContextValue {
   items: CartItem[];
   itemCount: number;
   subtotal: number;
-  addItem: (product: ApiProduct, quantity?: number) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  addItem: (product: ApiProduct, quantity?: number, variant?: ProductVariant | null) => void;
+  removeItem: (productId: number, variantId?: number | null) => void;
+  updateQuantity: (productId: number, quantity: number, variantId?: number | null) => void;
   clearCart: () => void;
   isDrawerOpen: boolean;
   openDrawer: () => void;
   closeDrawer: () => void;
-  // For a Link that's *also* navigating away (Checkout, Continue Shopping)
-  // — closes the drawer without touching the URL, since the Link's own
-  // navigation is about to set the real destination URL. Using closeDrawer
-  // there instead would race it: the URL-restore is reactive (a useEffect,
-  // async relative to the click) and can resolve after Next's own
-  // navigation, silently overwriting /checkout back to whatever page the
-  // drawer was opened from.
   closeDrawerForNavigation: () => void;
 }
 
@@ -236,11 +249,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items: state.items,
       itemCount,
       subtotal,
-      addItem: (product, quantity = 1) =>
-        dispatch({ type: "ADD_ITEM", product, quantity }),
-      removeItem: (productId) => dispatch({ type: "REMOVE_ITEM", productId }),
-      updateQuantity: (productId, quantity) =>
-        dispatch({ type: "UPDATE_QUANTITY", productId, quantity }),
+      addItem: (product, quantity = 1, variant = null) =>
+        dispatch({ type: "ADD_ITEM", product, quantity, variant }),
+      removeItem: (productId, variantId = null) =>
+        dispatch({ type: "REMOVE_ITEM", productId, variantId }),
+      updateQuantity: (productId, quantity, variantId = null) =>
+        dispatch({ type: "UPDATE_QUANTITY", productId, quantity, variantId }),
       clearCart: () => dispatch({ type: "CLEAR_CART" }),
       isDrawerOpen: state.isDrawerOpen,
       openDrawer: () => dispatch({ type: "OPEN_DRAWER" }),

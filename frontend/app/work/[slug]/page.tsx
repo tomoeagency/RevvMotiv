@@ -50,7 +50,7 @@ export default async function ProjectDetailPage({
 
   return (
     <>
-      <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-6 max-w-screen-2xl mx-auto w-full">
+      <div className="pt-6 sm:pt-8 md:pt-12 pb-20 px-4 sm:px-6 max-w-screen-2xl mx-auto w-full">
         <Link
           href="/work"
           className="inline-flex items-center gap-2 text-xs font-bold text-ink-muted uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors mb-8"

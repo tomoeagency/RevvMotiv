@@ -106,19 +106,45 @@ export default async function ShopPage({
     return `/shop${qs ? `?${qs}` : ""}`;
   }
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://revvmotiv.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: activeCategory ? activeCategory.name : "Shop",
+        item: activeCategory
+          ? `https://revvmotiv.com/shop?category=${encodeURIComponent(activeCategory.slug)}`
+          : "https://revvmotiv.com/shop",
+      },
+    ],
+  };
+
   return (
-    <div className="w-full bg-carbon text-ink">
-      {/* 1. Hero Section */}
-      <section className="relative border-b border-hairline bg-canvas overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
-        <div className="relative max-w-screen-2xl mx-auto px-6 py-6 sm:py-8 md:py-14">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <div className="w-full bg-carbon text-ink">
+        {/* 1. Hero Section */}
+        <section className="relative border-b border-hairline bg-canvas overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
+          <div className="relative max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-14">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7">
               <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
                 Store Catalog & Performance Upgrades
               </span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight leading-[0.95] mb-6">
-                {activeCategory ? activeCategory.name : "Engineered Parts Catalog"}
+                {activeCategory ? activeCategory.name : "Customised Parts Catalog"}
               </h1>
               <p className="text-ink-muted text-base md:text-lg leading-relaxed mb-6 max-w-2xl">
                 Precision 3D laser-scanned splitters, diffusers, spoilers, custom tyre stickers, and OLED lighting components engineered for maximum visual and functional downforce.
@@ -157,9 +183,9 @@ export default async function ShopPage({
       </section>
 
       {/* 2. Main Shop Area */}
-      <section className="max-w-screen-2xl mx-auto px-6 py-16 md:py-20">
+      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-10 sm:py-16 md:py-20">
         {/* Mobile/Tablet Category Filter Scrollbar */}
-        <div className="lg:hidden -mx-6 px-6 mb-8 flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2">
+        <div data-lenis-prevent className="lg:hidden -mx-4 px-4 sm:-mx-6 sm:px-6 mb-6 sm:mb-8 flex items-center gap-2 overflow-x-auto hide-scrollbar pb-2 touch-pan-x overscroll-x-contain">
           <CategoryChip href={buildHref({ category: undefined })} label="All Products" active={!category} />
           {categories.map((cat) => (
             <CategoryChip
@@ -242,7 +268,8 @@ export default async function ShopPage({
         heading="Can't Find What You Need?"
         body="Talk to our master technicians and we'll help you source the exact fitment for your car."
       />
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -281,7 +308,7 @@ function CategoryChip({
   return (
     <Link
       href={href}
-      className={`flex-none px-4 py-2 text-[11px] font-bold uppercase tracking-widest border rounded transition-all whitespace-nowrap ${
+      className={`flex-none min-h-[36px] px-4 py-2 text-[11px] font-bold uppercase tracking-widest border rounded transition-all whitespace-nowrap flex items-center cursor-pointer ${
         active
           ? "border-red-500 text-white brand-gradient-flow shadow-sm shadow-red-500/20"
           : "border-hairline text-ink-muted hover:border-hairline-strong hover:text-ink bg-surface"

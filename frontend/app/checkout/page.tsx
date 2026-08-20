@@ -148,6 +148,8 @@ export default function CheckoutPage() {
 
   const cartItemPayload = items.map((i) => ({
     product_id: i.productId,
+    variant_id: i.variantId || null,
+    variant_name: i.variantName || null,
     quantity: i.quantity,
   }));
 
@@ -395,10 +397,13 @@ export default function CheckoutPage() {
             value={form.customer_name}
             onChange={(v) => handleChange("customer_name", v)}
             errors={fieldErrors.customer_name}
+            autoComplete="name"
           />
           <Field
             label="Email"
             type="email"
+            inputMode="email"
+            autoComplete="email"
             value={form.customer_email}
             onChange={(v) => handleChange("customer_email", v)}
             errors={fieldErrors.customer_email}
@@ -406,6 +411,8 @@ export default function CheckoutPage() {
           <Field
             label="Phone"
             type="tel"
+            inputMode="tel"
+            autoComplete="tel"
             value={form.customer_phone}
             onChange={(v) => handleChange("customer_phone", v)}
             errors={fieldErrors.customer_phone}
@@ -433,6 +440,7 @@ export default function CheckoutPage() {
                 <input
                   id="checkout-field-house-no"
                   required
+                  autoComplete="address-line1"
                   placeholder="e.g. Flat 402, Tower B, Galaxy Heights"
                   value={address.house_no}
                   onChange={(e) => handleAddressChange("house_no", e.target.value)}
@@ -453,6 +461,7 @@ export default function CheckoutPage() {
                 <input
                   id="checkout-field-area"
                   required
+                  autoComplete="address-line2"
                   placeholder="e.g. Sector 62, Near Metro Station"
                   value={address.area}
                   onChange={(e) => handleAddressChange("area", e.target.value)}
@@ -492,6 +501,7 @@ export default function CheckoutPage() {
                   maxLength={6}
                   pattern="[0-9]{6}"
                   inputMode="numeric"
+                  autoComplete="postal-code"
                   placeholder="e.g. 201301"
                   value={address.pincode}
                   onChange={(e) => {
@@ -515,6 +525,7 @@ export default function CheckoutPage() {
                 <input
                   id="checkout-field-city"
                   required
+                  autoComplete="address-level2"
                   placeholder="e.g. Greater Noida"
                   value={address.city}
                   onChange={(e) => handleAddressChange("city", e.target.value)}
@@ -535,6 +546,7 @@ export default function CheckoutPage() {
                 <select
                   id="checkout-field-state"
                   required
+                  autoComplete="address-level1"
                   value={address.state}
                   onChange={(e) => handleAddressChange("state", e.target.value)}
                   className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded cursor-pointer"
@@ -659,8 +671,8 @@ export default function CheckoutPage() {
 
           <div className="flex flex-col gap-4">
             {items.map((item) => (
-              <div key={item.productId} className="flex gap-4">
-                <div className="relative w-16 h-16 flex-none bg-surface border border-hairline overflow-hidden">
+              <div key={`${item.productId}-${item.variantId || 'default'}`} className="flex gap-4">
+                <div className="relative w-16 h-16 flex-none bg-surface border border-hairline overflow-hidden rounded">
                   <Image
                     src={item.image}
                     alt={item.title}
@@ -670,9 +682,16 @@ export default function CheckoutPage() {
                   />
                 </div>
                 <div className="flex-1 flex flex-col justify-between min-w-0">
-                  <span className="text-sm font-bold text-ink truncate">
-                    {item.title}
-                  </span>
+                  <div className="min-w-0">
+                    <span className="text-sm font-bold text-ink truncate block">
+                      {item.title}
+                    </span>
+                    {item.variantName && (
+                      <span className="inline-block px-1.5 py-0.5 mt-0.5 rounded bg-red-500/10 border border-red-500/20 text-[10px] font-bold text-red-500 uppercase tracking-wider">
+                        {item.variantName}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-xs text-ink-muted">
                     Qty {item.quantity}
                   </span>
@@ -818,12 +837,16 @@ function Field({
   onChange,
   errors,
   type = "text",
+  inputMode,
+  autoComplete,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   errors?: string[];
   type?: string;
+  inputMode?: "text" | "tel" | "email" | "numeric";
+  autoComplete?: string;
 }) {
   const inputId = `checkout-field-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 
@@ -831,17 +854,19 @@ function Field({
     <div>
       <label
         htmlFor={inputId}
-        className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2"
+        className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
       >
-        {label}
+        {label} <span className="text-red-500">*</span>
       </label>
       <input
         id={inputId}
         required
         type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-surface border border-hairline focus:border-[var(--brand-red)] outline-none px-4 py-3 text-sm text-ink transition-colors"
+        className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
       />
       {errors?.map((msg) => (
         <p key={msg} className="text-xs text-red-400 mt-1">

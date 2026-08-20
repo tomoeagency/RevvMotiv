@@ -9,6 +9,13 @@ class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $normalizedImages = collect($this->images ?? [])->map(function ($img) {
+            if (is_string($img) && preg_match('#https?://[^/]+(/uploads/.*)#', $img, $matches)) {
+                return $matches[1];
+            }
+            return $img;
+        })->values()->all();
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -19,8 +26,9 @@ class ProductResource extends JsonResource
             'in_stock' => $this->stock > 0,
             'fitment' => $this->fitment,
             'is_featured' => (bool) $this->is_featured,
-            'images' => $this->images ?? [],
+            'images' => $normalizedImages,
             'category' => new CategoryResource($this->whenLoaded('category')),
+            'variants' => ProductVariantResource::collection($this->variants),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }

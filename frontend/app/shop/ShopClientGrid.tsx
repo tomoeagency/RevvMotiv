@@ -171,7 +171,7 @@ export function ShopClientGrid({
             onClick={() => handleLayoutChange("single")}
             aria-label="Single Large Card View"
             title="Single Large Card View"
-            className={`p-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
+            className={`min-h-[34px] px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
               layoutMode === "single"
                 ? "bg-red-600 text-white shadow-sm font-bold"
                 : "text-ink-muted hover:text-ink hover:bg-hover"
@@ -187,7 +187,7 @@ export function ShopClientGrid({
             onClick={() => handleLayoutChange("grid")}
             aria-label="4-Grid 2x2 View"
             title="4-Grid 2x2 View"
-            className={`p-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
+            className={`min-h-[34px] px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
               layoutMode === "grid"
                 ? "bg-red-600 text-white shadow-sm font-bold"
                 : "text-ink-muted hover:text-ink hover:bg-hover"
@@ -203,7 +203,7 @@ export function ShopClientGrid({
             onClick={() => handleLayoutChange("list")}
             aria-label="List Row View"
             title="List Row View"
-            className={`p-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
+            className={`min-h-[34px] px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer ${
               layoutMode === "list"
                 ? "bg-red-600 text-white shadow-sm font-bold"
                 : "text-ink-muted hover:text-ink hover:bg-hover"

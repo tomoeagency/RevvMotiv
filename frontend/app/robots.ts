@@ -25,6 +25,10 @@ export default function robots(): MetadataRoute.Robots {
           "anthropic-ai",
           "Google-Extended",
           "Applebot-Extended",
+          "CCBot",
+          "FacebookBot",
+          "Bytespider",
+          "cohere-ai",
         ],
         allow: ["/", "/llms.txt", "/llms-full.txt"],
         disallow: [

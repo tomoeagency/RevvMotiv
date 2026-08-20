@@ -4,7 +4,7 @@ import { ArrowLeft, Home, AlertCircle } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <main className="relative min-h-[85vh] flex items-center justify-center bg-canvas overflow-hidden px-6 lg:px-12">
+    <main className="relative min-h-[85dvh] flex items-center justify-center bg-canvas overflow-hidden px-4 sm:px-6 lg:px-12">
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0">
         {/* Subtle grid */}

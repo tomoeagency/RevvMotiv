@@ -25,12 +25,26 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased font-sans flex flex-col min-h-full">
-    <div class="flex flex-1 min-h-screen">
+    <div class="flex flex-1 min-h-screen relative" x-data="{ sidebarOpen: false }">
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="admin-sidebar-backdrop"
+             onclick="toggleAdminSidebar()"
+             class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 hidden lg:hidden transition-opacity"></div>
+
         <!-- Sidebar Navigation -->
-        <aside class="admin-sidebar sticky top-0 z-30 flex h-screen w-64 shrink-0 flex-col bg-[#0f1c2e] text-slate-200 border-r border-slate-800/80">
+        <aside id="admin-sidebar"
+               class="fixed lg:sticky top-0 z-50 flex h-screen w-64 shrink-0 flex-col bg-[#0f1c2e] text-slate-200 border-r border-slate-800/80 -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <!-- Brand Logo Area -->
-            <div class="flex items-center justify-center bg-white px-5 py-4 border-b border-slate-200">
-                <img src="{{ asset('images/logo.png') }}" alt="RevvMotiv" class="block w-[180px] max-w-full h-auto">
+            <div class="flex items-center justify-between bg-white px-5 py-4 border-b border-slate-200">
+                <img src="{{ asset('images/logo.png') }}" alt="RevvMotiv" class="block w-[150px] sm:w-[180px] max-w-full h-auto">
+                <button type="button"
+                        onclick="toggleAdminSidebar()"
+                        aria-label="Close menu"
+                        class="lg:hidden p-1.5 text-slate-500 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
 
             <!-- Navigation Links -->
@@ -99,15 +113,24 @@
         <!-- Main Content Area -->
         <div class="flex flex-1 flex-col min-w-0 bg-slate-50">
             <!-- Top Navbar Header -->
-            <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 backdrop-blur-md px-6 sm:px-8 shadow-2xs">
+            <header class="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 backdrop-blur-md px-4 sm:px-6 lg:px-8 shadow-2xs">
                 <div class="flex items-center gap-3">
-                    <h1 class="text-lg sm:text-xl font-bold tracking-tight text-slate-900">{{ $title }}</h1>
+                    <!-- Mobile Sidebar Toggle -->
+                    <button type="button"
+                            onclick="toggleAdminSidebar()"
+                            aria-label="Open navigation menu"
+                            class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <h1 class="text-base sm:text-lg lg:text-xl font-bold tracking-tight text-slate-900 truncate">{{ $title }}</h1>
                 </div>
 
-                <div class="flex items-center gap-4 sm:gap-6">
+                <div class="flex items-center gap-3 sm:gap-6">
                     <!-- User Profile Button -->
                     <a href="{{ route('admin.account.edit') }}"
-                       class="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-slate-50/80 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-100 transition-all shadow-2xs">
+                       class="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50/80 px-2.5 py-1.5 sm:px-3 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-100 transition-all shadow-2xs">
                         @if (auth()->user()?->avatar_url)
                             <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="h-6 w-6 rounded-full object-cover border border-slate-300 shadow-xs">
                         @else
@@ -115,23 +138,24 @@
                                 {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
                             </span>
                         @endif
-                        <span>{{ auth()->user()?->name }}</span>
+                        <span class="hidden sm:inline">{{ auth()->user()?->name }}</span>
                     </a>
 
                     <!-- Logout Button -->
                     <form method="POST" action="{{ route('admin.logout') }}">
                         @csrf
                         <button type="submit"
+                                aria-label="Log out"
                                 class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-rose-600 transition-colors cursor-pointer py-1.5 px-2 rounded-md hover:bg-rose-50">
                             <x-admin.icon name="logout" class="h-4 w-4" />
-                            <span>Log out</span>
+                            <span class="hidden sm:inline">Log out</span>
                         </button>
                     </form>
                 </div>
             </header>
 
             <!-- Main Page Viewport -->
-            <main class="flex-1 p-6 sm:p-8 max-w-7xl w-full">
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full">
                 <!-- Flash Notification Banner -->
                 @if (session('status'))
                     <div class="mb-6 flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-sm font-medium text-emerald-900 shadow-2xs">
@@ -148,5 +172,33 @@
             </main>
         </div>
     </div>
+
+    <script>
+        function toggleAdminSidebar() {
+            const sidebar = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('admin-sidebar-backdrop');
+            if (!sidebar || !backdrop) return;
+            
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('admin-sidebar');
+                if (sidebar && !sidebar.classList.contains('-translate-x-full') && window.innerWidth < 1024) {
+                    toggleAdminSidebar();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

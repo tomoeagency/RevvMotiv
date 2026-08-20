@@ -86,7 +86,7 @@ export default function OrderConfirmationPage({
   }, [id, token, restartToken]);
 
   return (
-    <div className="py-6 md:py-8 px-4 sm:px-6 max-w-screen-xl mx-auto w-full min-h-[calc(100vh-140px)] flex flex-col justify-center">
+    <div className="py-6 md:py-8 px-4 sm:px-6 max-w-screen-xl mx-auto w-full min-h-[calc(100dvh-140px)] flex flex-col justify-center">
       <div className="max-w-2xl mx-auto w-full">
         {/* Compact Header */}
         <div className="flex items-center justify-between border-b border-hairline pb-3 mb-4">
@@ -223,7 +223,7 @@ function OrderStatus({
             <PackageCheck className="w-3.5 h-3.5 text-red-500" />
             What Happens Next:
           </h3>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="border-l-2 border-red-500 pl-2">
               <span className="text-[9px] font-black text-red-500 uppercase tracking-widest block">
                 01. Quality Check

@@ -139,6 +139,107 @@
         </x-admin.form-field>
     </div>
 
+    <!-- Card 5: Product Variants -->
+    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">
+                    Product Variants (Optional)
+                </h2>
+                <p class="text-xs text-slate-500 mt-0.5">
+                    Add material options, colors, or sizes (e.g. Gloss Black, 2x2 Twill Carbon, Forged Carbon).
+                </p>
+            </div>
+            <button type="button" onclick="addVariantRow()" class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors cursor-pointer">
+                <svg class="w-4 h-4 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Add Variant</span>
+            </button>
+        </div>
+
+        <div id="variants-container" class="space-y-4">
+            @php
+                $existingVariants = old('variants', $product ? $product->variants->toArray() : []);
+            @endphp
+
+            @if (!empty($existingVariants))
+                @foreach ($existingVariants as $idx => $v)
+                    <div class="variant-row rounded-lg border border-slate-200 bg-slate-50/70 p-4 relative space-y-3" data-index="{{ $idx }}">
+                        @if (!empty($v['id']))
+                            <input type="hidden" name="variants[{{ $idx }}][id]" value="{{ $v['id'] }}">
+                        @endif
+
+                        <div class="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
+                            <span class="text-xs font-bold text-[#1e3a5f] uppercase tracking-wider">
+                                Variant #<span class="variant-num">{{ $loop->iteration }}</span>
+                            </span>
+                            <button type="button" onclick="removeVariantRow(this, {{ $v['id'] ?? 'null' }})" class="text-xs font-semibold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer">
+                                Remove
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Variant Name <span class="text-rose-500">*</span></label>
+                                <input type="text" name="variants[{{ $idx }}][name]" value="{{ $v['name'] ?? '' }}" required placeholder="e.g. 2x2 Twill Carbon Fiber"
+                                       class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">SKU</label>
+                                <input type="text" name="variants[{{ $idx }}][sku]" value="{{ $v['sku'] ?? '' }}" placeholder="RM-SPL-CF"
+                                       class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Units</label>
+                                <input type="number" min="0" name="variants[{{ $idx }}][stock]" value="{{ $v['stock'] ?? 0 }}" placeholder="5"
+                                       class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-rose-500">*</span></label>
+                                <input type="number" step="0.01" min="0" name="variants[{{ $idx }}][price]" value="{{ $v['price'] ?? '' }}" required placeholder="7999.00"
+                                       class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Compare Price (₹)</label>
+                                <input type="number" step="0.01" min="0" name="variants[{{ $idx }}][compare_at_price]" value="{{ $v['compare_at_price'] ?? '' }}" placeholder="9999.00"
+                                       class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 mb-1">Specific Photo</label>
+                                <input type="file" name="variant_images[{{ $idx }}]" accept="image/png,image/jpeg,image/webp"
+                                       class="block w-full text-[11px] text-slate-600 file:mr-2 file:rounded file:border-0 file:bg-slate-200 file:px-2.5 file:py-1 file:text-[11px] file:font-semibold file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
+                                @if (!empty($v['image']))
+                                    <div class="mt-1 flex items-center gap-2">
+                                        <img src="{{ $v['image'] }}" alt="" class="h-6 w-6 rounded object-cover border border-slate-300">
+                                        <span class="text-[10px] text-slate-500 truncate max-w-[120px]">{{ basename($v['image']) }}</span>
+                                    </div>
+                                    <input type="hidden" name="variants[{{ $idx }}][image]" value="{{ $v['image'] }}">
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1">
+                            <label class="inline-flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                                <input type="checkbox" name="variants[{{ $idx }}][is_default]" value="1" @checked(!empty($v['is_default'])) class="rounded border-slate-300 text-[#1e3a5f] focus:ring-[#1e3a5f]">
+                                <span>Default selected variant</span>
+                            </label>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+
+        <div id="no-variants-msg" class="{{ !empty($existingVariants) ? 'hidden' : '' }} p-4 rounded-lg bg-slate-50 border border-dashed border-slate-200 text-center">
+            <p class="text-xs text-slate-500">No variants added yet. Product will sell with single default price & stock above.</p>
+        </div>
+    </div>
+
+    <div id="delete-variants-container"></div>
+
     <!-- Actions Deck -->
     <div class="flex items-center gap-3 pt-2">
         <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#1e3a5f] px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#16304d] active:bg-[#0f2238] transition-all cursor-pointer">
@@ -149,3 +250,105 @@
         </a>
     </div>
 </form>
+
+<script>
+    let variantCount = {{ !empty($existingVariants) ? count($existingVariants) : 0 }};
+
+    function addVariantRow() {
+        const container = document.getElementById('variants-container');
+        const noMsg = document.getElementById('no-variants-msg');
+        if (noMsg) noMsg.classList.add('hidden');
+
+        const idx = variantCount++;
+        const displayNum = container.querySelectorAll('.variant-row').length + 1;
+
+        const row = document.createElement('div');
+        row.className = 'variant-row rounded-lg border border-slate-200 bg-slate-50/70 p-4 relative space-y-3';
+        row.dataset.index = idx;
+        row.innerHTML = `
+            <div class="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-2">
+                <span class="text-xs font-bold text-[#1e3a5f] uppercase tracking-wider">
+                    Variant #<span class="variant-num">${displayNum}</span>
+                </span>
+                <button type="button" onclick="removeVariantRow(this, null)" class="text-xs font-semibold text-rose-600 hover:text-rose-800 transition-colors cursor-pointer">
+                    Remove
+                </button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Variant Name <span class="text-rose-500">*</span></label>
+                    <input type="text" name="variants[${idx}][name]" required placeholder="e.g. Gloss Black / Forged Carbon"
+                           class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">SKU</label>
+                    <input type="text" name="variants[${idx}][sku]" placeholder="RM-SPL-GB"
+                           class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Stock Units</label>
+                    <input type="number" min="0" name="variants[${idx}][stock]" value="10" placeholder="10"
+                           class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Price (₹) <span class="text-rose-500">*</span></label>
+                    <input type="number" step="0.01" min="0" name="variants[${idx}][price]" required placeholder="4999.00"
+                           class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Compare Price (₹)</label>
+                    <input type="number" step="0.01" min="0" name="variants[${idx}][compare_at_price]" placeholder="6499.00"
+                           class="block w-full rounded-md border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-900 font-mono shadow-2xs focus:border-[#1e3a5f] focus:ring-1 focus:ring-[#1e3a5f]">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Specific Photo</label>
+                    <input type="file" name="variant_images[${idx}]" accept="image/png,image/jpeg,image/webp"
+                           class="block w-full text-[11px] text-slate-600 file:mr-2 file:rounded file:border-0 file:bg-slate-200 file:px-2.5 file:py-1 file:text-[11px] file:font-semibold file:text-slate-700 hover:file:bg-slate-300 cursor-pointer">
+                </div>
+            </div>
+            <div class="flex items-center gap-2 pt-1">
+                <label class="inline-flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                    <input type="checkbox" name="variants[${idx}][is_default]" value="1" ${displayNum === 1 ? 'checked' : ''} class="rounded border-slate-300 text-[#1e3a5f] focus:ring-[#1e3a5f]">
+                    <span>Default selected variant</span>
+                </label>
+            </div>
+        `;
+        container.appendChild(row);
+        renumberVariants();
+    }
+
+    function removeVariantRow(btn, variantId) {
+        const row = btn.closest('.variant-row');
+        if (!row) return;
+
+        if (variantId) {
+            const deleteContainer = document.getElementById('delete-variants-container');
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'delete_variant_ids[]';
+            hiddenInput.value = variantId;
+            deleteContainer.appendChild(hiddenInput);
+        }
+
+        row.remove();
+        renumberVariants();
+
+        const container = document.getElementById('variants-container');
+        const remaining = container.querySelectorAll('.variant-row');
+        if (remaining.length === 0) {
+            const noMsg = document.getElementById('no-variants-msg');
+            if (noMsg) noMsg.classList.remove('hidden');
+        }
+    }
+
+    function renumberVariants() {
+        const rows = document.querySelectorAll('#variants-container .variant-row');
+        rows.forEach((row, i) => {
+            const numSpan = row.querySelector('.variant-num');
+            if (numSpan) numSpan.textContent = i + 1;
+        });
+    }
+</script>
+

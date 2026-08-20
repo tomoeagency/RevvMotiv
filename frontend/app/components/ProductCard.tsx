@@ -122,14 +122,14 @@ export function ProductCard({
             onClick={handleQuickAdd}
             disabled={!product.in_stock}
             aria-label={product.in_stock ? `Add to cart` : `Out of stock`}
-            className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-black/80 backdrop-blur border border-white/20 text-white hover:bg-red-600 shadow-md transition-colors z-20 disabled:opacity-50"
+            className="absolute top-2 right-2 w-8 h-8 sm:w-8.5 sm:h-8.5 flex items-center justify-center rounded-full bg-black/80 backdrop-blur border border-white/20 text-white hover:bg-red-600 shadow-md transition-colors z-20 disabled:opacity-50 cursor-pointer"
           >
             {!product.in_stock ? (
-              <Ban className="w-3 h-3 text-slate-400" />
+              <Ban className="w-3.5 h-3.5 text-slate-400" />
             ) : justAdded ? (
-              <Check className="w-3 h-3 text-emerald-400" />
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
             ) : (
-              <ShoppingCart className="w-3 h-3" />
+              <ShoppingCart className="w-3.5 h-3.5" />
             )}
           </motion.button>
 

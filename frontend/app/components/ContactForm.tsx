@@ -27,9 +27,10 @@ export function ContactForm() {
   function validate(): boolean {
     const next: Partial<Record<keyof FormState, string>> = {};
     if (!form.name.trim()) next.name = "Name is required.";
-    if (!form.phone.trim()) {
+    const cleanPhone = form.phone.replace(/[\s\-()]/g, "");
+    if (!cleanPhone) {
       next.phone = "Phone number is required.";
-    } else if (!PHONE_PATTERN.test(form.phone.trim())) {
+    } else if (!PHONE_PATTERN.test(cleanPhone)) {
       next.phone = "Enter a valid 10-digit mobile number.";
     }
     if (!form.email.trim()) {
@@ -49,9 +50,10 @@ export function ContactForm() {
 
     setStatus("submitting");
     try {
+      const cleanPhone = form.phone.replace(/[\s\-()]/g, "");
       await createEnquiry({
         name: form.name.trim(),
-        phone: form.phone.trim(),
+        phone: cleanPhone,
         email: form.email.trim(),
         message: form.message.trim(),
       });
@@ -79,7 +81,7 @@ export function ContactForm() {
         </p>
         <button
           onClick={() => setStatus("idle")}
-          className="mt-2 text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-red-500 pb-1"
+          className="mt-2 text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-red-500 pb-1 cursor-pointer"
         >
           Send Another
         </button>
@@ -95,10 +97,13 @@ export function ContactForm() {
           value={form.name}
           onChange={(v) => setForm((f) => ({ ...f, name: v }))}
           error={errors.name}
+          autoComplete="name"
         />
         <Field
           label="Phone Number"
           type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           value={form.phone}
           onChange={(v) => setForm((f) => ({ ...f, phone: v }))}
           error={errors.phone}
@@ -107,20 +112,23 @@ export function ContactForm() {
       <Field
         label="Email"
         type="email"
+        inputMode="email"
+        autoComplete="email"
         value={form.email}
         onChange={(v) => setForm((f) => ({ ...f, email: v }))}
         error={errors.email}
       />
       <div>
-        <label className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2">
-          Message
+        <label htmlFor="contact-form-message" className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5">
+          Message <span className="text-red-500">*</span>
         </label>
         <textarea
+          id="contact-form-message"
           rows={5}
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
           placeholder="Tell us about your car and what styling or aero upgrade you're after..."
-          className="w-full bg-surface border border-hairline focus:border-red-500 rounded outline-none px-4 py-3 text-sm text-ink placeholder:text-ink-subtle transition-colors"
+          className="w-full bg-surface-alt border border-hairline focus:border-red-500 rounded-lg outline-none px-4 py-3 text-sm text-ink placeholder:text-ink-subtle transition-colors"
         />
         {errors.message && (
           <p className="text-xs text-red-400 mt-1">{errors.message}</p>
@@ -132,14 +140,14 @@ export function ContactForm() {
       <PrimaryCtaButton
         type="submit"
         disabled={status === "submitting"}
-        className="w-full sm:w-auto px-12 py-4 text-sm flex items-center justify-center gap-2 rounded"
+        className="w-full sm:w-auto px-10 py-3.5 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2 rounded-xl cursor-pointer"
       >
         {status === "submitting" ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <Send className="w-4 h-4" />
         )}
-        Send Enquiry
+        <span>Send Enquiry</span>
       </PrimaryCtaButton>
     </form>
   );
@@ -151,23 +159,32 @@ function Field({
   onChange,
   error,
   type = "text",
+  inputMode,
+  autoComplete,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
   type?: string;
+  inputMode?: "text" | "tel" | "email" | "numeric";
+  autoComplete?: string;
 }) {
+  const id = `contact-field-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+
   return (
     <div>
-      <label className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2">
+      <label htmlFor={id} className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5">
         {label}
       </label>
       <input
+        id={id}
         type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-surface border border-hairline focus:border-red-500 rounded outline-none px-4 py-3 text-sm text-ink transition-colors"
+        className="w-full bg-surface-alt border border-hairline focus:border-red-500 rounded-lg outline-none px-4 py-3 text-sm text-ink transition-colors"
       />
       {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
     </div>

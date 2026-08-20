@@ -32,6 +32,11 @@ class Product extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function variants(): HasMany
+    {
+        return $this->hasMany(ProductVariant::class)->orderBy('sort_order')->orderBy('id');
+    }
+
     // GET /api/v1/products/{product} accepts either the numeric id or the
     // slug, so the frontend's slug-based product detail route can call it
     // directly without a separate lookup.

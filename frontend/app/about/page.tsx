@@ -71,8 +71,8 @@ export default async function AboutPage() {
       {/* 1. Hero Section — Realistic White-Light Tuning Studio */}
       <section className="relative border-b border-hairline bg-canvas overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-40" />
-        <div className="relative max-w-screen-2xl mx-auto px-6 py-6 sm:py-8 md:py-14">
-          <div className="grid lg:grid-cols-12 gap-12 items-center">
+        <div className="relative max-w-screen-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-14">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-7">
               <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-3">
                 Our Garage Story
@@ -124,14 +124,14 @@ export default async function AboutPage() {
       </section>
 
       {/* 2. Key Standards Band */}
-      <section className="border-b border-hairline bg-surface-alt py-12">
-        <div className="max-w-screen-2xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <section className="border-b border-hairline bg-surface-alt py-8 sm:py-12">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8 text-center">
           {METRICS.map((metric) => (
-            <div key={metric.label} className="p-4">
+            <div key={metric.label} className="p-2 sm:p-4">
               <div className="text-2xl md:text-4xl font-black text-ink tracking-tight mb-1">
                 {metric.value}
               </div>
-              <div className="text-xs font-bold text-ink-muted uppercase tracking-widest">
+              <div className="text-[10px] sm:text-xs font-bold text-ink-muted uppercase tracking-widest">
                 {metric.label}
               </div>
             </div>
@@ -140,7 +140,7 @@ export default async function AboutPage() {
       </section>
 
       {/* 3. Our Craftsmanship */}
-      <section className="max-w-screen-2xl mx-auto px-6 py-24">
+      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-12 sm:py-20 md:py-24">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="relative aspect-[4/3] rounded-lg border border-hairline bg-surface overflow-hidden">
             <Image
@@ -259,34 +259,34 @@ export default async function AboutPage() {
       </section>
 
       {/* 5. The 4 Quality Standards */}
-      <section className="border-t border-b border-hairline bg-canvas py-24">
-        <div className="max-w-screen-2xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-16">
+      <section className="border-t border-b border-hairline bg-canvas py-12 sm:py-20 md:py-24">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-6">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
               Why Choose Us
             </span>
-            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black uppercase tracking-tight mb-4">
               Our 4 Quality Standards
             </h2>
-            <p className="text-ink-muted text-sm md:text-base">
+            <p className="text-ink-muted text-xs sm:text-sm md:text-base">
               From material selection to packaging and fitment checks, we maintain strict standards for every product.
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {PILLARS.map(({ number, icon: Icon, title, body }) => (
               <div
                 key={title}
-                className="p-6 rounded border border-hairline bg-surface hover:border-red-500/40 transition-all group"
+                className="p-5 sm:p-6 rounded-lg border border-hairline bg-surface hover:border-red-500/40 transition-all group"
               >
-                <div className="flex items-center justify-between mb-6">
-                  <span className="text-2xl font-black text-red-500">{number}</span>
-                  <Icon className="w-6 h-6 text-ink-muted group-hover:text-red-400 transition-colors" />
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <span className="text-xl sm:text-2xl font-black text-red-500">{number}</span>
+                  <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-ink-muted group-hover:text-red-400 transition-colors" />
                 </div>
-                <h3 className="text-base font-bold text-ink uppercase tracking-wider mb-3">
+                <h3 className="text-sm sm:text-base font-bold text-ink uppercase tracking-wider mb-2 sm:mb-3">
                   {title}
                 </h3>
-                <p className="text-sm text-ink-muted leading-relaxed">{body}</p>
+                <p className="text-xs sm:text-sm text-ink-muted leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -294,23 +294,23 @@ export default async function AboutPage() {
       </section>
 
       {/* 6. Inside Our Master Fitting Facility (Studio Showcase) */}
-      <section className="max-w-screen-2xl mx-auto px-6 py-24">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6">
+      <section className="max-w-screen-2xl mx-auto px-4 sm:px-6 py-12 sm:py-20 md:py-24">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 sm:mb-12 gap-4 sm:gap-6">
           <div>
             <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
               Behind The Scenes
             </span>
-            <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight">
               Inside Our Facility
             </h2>
           </div>
-          <p className="text-sm text-ink-muted max-w-md">
+          <p className="text-xs sm:text-sm text-ink-muted max-w-md">
             Our clean white-light studio workshop is equipped with digital alignment rigs, lift bays, and carbon finishing stations.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="relative aspect-[4/3] rounded border border-hairline overflow-hidden group">
+        <div className="grid md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="relative aspect-[4/3] rounded-lg border border-hairline overflow-hidden group">
             <Image
               src="/images/about/facility.png"
               alt="Spacious clean white studio tuning workshop"
@@ -324,7 +324,7 @@ export default async function AboutPage() {
             </div>
           </div>
 
-          <div className="relative aspect-[4/3] rounded border border-hairline overflow-hidden group">
+          <div className="relative aspect-[4/3] rounded-lg border border-hairline overflow-hidden group">
             <Image
               src="/images/about/fitting.png"
               alt="Master technician aligning carbon fiber diffuser"
@@ -338,7 +338,7 @@ export default async function AboutPage() {
             </div>
           </div>
 
-          <div className="relative aspect-[4/3] rounded border border-hairline overflow-hidden group">
+          <div className="relative aspect-[4/3] rounded-lg border border-hairline overflow-hidden group">
             <Image
               src="/images/about/workshop.png"
               alt="3D laser scanning and quality check"
@@ -356,14 +356,14 @@ export default async function AboutPage() {
 
       {/* 7. Recent Real Builds Section */}
       {featuredProjects.length > 0 && (
-        <section className="border-t border-hairline bg-surface-alt py-24">
-          <div className="max-w-screen-2xl mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-6">
+        <section className="border-t border-hairline bg-surface-alt py-12 sm:py-20 md:py-24">
+          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6">
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-8 sm:mb-12 gap-4 sm:gap-6">
               <div>
                 <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-2">
                   Real Customer Builds
                 </span>
-                <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black uppercase tracking-tight">
                   Recent Workshop Builds
                 </h2>
               </div>
@@ -374,7 +374,7 @@ export default async function AboutPage() {
                 View All Builds
               </Link>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {featuredProjects.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}

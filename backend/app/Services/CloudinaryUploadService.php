@@ -89,8 +89,9 @@ class CloudinaryUploadService
         $fullUrl = asset("uploads/{$folder}/{$filename}");
 
         return [
-            'secure_url' => $fullUrl,
-            'url' => $fullUrl,
+            'secure_url' => $relativeUrl,
+            'url' => $relativeUrl,
+            'full_url' => $fullUrl,
             'public_id' => "local_{$folder}_{$filename}",
             'relative_path' => $relativeUrl,
             'resource_type' => $resourceType,

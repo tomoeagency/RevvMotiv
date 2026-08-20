@@ -29,6 +29,17 @@ class ProductStoreRequest extends FormRequest
             'status' => ['required', 'in:active,draft'],
             'images' => ['nullable', 'array', 'max:6'],
             'images.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'variants' => ['nullable', 'array'],
+            'variants.*.name' => ['required_with:variants', 'string', 'max:255'],
+            'variants.*.sku' => ['nullable', 'string', 'max:100'],
+            'variants.*.price' => ['required_with:variants', 'numeric', 'min:0'],
+            'variants.*.compare_at_price' => ['nullable', 'numeric', 'min:0'],
+            'variants.*.stock' => ['nullable', 'integer', 'min:0'],
+            'variants.*.image' => ['nullable', 'string'],
+            'variants.*.attributes' => ['nullable'],
+            'variants.*.is_default' => ['nullable'],
+            'variant_images' => ['nullable', 'array'],
+            'variant_images.*' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 }

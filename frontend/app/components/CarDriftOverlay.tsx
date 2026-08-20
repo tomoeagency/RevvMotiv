@@ -380,10 +380,10 @@ export function CarDriftOverlay({
       initial={{ opacity: 0 }}
       animate={{ opacity: visible ? 1 : 0 }}
       transition={{ duration: 0.3 }}
-      className="fixed inset-0 z-[190] flex items-center justify-center bg-canvas/90 backdrop-blur-sm pointer-events-none"
+      className="fixed inset-0 z-[190] flex items-center justify-center bg-canvas/90 backdrop-blur-sm pointer-events-none overflow-hidden"
       aria-hidden="true"
     >
-      <svg viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`} className="w-full max-w-3xl px-10" style={{ overflow: "visible" }}>
+      <svg viewBox={`0 0 ${VIEWBOX_W} ${VIEWBOX_H}`} className="w-full max-w-3xl px-4 sm:px-10" style={{ overflow: "visible" }}>
         <defs>
           {/* Chrome-adjacent gradient (reuses the site's existing chrome
               sheen stop for a rim highlight) over the brand red→black CTA

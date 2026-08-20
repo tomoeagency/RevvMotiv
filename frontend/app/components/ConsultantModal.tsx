@@ -52,9 +52,10 @@ export function ConsultantModal() {
   function validate(): boolean {
     const next: Partial<Record<keyof FormState, string>> = {};
     if (!form.name.trim()) next.name = "Name is required.";
-    if (!form.phone.trim()) {
+    const cleanPhone = form.phone.replace(/[\s\-()]/g, "");
+    if (!cleanPhone) {
       next.phone = "Phone number is required.";
-    } else if (!PHONE_PATTERN.test(form.phone.trim())) {
+    } else if (!PHONE_PATTERN.test(cleanPhone)) {
       next.phone = "Enter a valid 10-digit mobile number.";
     }
     setErrors(next);
@@ -68,7 +69,8 @@ export function ConsultantModal() {
 
     setStatus("submitting");
     try {
-      await createLead({ name: form.name.trim(), phone: form.phone.trim() });
+      const cleanPhone = form.phone.replace(/[\s\-()]/g, "");
+      await createLead({ name: form.name.trim(), phone: cleanPhone });
       setStatus("success");
     } catch (err) {
       setStatus("error");
@@ -99,18 +101,18 @@ export function ConsultantModal() {
             role="dialog"
             aria-modal="true"
             aria-label="Request a callback"
-            className="fixed inset-x-4 bottom-24 sm:inset-x-auto sm:right-6 sm:bottom-24 z-[70] w-auto sm:w-[380px] bg-surface border border-hairline shadow-[0_0_60px_rgba(0,0,0,0.8)]"
+            className="fixed inset-x-3 sm:inset-x-auto sm:right-6 bottom-20 sm:bottom-24 z-[70] w-auto sm:w-[380px] max-h-[85dvh] overflow-y-auto bg-surface border border-hairline shadow-[0_0_60px_rgba(0,0,0,0.8)] rounded-xl"
           >
-            <div className="flex items-center justify-between px-6 h-16 border-b border-hairline">
-              <span className="text-sm font-bold text-ink uppercase tracking-widest">
+            <div className="flex items-center justify-between px-5 sm:px-6 h-14 sm:h-16 border-b border-hairline sticky top-0 bg-surface/95 backdrop-blur z-10">
+              <span className="text-xs sm:text-sm font-bold text-ink uppercase tracking-widest">
                 Request a Callback
               </span>
               <button
                 onClick={close}
                 aria-label="Close"
-                className="text-ink-muted hover:text-ink transition-colors"
+                className="w-8 h-8 flex items-center justify-center text-ink-muted hover:text-ink hover:bg-hover rounded-lg transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </div>
 
@@ -198,16 +200,22 @@ function WidgetField({
   error?: string;
   type?: string;
 }) {
+  const id = `consultant-field-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  const isPhone = type === "tel" || label.toLowerCase().includes("phone");
+
   return (
     <div>
-      <label className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-2">
+      <label htmlFor={id} className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5">
         {label}
       </label>
       <input
+        id={id}
         type={type}
+        inputMode={isPhone ? "tel" : "text"}
+        autoComplete={isPhone ? "tel" : "name"}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full bg-surface border border-hairline focus:border-[var(--brand-red)] outline-none px-4 py-3 text-sm text-ink transition-colors"
+        className="w-full bg-surface border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 sm:px-4 sm:py-3 text-sm text-ink transition-colors rounded-lg"
       />
       {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
     </div>
