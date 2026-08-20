@@ -203,8 +203,10 @@
 .interactive-lift {
   transition: transform 300ms var(--ease-brand), box-shadow 300ms var(--ease-brand), border-color 300ms var(--ease-brand);
 }
-.interactive-lift:hover {
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .interactive-lift:hover {
+    transform: translateY(-4px);
+  }
 }
 
 .smooth-focus {

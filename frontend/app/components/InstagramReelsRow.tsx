@@ -31,7 +31,7 @@ export function InstagramReelsRow({ embeds }: { embeds: InstagramEmbed[] }) {
         strategy="lazyOnload"
         onLoad={() => window.instgrm?.Embeds.process()}
       />
-      <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-8 snap-x snap-mandatory">
+      <div data-lenis-prevent className="flex gap-4 overflow-x-auto hide-scrollbar pb-8 snap-x snap-mandatory touch-pan-y touch-pan-x overscroll-x-contain">
         {embeds.map((embed) => (
           <div
             key={embed.url}

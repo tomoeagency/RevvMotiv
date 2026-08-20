@@ -187,7 +187,7 @@ export function PlatformSelectorSection() {
       <div
         ref={scrollRef}
         data-lenis-prevent
-        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-6 hide-scrollbar relative z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 snap-x snap-mandatory touch-pan-x overscroll-x-contain"
+        className="flex gap-4 sm:gap-6 overflow-x-auto pb-4 sm:pb-6 hide-scrollbar relative z-10 -mx-4 px-4 sm:-mx-6 sm:px-6 snap-x snap-mandatory touch-pan-y touch-pan-x overscroll-x-contain"
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
       >
         {PLATFORMS.map((platform) => (
@@ -247,7 +247,7 @@ export function PlatformSelectorSection() {
               <Link
                 href={platform.link}
                 aria-label={`View full build details for ${platform.name}`}
-                className="w-full py-3.5 bg-surface-alt hover:bg-gradient-to-r hover:from-red-600 hover:to-red-700 border border-hairline text-ink hover:text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 group/btn shadow-md"
+                className="w-full py-3.5 bg-surface-alt hover:bg-surface border border-hairline hover:border-red-500/50 text-ink font-bold text-xs uppercase tracking-widest rounded transition-all flex items-center justify-center gap-2 group/btn shadow-xs"
               >
                 <span>View Full Build Details</span>
                 <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />

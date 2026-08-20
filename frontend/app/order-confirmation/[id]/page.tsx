@@ -99,8 +99,21 @@ export default function OrderConfirmationPage({
             </h1>
           </div>
           {order && (
-            <span className="text-[11px] font-bold text-ink-muted uppercase tracking-wider px-2.5 py-1 bg-surface border border-hairline rounded">
-              Status: {order.payment_status.replace("_", " ")}
+            <span
+              className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded border ${
+                order.payment_status === "fully_paid" || order.remaining_amount === 0
+                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                  : order.payment_status === "advance_paid"
+                  ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
+                  : "bg-surface border-hairline text-ink-muted"
+              }`}
+            >
+              Status:{" "}
+              {order.payment_status === "fully_paid" || order.remaining_amount === 0
+                ? "Fully Paid"
+                : order.payment_status === "advance_paid"
+                ? `Advance Paid (${order.advance_percent_applied}%)`
+                : order.payment_status.replace("_", " ")}
             </span>
           )}
         </div>
@@ -180,42 +193,83 @@ function OrderStatus({
   paymentFailedFlag: boolean;
   onRetry: () => void;
 }) {
-  const isConfirmed =
-    order.payment_status === "advance_paid" ||
-    order.payment_status === "fully_paid";
+  const isFullyPaid =
+    order.payment_status === "fully_paid" ||
+    order.remaining_amount === 0 ||
+    order.advance_percent_applied === 100;
+  const isAdvancePaid =
+    order.payment_status === "advance_paid" && !isFullyPaid;
+  const isConfirmed = isFullyPaid || isAdvancePaid;
   const isFailed = order.payment_status === "failed" || paymentFailedFlag;
 
-  // 1. ORDER CONFIRMED & ADVANCE PAID
+  // 1. ORDER CONFIRMED (FULLY PAID OR ADVANCE PAID)
   if (isConfirmed) {
     return (
       <div className="space-y-3.5">
         {/* Banner */}
-        <div className="border border-[var(--color-success)]/40 bg-[var(--color-success)]/5 p-4 sm:p-5 rounded relative overflow-hidden">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-[var(--color-success)]/20 flex items-center justify-center flex-none">
-              <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
-            </div>
-            <div>
-              <h2 className="text-base sm:text-lg font-black text-ink uppercase tracking-tight mb-1">
-                Order Confirmed & Advance Received!
-              </h2>
-              <p className="text-xs text-ink-muted leading-relaxed mb-2">
-                Thank you! Your advance payment of{" "}
-                <strong className="text-ink">
-                  {formatPrice(order.advance_amount)}
-                </strong>{" "}
-                has been verified. Parts are queued for 1:1 laser inspection.
-              </p>
-              <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold text-ink uppercase tracking-wider">
-                <span className="flex items-center gap-1 text-[var(--color-success)]">
-                  <ShieldCheck className="w-3.5 h-3.5" /> 100% Fitment Guarantee
-                </span>
-                <span className="text-ink-subtle">·</span>
-                <span className="text-ink-muted">Invoice sent to email</span>
+        {isFullyPaid ? (
+          <div className="border border-emerald-500/40 bg-emerald-500/5 p-4 sm:p-5 rounded relative overflow-hidden">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-none">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-ink uppercase tracking-tight mb-1">
+                  Order Confirmed & Fully Paid!
+                </h2>
+                <p className="text-xs text-ink-muted leading-relaxed mb-2">
+                  Thank you! Your full payment of{" "}
+                  <strong className="text-ink">
+                    {formatPrice(order.total_amount)}
+                  </strong>{" "}
+                  has been verified online. ₹0 balance due at delivery. Parts are queued for priority workshop inspection & express dispatch.
+                </p>
+                <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold text-ink uppercase tracking-wider">
+                  <span className="flex items-center gap-1 text-emerald-400">
+                    <ShieldCheck className="w-3.5 h-3.5" /> 100% Fitment Guarantee
+                  </span>
+                  <span className="text-ink-subtle">·</span>
+                  <span className="text-emerald-400 font-bold">₹0 COD Due</span>
+                  <span className="text-ink-subtle">·</span>
+                  <span className="text-ink-muted">Invoice sent to email</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="border border-[var(--color-success)]/40 bg-[var(--color-success)]/5 p-4 sm:p-5 rounded relative overflow-hidden">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-[var(--color-success)]/20 flex items-center justify-center flex-none">
+                <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
+              </div>
+              <div>
+                <h2 className="text-base sm:text-lg font-black text-ink uppercase tracking-tight mb-1">
+                  Order Confirmed & Advance Received!
+                </h2>
+                <p className="text-xs text-ink-muted leading-relaxed mb-2">
+                  Thank you! Your advance booking of{" "}
+                  <strong className="text-ink">
+                    {formatPrice(order.advance_amount)}
+                  </strong>{" "}
+                  ({order.advance_percent_applied}%) has been verified. Remaining balance of{" "}
+                  <strong className="text-amber-400">
+                    {formatPrice(order.remaining_amount)}
+                  </strong>{" "}
+                  is payable via Cash or UPI at doorstep delivery.
+                </p>
+                <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold text-ink uppercase tracking-wider">
+                  <span className="flex items-center gap-1 text-[var(--color-success)]">
+                    <ShieldCheck className="w-3.5 h-3.5" /> 100% Fitment Guarantee
+                  </span>
+                  <span className="text-ink-subtle">·</span>
+                  <span className="text-amber-400 font-bold">COD Due: {formatPrice(order.remaining_amount)}</span>
+                  <span className="text-ink-subtle">·</span>
+                  <span className="text-ink-muted">Invoice sent to email</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 3-Step Roadmap */}
         <div className="border border-hairline bg-surface p-3.5 rounded">
@@ -251,10 +305,12 @@ function OrderStatus({
                 03. Delivery
               </span>
               <span className="text-[11px] font-bold text-ink uppercase block leading-tight">
-                Doorstep Delivery
+                {isFullyPaid ? "Doorstep Delivery" : "Delivery & COD"}
               </span>
               <p className="text-[10px] text-ink-muted leading-tight mt-0.5">
-                Inspect parcel condition
+                {isFullyPaid
+                  ? "₹0 COD · Direct parcel handover"
+                  : `Pay ${formatPrice(order.remaining_amount)} Cash/UPI on arrival`}
               </p>
             </div>
           </div>
@@ -371,7 +427,10 @@ function OrderStatus({
 
 function OrderTotals({ order }: { order: ApiOrder }) {
   const hasDiscount = order.discount_amount > 0;
-  const subtotal = order.total_amount + order.discount_amount;
+  const isFullyPaid =
+    order.payment_status === "fully_paid" ||
+    order.remaining_amount === 0 ||
+    order.advance_percent_applied === 100;
 
   return (
     <div className="border border-hairline bg-surface p-3.5 rounded flex flex-col gap-2">
@@ -395,35 +454,71 @@ function OrderTotals({ order }: { order: ApiOrder }) {
         <span className="text-ink font-bold">{formatPrice(order.total_amount)}</span>
       </div>
 
-      <div className="flex items-center justify-between text-xs bg-surface-alt p-2.5 rounded border border-hairline">
-        <div>
-          <span className="text-ink font-bold block">
-            Advance ({order.advance_percent_applied}% Online)
-          </span>
-          <span className="text-[10px] text-ink-muted">
-            {order.payment_status === "advance_paid"
-              ? "Received & Verified"
-              : "Payable via Gateway"}
-          </span>
-        </div>
-        <span className="text-emerald-400 font-black text-sm">
-          {formatPrice(order.advance_amount)}
-        </span>
-      </div>
+      {isFullyPaid ? (
+        <>
+          <div className="flex items-center justify-between text-xs bg-emerald-500/10 p-2.5 rounded border border-emerald-500/20">
+            <div>
+              <span className="text-emerald-400 font-bold block">
+                Full Payment (100% Online)
+              </span>
+              <span className="text-[10px] text-ink-muted">
+                {order.payment_status === "fully_paid"
+                  ? "Received & Verified via Gateway"
+                  : "Payable via Gateway"}
+              </span>
+            </div>
+            <span className="text-emerald-400 font-black text-sm">
+              {formatPrice(order.total_amount)}
+            </span>
+          </div>
 
-      <div className="flex items-center justify-between text-xs px-2.5 py-1">
-        <div>
-          <span className="text-ink-muted font-bold block">
-            Balance on Delivery (COD)
-          </span>
-          <span className="text-[10px] text-ink-subtle">
-            Cash or UPI to delivery agent
-          </span>
-        </div>
-        <span className="text-ink font-bold text-sm">
-          {formatPrice(order.remaining_amount)}
-        </span>
-      </div>
+          <div className="flex items-center justify-between text-xs px-2.5 py-1">
+            <div>
+              <span className="text-ink-muted font-bold block">
+                Balance Due on Delivery (COD)
+              </span>
+              <span className="text-[10px] text-emerald-400 font-semibold">
+                ✓ Fully Settled — Nothing to pay at doorstep
+              </span>
+            </div>
+            <span className="text-emerald-400 font-bold text-sm">
+              ₹0
+            </span>
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex items-center justify-between text-xs bg-surface-alt p-2.5 rounded border border-hairline">
+            <div>
+              <span className="text-ink font-bold block">
+                Advance Paid ({order.advance_percent_applied}% Online)
+              </span>
+              <span className="text-[10px] text-ink-muted">
+                {order.payment_status === "advance_paid"
+                  ? "Received & Verified via Gateway"
+                  : "Payable via Gateway"}
+              </span>
+            </div>
+            <span className="text-emerald-400 font-black text-sm">
+              {formatPrice(order.advance_amount)}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between text-xs bg-amber-500/10 p-2.5 rounded border border-amber-500/20">
+            <div>
+              <span className="text-amber-400 font-bold block">
+                Balance on Delivery (COD)
+              </span>
+              <span className="text-[10px] text-amber-300/80">
+                Cash or UPI to delivery agent upon arrival
+              </span>
+            </div>
+            <span className="text-amber-400 font-black text-sm">
+              {formatPrice(order.remaining_amount)}
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 }

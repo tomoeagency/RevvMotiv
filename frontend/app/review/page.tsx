@@ -18,6 +18,7 @@ import {
   Check,
 } from "lucide-react";
 import type { ApiProduct } from "@/lib/api";
+import { PrimaryCtaButton, PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 const HIGHLIGHTS = [
   {
@@ -174,7 +175,7 @@ export default function SubmitReviewPage() {
             <div>
               <div className="text-[11px] font-bold text-red-500 uppercase tracking-widest mb-2 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                <span>Customer Build Verification</span>
+                <span>Customer Build Reviews</span>
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink leading-[1.05] mb-3">
                 Share Your Build Experience.
@@ -229,19 +230,19 @@ export default function SubmitReviewPage() {
                   Review Submitted Successfully!
                 </h2>
                 <p className="text-sm text-ink-muted leading-relaxed mb-8 max-w-md mx-auto">
-                  Thank you, <strong className="text-ink">{name}</strong>! Your review has been sent to our moderation team. Once verified, it will go live on the official RevvMotiv build showcase!
+                  Thank you, <strong className="text-ink">{name}</strong>! Your review and build photos have been successfully submitted.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Link
+                  <PrimaryCtaLink
                     href="/shop"
-                    className="px-8 py-3.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-colors flex items-center justify-center gap-2"
+                    className="px-8 py-3.5 text-xs flex items-center justify-center gap-2"
                   >
                     <span>Browse Store Catalog</span>
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </PrimaryCtaLink>
                   <Link
                     href="/work"
-                    className="px-8 py-3.5 bg-surface-alt hover:bg-hover border border-hairline text-ink font-bold text-xs uppercase tracking-widest rounded-xl transition-colors"
+                    className="px-8 py-3.5 bg-surface-alt hover:bg-hover border border-hairline text-ink font-bold text-xs uppercase tracking-widest rounded transition-colors flex items-center justify-center"
                   >
                     View Customer Builds
                   </Link>
@@ -480,10 +481,10 @@ export default function SubmitReviewPage() {
                 </div>
 
                 {/* Submit Button */}
-                <button
+                <PrimaryCtaButton
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-red-600/20 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-4 text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xl"
                 >
                   {isSubmitting ? (
                     <>
@@ -496,11 +497,11 @@ export default function SubmitReviewPage() {
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
-                </button>
+                </PrimaryCtaButton>
 
                 <div className="flex items-center justify-center gap-2 text-[11px] text-ink-subtle text-center">
                   <ShieldCheck className="w-4 h-4 text-amber-400" />
-                  <span>Reviews are verified by RevvMotiv master technicians before publishing.</span>
+                  <span>Thank you for helping fellow automotive enthusiasts choose the right fitment.</span>
                 </div>
               </form>
             )}

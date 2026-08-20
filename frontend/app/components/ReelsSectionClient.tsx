@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { GARAGE_GALLERY, type GarageReel } from "@/lib/garage-gallery";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
+import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 import { InstagramReelsRow } from "@/app/components/InstagramReelsRow";
 import type { InstagramEmbed } from "@/lib/instagram";
 
@@ -85,7 +86,7 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
         {embeds.length > 0 ? (
           <InstagramReelsRow embeds={embeds} />
         ) : (
-          <div data-lenis-prevent className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x overscroll-x-contain sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div data-lenis-prevent className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-y touch-pan-x overscroll-x-contain sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-5 md:gap-6 max-w-6xl mx-auto -mx-4 px-4 sm:mx-auto sm:px-0">
             {GARAGE_GALLERY.map((reel, i) => (
               <motion.div
                 key={reel.id}
@@ -93,9 +94,8 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: MOTION_DURATION.base, ease: MOTION_EASE_BRAND }}
-                whileHover={{ y: -8 }}
                 onClick={() => setActiveReel(reel)}
-                className="flex-none w-[72vw] max-w-[260px] sm:w-auto snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
+                className="flex-none w-[72vw] max-w-[260px] sm:max-w-none sm:w-full snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
               >
                 {/* Background Thumbnail Image */}
                 <Image
@@ -247,18 +247,18 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
                 </div>
 
                 <div className="pt-2 flex gap-2">
-                  <Link
+                  <PrimaryCtaLink
                     href="/shop"
                     onClick={() => setActiveReel(null)}
-                    className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider text-center flex items-center justify-center gap-1.5 shadow-lg shadow-red-600/30 transition-all"
+                    className="flex-1 py-3 px-4 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
                   >
                     <span>Shop This Setup</span>
                     <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  </PrimaryCtaLink>
                   <button
                     type="button"
                     onClick={(e) => toggleLike(activeReel.id, e)}
-                    className={`px-4 py-3 rounded-xl border border-white/20 flex items-center justify-center transition-colors ${
+                    className={`px-4 py-3 rounded border border-white/20 flex items-center justify-center transition-colors cursor-pointer ${
                       isLiked[activeReel.id] ? "bg-red-600 text-white" : "bg-black/60 text-white hover:bg-black/80"
                     }`}
                   >

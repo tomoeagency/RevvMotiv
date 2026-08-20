@@ -12,10 +12,10 @@ import { getProducts, getCategories, getFeaturedReviews } from "@/lib/api";
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  let featured = (await getProducts({ featured: true, perPage: 4 })).data;
+  let featured = (await getProducts({ featured: true, perPage: 12 })).data;
 
   if (featured.length === 0) {
-    featured = (await getProducts({ perPage: 4 })).data;
+    featured = (await getProducts({ perPage: 12 })).data;
   }
 
   const { data: categories } = await getCategories();

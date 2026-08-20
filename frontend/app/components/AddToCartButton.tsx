@@ -25,7 +25,7 @@ export function AddToCartButton({
     return (
       <button
         disabled
-        className="w-full sm:w-auto px-12 py-4 border border-hairline text-ink-subtle text-sm font-bold uppercase tracking-widest cursor-not-allowed rounded-xl"
+        className="w-full sm:w-auto px-12 py-4 border border-hairline text-ink-subtle text-sm font-bold uppercase tracking-widest cursor-not-allowed rounded"
       >
         {selectedVariant ? "Selected Option Out of Stock" : "Out of Stock"}
       </button>
@@ -39,7 +39,7 @@ export function AddToCartButton({
 
   return (
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-      <div className="flex items-center border border-hairline-strong rounded-xl overflow-hidden bg-surface w-fit shadow-xs">
+      <div className="flex items-center border border-hairline-strong rounded overflow-hidden bg-surface w-fit shadow-xs">
         <motion.button
           whileTap={{ scale: 0.85 }}
           onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -79,7 +79,7 @@ export function AddToCartButton({
 
       <PrimaryCtaButton
         onClick={handleAdd}
-        className="w-full sm:w-auto px-10 py-4 text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg"
+        className="w-full sm:w-auto px-10 py-4 text-sm flex items-center justify-center gap-2"
       >
         <ShoppingCart className="w-4 h-4" />
         <span>Add to Cart</span>

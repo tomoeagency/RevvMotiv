@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import type { ProductReviewsResponse } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
+import { PrimaryCtaButton } from "@/app/components/PrimaryCtaButton";
 import { motion, AnimatePresence } from "motion/react";
 
 function formatReviewDate(iso: string): string {
@@ -136,22 +137,22 @@ export function ReviewsSection({
           </h2>
         </div>
 
-        <button
+        <PrimaryCtaButton
           type="button"
           onClick={() => {
             setIsModalOpen(true);
             setSubmitSuccess(false);
             setSubmitError(null);
           }}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg hover:shadow-red-600/20 cursor-pointer w-fit"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs w-fit cursor-pointer"
         >
           <PenLine className="w-4 h-4" />
           <span>Write a Review</span>
-        </button>
+        </PrimaryCtaButton>
       </div>
 
       {meta.total === 0 ? (
-        <div className="border border-hairline bg-surface p-12 rounded-2xl flex flex-col items-center text-center gap-4">
+        <div className="border border-hairline bg-surface p-12 rounded-xl flex flex-col items-center text-center gap-4">
           <MessageSquareOff className="w-10 h-10 text-ink-subtle" />
           <div className="max-w-md">
             <h3 className="text-base font-bold text-ink mb-1">No reviews yet for this product</h3>
@@ -159,13 +160,13 @@ export function ReviewsSection({
               Have you installed this part on your build? Share your feedback and photos to help fellow automotive enthusiasts.
             </p>
           </div>
-          <button
+          <PrimaryCtaButton
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="px-6 py-2.5 rounded-xl border border-red-500/30 hover:border-red-500 bg-red-500/10 text-red-400 hover:text-white hover:bg-red-600 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+            className="px-6 py-2.5 text-xs cursor-pointer"
           >
             Be the First to Review
-          </button>
+          </PrimaryCtaButton>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-10 lg:gap-14">
@@ -293,15 +294,15 @@ export function ReviewsSection({
                   </div>
                   <h3 className="text-xl font-bold text-ink">Review Submitted!</h3>
                   <p className="text-xs text-ink-muted leading-relaxed max-w-xs mx-auto">
-                    Thank you for sharing your feedback. Your review has been submitted for moderation and will appear once verified by our team.
+                    Thank you for sharing your feedback! Your review and photos have been successfully submitted.
                   </p>
-                  <button
+                  <PrimaryCtaButton
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+                    className="px-6 py-2.5 text-xs cursor-pointer"
                   >
                     Close Window
-                  </button>
+                  </PrimaryCtaButton>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -455,10 +456,10 @@ export function ReviewsSection({
                   </div>
 
                   {/* Submit Button */}
-                  <button
+                  <PrimaryCtaButton
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full h-11 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-lg"
+                    className="w-full h-11 text-xs flex items-center justify-center gap-2 cursor-pointer shadow-lg"
                   >
                     {isSubmitting ? (
                       <>
@@ -466,9 +467,9 @@ export function ReviewsSection({
                         <span>Submitting Review...</span>
                       </>
                     ) : (
-                      <span>Submit Review for Verification</span>
+                      <span>Submit Review</span>
                     )}
-                  </button>
+                  </PrimaryCtaButton>
                 </form>
               )}
             </motion.div>

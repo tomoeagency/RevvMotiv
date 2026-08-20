@@ -5,22 +5,23 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, Crosshair, Sparkles } from "lucide-react";
+import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 const HERO_SLIDES = [
   {
-    image: "/hero-1-ai.png",
+    image: "/hero-1-ai.jpg",
     caption: "Custom Street Styling",
     badge: "PRECISION CRAFTSMANSHIP",
     headline: ["Crafted for the Street.", "Designed to Stand Out."],
   },
   {
-    image: "/hero-2-ai.png",
+    image: "/hero-2-ai.jpg",
     caption: "Track-Tested Durability",
     badge: "EXTREME ENDURANCE",
     headline: ["Built Tough.", "Engineered to Endure."],
   },
   {
-    image: "/hero-3-ai.png",
+    image: "/hero-3-ai.jpg",
     caption: "Guaranteed 1:1 Fitment",
     badge: "DIRECT OEM BOLT-ON",
     headline: ["Precision Molded.", "Direct Factory Fit."],
@@ -194,26 +195,21 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.45, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto"
+            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto"
           >
-            <Link
+            <PrimaryCtaLink
               href="/shop"
-              className="group relative overflow-hidden w-full sm:w-auto px-10 py-4 text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-2xl transition-all"
+              className="w-full sm:w-auto px-8 py-3.5 text-xs flex items-center justify-center gap-2"
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-full">
-                <span className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 bg-white/80 shadow-[0_0_12px_rgba(255,255,255,0.8)]" />
-              </span>
-              <span className="relative z-10 flex items-center gap-3">
-                Shop Catalog{" "}
-                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </span>
-            </Link>
+              <span>Shop Catalog</span>
+              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </PrimaryCtaLink>
 
             <Link
               href="/work"
-              className="text-xs font-bold text-ink uppercase tracking-widest hover:text-red-400 transition-colors border-b border-white/40 hover:border-red-500 pb-1"
+              className="w-full sm:w-auto px-8 py-3.5 bg-surface hover:bg-surface-alt border border-hairline text-ink font-bold text-xs uppercase tracking-widest rounded transition-colors inline-flex items-center justify-center"
             >
-              View Workshop Builds
+              View Builds
             </Link>
           </motion.div>
         </div>

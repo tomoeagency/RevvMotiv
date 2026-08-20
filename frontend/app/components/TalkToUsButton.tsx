@@ -14,7 +14,7 @@ export function TalkToUsButton() {
   return (
     <button
       onClick={() => open()}
-      className="inline-flex items-center gap-2 px-12 py-4 border border-hairline-strong text-ink text-sm font-bold uppercase tracking-widest hover:border-[var(--brand-red)] hover:text-[var(--brand-red)] transition-colors"
+      className="inline-flex items-center gap-2 px-12 py-4 border border-hairline-strong text-ink text-sm font-bold uppercase tracking-widest hover:border-[var(--brand-red)] hover:text-[var(--brand-red)] rounded transition-colors cursor-pointer"
     >
       <MessageCircle className="w-4 h-4" />
       Talk to Us

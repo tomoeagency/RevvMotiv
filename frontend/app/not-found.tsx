@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Home, AlertCircle } from "lucide-react";
+import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 export default function NotFound() {
   return (
@@ -40,19 +41,19 @@ export default function NotFound() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Link 
+            <PrimaryCtaLink 
               href="/"
-              className="group relative flex items-center justify-center gap-3 px-8 py-4 bg-ink text-canvas font-bold uppercase tracking-widest text-sm rounded hover:scale-105 transition-transform shadow-xl"
+              className="flex items-center justify-center gap-3 px-8 py-4 text-sm"
             >
               <Home className="w-5 h-5" />
-              Back to Home
-            </Link>
+              <span>Back to Home</span>
+            </PrimaryCtaLink>
             <Link 
               href="/shop"
-              className="group relative flex items-center justify-center gap-3 px-8 py-4 border border-hairline-strong text-ink font-bold uppercase tracking-widest text-sm rounded hover:bg-hover transition-colors"
+              className="flex items-center justify-center gap-3 px-8 py-4 border border-hairline-strong text-ink font-bold uppercase tracking-widest text-sm rounded hover:bg-hover transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
-              Browse Shop
+              <span>Browse Shop</span>
             </Link>
           </div>
         </div>

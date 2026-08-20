@@ -33,7 +33,7 @@ class ReviewController extends Controller
             'data' => [
                 'id' => $review->id,
                 'status' => $review->status,
-                'message' => 'Thanks for your review! It will appear once approved.',
+                'message' => 'Thanks for your review!',
             ],
         ], 201);
     }
