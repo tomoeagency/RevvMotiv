@@ -213,7 +213,7 @@
       <!-- Footer -->
       <div class="footer">
         <p style="margin: 0 0 6px 0;">RevvMotiv Performance & Styling Studio • Delhi NCR, India</p>
-        <p style="margin: 0;">Need fitment assistance? Reach us directly on <a href="https://wa.me/919917128864" style="color: #22c55e;">WhatsApp Support</a> or <a href="mailto:support@revvmotiv.com">support@revvmotiv.com</a></p>
+        <p style="margin: 0;">Need fitment assistance? Reach us directly on <a href="https://wa.me/918368343232?text=Hi%20RevvMotiv%2C%20I%20need%20assistance%20with%20my%20order." style="color: #22c55e;">WhatsApp Support</a> or <a href="mailto:support@revvmotiv.com">support@revvmotiv.com</a></p>
       </div>
 
     </div>

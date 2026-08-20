@@ -6,7 +6,7 @@ import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 import { WhatsAppIcon } from "@/app/components/WhatsAppIcon";
 
 const PREFILLED_MESSAGE =
-  "Hi RevvMotiv, I'm looking for styling & aero parts for my car. Can you assist me?";
+  "Hi RevvMotiv, I'm looking for custom styling & aero parts for my car. Can you assist me with fitment?";
 
 export function WhatsAppFab({ digits }: { digits: string }) {
   const visible = useFooterVisibility();
