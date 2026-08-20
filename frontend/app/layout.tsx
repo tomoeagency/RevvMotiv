@@ -12,6 +12,7 @@ import "./globals.css";
 import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
 import { AnnouncementStrip } from "@/app/components/AnnouncementStrip";
+import { WhatsAppButton } from "@/app/components/WhatsAppButton";
 import { ClientOverlays } from "@/app/components/ClientOverlays";
 import { CartProvider } from "@/lib/cart-context";
 import { ConsultantProvider } from "@/lib/consultant-context";
@@ -147,6 +148,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Navbar />
               <main className="flex-1 w-full max-w-full">{children}</main>
               <Footer />
+              <WhatsAppButton />
               <ClientOverlays />
             </ConsultantProvider>
           </CartProvider>
