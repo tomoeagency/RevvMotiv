@@ -8,18 +8,44 @@ import { FeaturedReviews } from "@/app/components/FeaturedReviews";
 import { ReelsSection } from "@/app/components/ReelsSection";
 import { ClosingCta } from "@/app/components/ClosingCta";
 import { getProducts, getCategories, getFeaturedReviews } from "@/lib/api";
+import { FALLBACK_CATEGORIES, FALLBACK_REVIEWS } from "@/lib/constants";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function Home() {
-  let featured = (await getProducts({ featured: true, perPage: 12 })).data;
-
-  if (featured.length === 0) {
-    featured = (await getProducts({ perPage: 12 })).data;
+  let featured: any[] = [];
+  try {
+    const res = await getProducts({ featured: true, perPage: 12 });
+    featured = res.data || [];
+    if (featured.length === 0) {
+      const allRes = await getProducts({ perPage: 12 });
+      featured = allRes.data || [];
+    }
+  } catch {
+    featured = [];
   }
 
-  const { data: categories } = await getCategories();
-  const { data: featuredReviews } = await getFeaturedReviews();
+  let categories: any[] = [];
+  try {
+    const res = await getCategories();
+    categories = res.data || [];
+  } catch {
+    categories = [];
+  }
+  if (!categories || categories.length === 0) {
+    categories = [...FALLBACK_CATEGORIES];
+  }
+
+  let featuredReviews: any[] = [];
+  try {
+    const res = await getFeaturedReviews();
+    featuredReviews = res.data || [];
+  } catch {
+    featuredReviews = [];
+  }
+  if (!featuredReviews || featuredReviews.length === 0) {
+    featuredReviews = [...FALLBACK_REVIEWS];
+  }
 
   return (
     <>
