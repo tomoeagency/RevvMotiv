@@ -88,7 +88,7 @@ export function Hero() {
       </div>
 
       {/* 2. Text & Content Layer (Directly Over Image) */}
-      <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 pt-24 pb-16 sm:pt-28 sm:pb-20 md:pt-32 md:pb-24 flex-1 flex flex-col justify-center">
+      <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 py-16 sm:py-20 md:py-28 flex-1 flex flex-col justify-center">
         <div className="max-w-4xl relative w-full">
           {/* Engineering Crosshairs */}
           <Crosshair className="hidden md:block absolute -top-10 -left-6 text-red-500/50 w-5 h-5" />
