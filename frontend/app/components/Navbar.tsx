@@ -180,7 +180,7 @@ export function Navbar() {
           >
             <Search className="w-5 h-5" />
           </Link>
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <button
             onClick={openDrawer}
             aria-label={itemCount > 0 ? `${itemCount} ${itemCount === 1 ? "item" : "items"} in cart, open cart` : "Open cart (empty)"}
