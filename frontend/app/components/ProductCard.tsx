@@ -29,6 +29,8 @@ export function ProductCard({
   }
 
   const hasSecondaryImage = product.images && product.images.length > 1;
+  const primaryImage = product.images?.[0] || "/images/logo.png";
+  const secondaryImage = hasSecondaryImage ? product.images[1] : primaryImage;
 
   // 1. LIST VIEW (Horizontal Row)
   if (layoutMode === "list") {
@@ -40,7 +42,7 @@ export function ProductCard({
         {/* Left: Thumbnail Image */}
         <div className="relative w-20 h-20 flex-none rounded-lg overflow-hidden bg-black border border-hairline">
           <Image
-            src={product.images[0]}
+            src={primaryImage}
             alt={product.title}
             fill
             sizes="80px"
@@ -107,7 +109,7 @@ export function ProductCard({
       >
         <div className="aspect-square bg-black border border-hairline mb-2 flex items-center justify-center relative overflow-hidden rounded-lg">
           <Image
-            src={product.images[0]}
+            src={primaryImage}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 45vw, 25vw"
@@ -166,7 +168,7 @@ export function ProductCard({
       <div className="aspect-square bg-surface border border-hairline-strong mb-4 flex items-center justify-center relative overflow-hidden rounded-xl transition-all duration-300 group-hover:border-red-500/50 group-hover:shadow-[0_12px_32px_rgba(201,24,43,0.12)]">
         {/* Primary Image */}
         <Image
-          src={product.images[0]}
+          src={primaryImage}
           alt={product.title}
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -180,7 +182,7 @@ export function ProductCard({
         {/* Secondary Image Crossfade on Hover (if available) */}
         {hasSecondaryImage && (
           <Image
-            src={product.images[1]}
+            src={secondaryImage}
             alt={`${product.title} alternate view`}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"

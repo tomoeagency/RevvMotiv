@@ -24,7 +24,7 @@ export async function generateMetadata({
     return { title: "Product Not Found — RevvMotiv" };
   }
 
-  const desc = product.description.slice(0, 160);
+  const desc = product.description?.slice(0, 160) || `${product.title} - High quality custom automotive parts by RevvMotiv.`;
 
   return {
     title: `${product.title} — RevvMotiv`,
@@ -35,7 +35,7 @@ export async function generateMetadata({
     openGraph: {
       title: product.title,
       description: desc,
-      images: product.images?.[0] ? [{ url: product.images[0] }] : [],
+      images: product.images?.[0] ? [{ url: product.images[0] }] : [{ url: "https://revvmotiv.com/images/logo.png" }],
     },
   };
 }
@@ -68,8 +68,8 @@ export default async function ProductDetailPage({
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.title,
-    description: product.description,
-    image: product.images,
+    description: product.description || `${product.title} - Custom automotive styling upgrade by RevvMotiv.`,
+    image: product.images && product.images.length > 0 ? product.images : ["https://revvmotiv.com/images/logo.png"],
     sku: `RM-${product.id}`,
     category: product.category.name,
     brand: {

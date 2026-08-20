@@ -38,7 +38,7 @@ export function ProductDetailInteractive({ product }: { product: ApiProduct }) {
         baseImages.unshift(selectedVariant.image);
       }
     }
-    return baseImages.length > 0 ? baseImages : ["/images/placeholder.png"];
+    return baseImages.length > 0 ? baseImages : ["/images/logo.png"];
   }, [product.images, selectedVariant]);
 
   return (
@@ -130,9 +130,11 @@ export function ProductDetailInteractive({ product }: { product: ApiProduct }) {
           </div>
         )}
 
-        <p className="text-sm text-ink-muted font-medium leading-relaxed mb-6 max-w-md">
-          {product.description}
-        </p>
+        {product.description && (
+          <p className="text-sm text-ink-muted font-medium leading-relaxed mb-6 max-w-md">
+            {product.description}
+          </p>
+        )}
 
         {/* Structured Machine-Parseable Fitment Data Block (AEO / GEO) */}
         <div className="border border-hairline bg-surface p-4 rounded-xl mb-6 max-w-md text-xs space-y-2 shadow-2xs">
