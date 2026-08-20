@@ -45,6 +45,8 @@ export interface ApiProduct {
   images: string[];
   category: Category;
   variants?: ProductVariant[];
+  average_rating?: number | null;
+  reviews_count?: number;
   created_at: string;
 }
 
@@ -346,7 +348,7 @@ export async function getProductReviews(
   try {
     const res = await fetch(
       apiUrl(`/api/v1/products/${productIdOrSlug}/reviews?per_page=${perPage}`),
-      { next: { revalidate: 300 } }
+      { cache: "no-store" }
     );
 
     if (!res.ok) {

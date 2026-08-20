@@ -13,7 +13,7 @@ import {
   PenLine,
   Loader2,
 } from "lucide-react";
-import type { ProductReviewsResponse } from "@/lib/api";
+import type { ProductReviewsResponse, Review } from "@/lib/api";
 import { parseReviewComment } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
 import { PrimaryCtaButton } from "@/app/components/PrimaryCtaButton";
@@ -36,7 +36,17 @@ export function ReviewsSection({
   productTitle?: string;
   reviews: ProductReviewsResponse;
 }) {
-  const { data, meta } = reviews;
+  const [reviewList, setReviewList] = useState<Review[]>(reviews?.data || []);
+  const [reviewMeta, setReviewMeta] = useState(
+    reviews?.meta || {
+      current_page: 1,
+      last_page: 1,
+      per_page: 10,
+      total: 0,
+      average_rating: 5,
+      rating_breakdown: {},
+    }
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Form State
@@ -107,6 +117,35 @@ export function ReviewsSection({
         throw new Error(result.message || "Failed to submit review. Please check the inputs.");
       }
 
+      // Prepend newly submitted review into reviewList and recalculate average rating live
+      const newReview: Review = {
+        id: result.data?.id || Date.now(),
+        product_id: productId ?? null,
+        customer_name: customerName.trim(),
+        rating: Number(rating),
+        comment: comment.trim(),
+        media_urls: mediaPreviews,
+        verified_purchase: false,
+        created_at: new Date().toISOString(),
+      };
+
+      const updatedList = [newReview, ...reviewList];
+      const newTotal = updatedList.length;
+      const sumRating = updatedList.reduce((acc, curr) => acc + curr.rating, 0);
+      const newAvg = Number((sumRating / newTotal).toFixed(1));
+      const newBreakdown: Record<string, number> = {};
+      updatedList.forEach((r) => {
+        newBreakdown[String(r.rating)] = (newBreakdown[String(r.rating)] || 0) + 1;
+      });
+
+      setReviewList(updatedList);
+      setReviewMeta({
+        ...reviewMeta,
+        total: newTotal,
+        average_rating: newAvg,
+        rating_breakdown: newBreakdown,
+      });
+
       setSubmitSuccess(true);
       setCustomerName("");
       setCustomerEmail("");
@@ -122,7 +161,7 @@ export function ReviewsSection({
 
   const breakdown = [5, 4, 3, 2, 1].map((star) => ({
     star,
-    count: meta.rating_breakdown?.[String(star)] ?? 0,
+    count: reviewMeta.rating_breakdown?.[String(star)] ?? 0,
   }));
 
   return (
@@ -152,7 +191,7 @@ export function ReviewsSection({
         </PrimaryCtaButton>
       </div>
 
-      {meta.total === 0 ? (
+      {reviewMeta.total === 0 ? (
         <div className="border border-hairline bg-surface p-12 rounded-xl flex flex-col items-center text-center gap-4">
           <MessageSquareOff className="w-10 h-10 text-ink-subtle" />
           <div className="max-w-md">
@@ -175,20 +214,20 @@ export function ReviewsSection({
           <div className="flex flex-col gap-6 h-fit lg:sticky lg:top-28 bg-surface/40 p-6 rounded-2xl border border-hairline">
             <div>
               <span className="text-5xl font-black text-ink block leading-none mb-2 font-mono">
-                {meta.average_rating.toFixed(1)}
+                {reviewMeta.average_rating.toFixed(1)}
               </span>
               <div className="flex items-center gap-2 mb-1.5">
-                <StarRating rating={meta.average_rating} size="w-5 h-5" />
+                <StarRating rating={reviewMeta.average_rating} size="w-5 h-5" />
                 <span className="text-xs font-bold text-ink">out of 5</span>
               </div>
               <p className="text-xs text-ink-muted">
-                Based on {meta.total} verified {meta.total === 1 ? "review" : "reviews"}
+                Based on {reviewMeta.total} verified {reviewMeta.total === 1 ? "review" : "reviews"}
               </p>
             </div>
 
             <div className="flex flex-col gap-2.5 pt-4 border-t border-hairline">
               {breakdown.map(({ star, count }) => {
-                const pct = meta.total > 0 ? Math.round((count / meta.total) * 100) : 0;
+                const pct = reviewMeta.total > 0 ? Math.round((count / reviewMeta.total) * 100) : 0;
                 return (
                   <div key={star} className="flex items-center gap-3 text-xs">
                     <span className="w-4 text-ink font-bold flex items-center gap-0.5">
@@ -209,7 +248,7 @@ export function ReviewsSection({
 
           {/* Right: Customer Reviews List */}
           <div className="flex flex-col gap-6">
-            {data.map((review) => (
+            {reviewList.map((review) => (
               <div
                 key={review.id}
                 className="p-6 bg-surface border border-hairline rounded-2xl space-y-3"

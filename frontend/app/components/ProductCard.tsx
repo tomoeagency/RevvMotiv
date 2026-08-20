@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ShoppingCart, Check, Ban } from "lucide-react";
+import { ShoppingCart, Check, Ban, Star } from "lucide-react";
 import { type ApiProduct, formatPrice, PRODUCT_IMAGE_BLUR_DATA_URL } from "@/lib/api";
 import { useCart } from "@/lib/cart-context";
 
@@ -235,8 +235,16 @@ export function ProductCard({
       </div>
 
       <div className="space-y-1">
-        <div className="text-[10px] font-bold text-red-500 uppercase tracking-widest">
-          {product.category.name}
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest truncate">
+            {product.category.name}
+          </span>
+          {product.average_rating ? (
+            <div className="flex items-center gap-1 text-[11px] text-amber-400 font-bold flex-none">
+              <Star className="w-3 h-3 fill-amber-400" />
+              <span className="text-ink font-mono text-xs">{Number(product.average_rating).toFixed(1)}</span>
+            </div>
+          ) : null}
         </div>
         <h3 className="text-sm font-bold text-ink group-hover:text-red-400 transition-colors line-clamp-1">
           {product.title}

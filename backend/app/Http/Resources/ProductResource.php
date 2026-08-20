@@ -29,6 +29,10 @@ class ProductResource extends JsonResource
             'images' => $normalizedImages,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'variants' => ProductVariantResource::collection($this->variants),
+            'average_rating' => $this->relationLoaded('reviews') || $this->reviews()->exists()
+                ? round((float) $this->reviews()->where('status', 'approved')->avg('rating'), 1) ?: null
+                : null,
+            'reviews_count' => (int) $this->reviews()->where('status', 'approved')->count(),
             'created_at' => $this->created_at?->toIso8601String(),
         ];
     }
