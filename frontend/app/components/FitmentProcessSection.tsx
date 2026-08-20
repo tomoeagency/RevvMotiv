@@ -203,7 +203,7 @@ export function FitmentProcessSection() {
                   </div>
 
                   <p className="text-[11px] text-ink-muted pl-8 flex items-center gap-2">
-                    <span className="text-red-500/90 font-medium">{step.badge}</span>
+                    <span className="text-red-400 font-bold">{step.badge}</span>
                     <span>•</span>
                     <span>{step.stat}</span>
                   </p>

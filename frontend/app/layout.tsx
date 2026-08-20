@@ -135,7 +135,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         <RootSchema />
+        <link rel="preconnect" href="https://api.revvmotiv.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.revvmotiv.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full relative">
         <Script id="theme-init" strategy="beforeInteractive">
