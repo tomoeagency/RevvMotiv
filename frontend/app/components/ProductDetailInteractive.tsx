@@ -25,21 +25,32 @@ export function ProductDetailInteractive({ product }: { product: ApiProduct }) {
     ? selectedVariant.in_stock !== false && (selectedVariant.stock ?? 1) > 0
     : product.in_stock;
 
-  // Build the active image gallery list, prepending the selected variant image if unique
+  // Collect all images that belong specifically to OTHER variants
+  const otherVariantImages = useMemo(() => {
+    return variants
+      .filter((v) => v.id !== selectedVariant?.id && Boolean(v.image))
+      .map((v) => v.image as string);
+  }, [variants, selectedVariant?.id]);
+
+  // Build the active image gallery list:
+  // If the selected variant has its own image, show it and exclude images belonging to other variants
   const galleryImages = useMemo(() => {
-    const baseImages = product.images && product.images.length > 0 ? [...product.images] : [];
     if (selectedVariant?.image) {
-      const idx = baseImages.indexOf(selectedVariant.image);
-      if (idx > -1) {
-        // Move it to the front
-        baseImages.splice(idx, 1);
-        baseImages.unshift(selectedVariant.image);
-      } else {
-        baseImages.unshift(selectedVariant.image);
-      }
+      const generalImages = (product.images || []).filter(
+        (img) => img !== selectedVariant.image && !otherVariantImages.includes(img)
+      );
+      return [selectedVariant.image, ...generalImages];
     }
-    return baseImages.length > 0 ? baseImages : ["/images/logo.png"];
-  }, [product.images, selectedVariant]);
+
+    // If no variant-specific image is set on selected variant, show base product images excluding other variant photos
+    const baseImages = (product.images || []).filter(
+      (img) => !otherVariantImages.includes(img)
+    );
+
+    if (baseImages.length > 0) return baseImages;
+    if (product.images && product.images.length > 0) return product.images;
+    return ["/images/logo.png"];
+  }, [product.images, selectedVariant?.image, otherVariantImages]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
