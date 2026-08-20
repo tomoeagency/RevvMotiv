@@ -86,6 +86,10 @@ upload_dir('backend/resources', 'public_html/resources')
 print("\n--- Uploading Public Images (Logos, Projects PNGs) ---")
 upload_dir('backend/public/images', 'public_html/public/images')
 
+print("\n--- Uploading Compiled Vite Assets (CSS & JS) ---")
+upload_dir('backend/public/build', 'public_html/build')
+upload_dir('backend/public/build', 'public_html/public/build')
+
 print("\n--- Uploading Database Migrations ---")
 upload_dir('backend/database/migrations', 'public_html/database/migrations')
 

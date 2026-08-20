@@ -11,17 +11,10 @@ import Script from "next/script";
 import "./globals.css";
 import { Navbar } from "@/app/components/Navbar";
 import { Footer } from "@/app/components/Footer";
-import { CartDrawer } from "@/app/components/CartDrawer";
-import { RouteLoader } from "@/app/components/RouteLoader";
 import { AnnouncementStrip } from "@/app/components/AnnouncementStrip";
-import { ConsultantModal } from "@/app/components/ConsultantModal";
-import { ConsultantFabTrigger } from "@/app/components/ConsultantFabTrigger";
-import { WhatsAppButton } from "@/app/components/WhatsAppButton";
-import { CookieConsent } from "@/app/components/CookieConsent";
-import { TrustPanel } from "@/app/components/TrustPanel";
+import { ClientOverlays } from "@/app/components/ClientOverlays";
 import { CartProvider } from "@/lib/cart-context";
 import { ConsultantProvider } from "@/lib/consultant-context";
-
 import { RootSchema } from "@/app/components/RootSchema";
 
 const orbitron = Orbitron({
@@ -139,6 +132,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.revvmotiv.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="preload" as="image" href="/hero-1-ai.jpg" fetchPriority="high" />
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
+        <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLMs-full.txt" />
       </head>
       <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full relative">
         <Script id="theme-init" strategy="beforeInteractive">
@@ -155,13 +151,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Navbar />
               <main className="flex-1 w-full max-w-full">{children}</main>
               <Footer />
-              <CartDrawer />
-              <TrustPanel />
-              <RouteLoader />
-              <ConsultantModal />
-              <ConsultantFabTrigger />
-              <WhatsAppButton />
-              <CookieConsent />
+              <ClientOverlays />
             </ConsultantProvider>
           </CartProvider>
         </SmoothScrollProvider>

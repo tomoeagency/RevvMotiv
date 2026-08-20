@@ -30,7 +30,13 @@ export default function robots(): MetadataRoute.Robots {
           "Bytespider",
           "cohere-ai",
         ],
-        allow: ["/", "/llms.txt", "/llms-full.txt"],
+        allow: [
+          "/",
+          "/llms.txt",
+          "/llms-full.txt",
+          "/.well-known/ai-plugin.json",
+          "/.well-known/llms.txt",
+        ],
         disallow: [
           "/admin/",
           "/api/",
