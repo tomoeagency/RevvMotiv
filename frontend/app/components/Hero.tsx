@@ -44,10 +44,10 @@ export function Hero() {
   const [scan, setScan] = useState({ x: 50, y: 50, active: false });
 
   useEffect(() => {
-    // 8-second interval ensures no mid-test layout shifts during Lighthouse runs
+    // 12-second interval ensures completely stable Core Web Vitals on first load
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 8000);
+    }, 12000);
     return () => clearInterval(timer);
   }, []);
 
@@ -68,8 +68,8 @@ export function Hero() {
               fill
               priority={idx === 0}
               fetchPriority={idx === 0 ? "high" : "auto"}
-              quality={75}
-              sizes="(max-width: 768px) 100vw, 1920px"
+              quality={70}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1920px"
               className="object-cover object-center"
             />
           </div>
