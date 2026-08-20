@@ -16,13 +16,23 @@ const HERO_SLIDES = [
   },
   {
     image: "/hero-2-ai.png",
-    caption: "Durable & Road-Ready",
-    headline: ["Built Tough.", "Engineered for Indian Roads."],
+    caption: "Track-Tested Durability",
+    headline: ["Built Tough.", "Engineered to Endure."],
   },
   {
     image: "/hero-3-ai.png",
     caption: "Guaranteed 1:1 Fitment",
     headline: ["Precision Molded.", "Direct Factory Bolt-On."],
+  },
+  {
+    image: "/hero-4-ai.jpg",
+    caption: "Aerodynamic Performance",
+    headline: ["Sculpted for Downforce.", "Uncompromised Speed."],
+  },
+  {
+    image: "/hero-5-ai.jpg",
+    caption: "Track-Grade Carbon & ABS",
+    headline: ["Aggressive Stance.", "Precision Engineered."],
   },
 ];
 
