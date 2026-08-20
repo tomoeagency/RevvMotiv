@@ -1,37 +1,40 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, Crosshair } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
-import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
+import { motion, AnimatePresence } from "motion/react";
+import { ArrowRight, Crosshair, Sparkles } from "lucide-react";
 
 const HERO_SLIDES = [
   {
     image: "/hero-1-ai.png",
     caption: "Custom Street Styling",
+    badge: "PRECISION CRAFTSMANSHIP",
     headline: ["Crafted for the Street.", "Designed to Stand Out."],
   },
   {
     image: "/hero-2-ai.png",
     caption: "Track-Tested Durability",
+    badge: "EXTREME ENDURANCE",
     headline: ["Built Tough.", "Engineered to Endure."],
   },
   {
     image: "/hero-3-ai.png",
     caption: "Guaranteed 1:1 Fitment",
-    headline: ["Precision Molded.", "Direct Factory Bolt-On."],
+    badge: "DIRECT OEM BOLT-ON",
+    headline: ["Precision Molded.", "Direct Factory Fit."],
   },
   {
     image: "/hero-4-ai.jpg",
     caption: "Aerodynamic Performance",
+    badge: "TRACK-GRADE AERO",
     headline: ["Sculpted for Downforce.", "Uncompromised Speed."],
   },
   {
     image: "/hero-5-ai.jpg",
-    caption: "Track-Grade Carbon & ABS",
+    caption: "Bespoke Workshop Builds",
+    badge: "CUSTOM FABRICATION",
     headline: ["Aggressive Stance.", "Precision Engineered."],
   },
 ];
@@ -43,45 +46,57 @@ export function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
-    }, 4000);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
   return (
-    <section className="relative w-full min-h-[85dvh] border-b border-hairline overflow-hidden bg-canvas flex flex-col justify-between">
-      {/* 1. Full-Bleed Background Photo Layer */}
+    <section className="relative w-full min-h-[88dvh] border-b border-hairline overflow-hidden bg-canvas flex flex-col justify-between select-none">
+      {/* 1. Full-Bleed Background Photo Layer with Smooth Crossfade & Ken Burns Zoom */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {HERO_SLIDES.map((slide, idx) => (
-          <Image
-            key={slide.image}
-            src={slide.image}
-            alt={slide.caption}
-            fill
-            priority={idx === 0}
-            sizes="100vw"
-            className={`object-cover object-center transition-[opacity,transform] duration-1000 ease-out ${
-              idx === currentSlide ? "opacity-100 scale-105" : "opacity-0 scale-100 pointer-events-none"
-            }`}
-          />
-        ))}
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, scale: 1.08 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{
+              opacity: { duration: 1.2, ease: [0.16, 1, 0.3, 1] },
+              scale: { duration: 6, ease: "easeOut" },
+            }}
+            className="absolute inset-0"
+          >
+            <Image
+              src={HERO_SLIDES[currentSlide].image}
+              alt={HERO_SLIDES[currentSlide].caption}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center"
+            />
+          </motion.div>
+        </AnimatePresence>
 
         {/* Gradient Overlay — Targeted behind left text, keeping car photo crisp on right */}
-        <div className="absolute inset-y-0 left-0 w-full md:w-3/5 bg-gradient-to-r from-canvas via-canvas/70 to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-canvas/40 to-transparent z-10 pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-canvas/50 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-full md:w-3/5 bg-gradient-to-r from-canvas via-canvas/80 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-canvas/60 to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-canvas/70 to-transparent z-10 pointer-events-none" />
+        
         {/* Structural Grid Overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-30 z-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-[size:100px_100px] opacity-25 z-10 pointer-events-none" />
+        
         {/* Red Laser Accent */}
         <div className="absolute top-0 left-1/4 w-[1px] h-[150%] bg-red-500 shadow-[0_0_25px_rgba(201,24,43,0.9)] rotate-[35deg] origin-top-left animate-glow-pulse z-10 pointer-events-none" />
       </div>
 
-      {/* 3. Text & Content Layer (Directly Over Image) */}
+      {/* 2. Text & Content Layer (Directly Over Image) */}
       <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-4 sm:px-6 py-16 sm:py-20 md:py-28 flex-1 flex flex-col justify-center">
         <div className="max-w-4xl relative w-full">
-          {/* Engineering Crosshairs - hidden on mobile to avoid horizontal overflow */}
+          {/* Engineering Crosshairs */}
           <Crosshair className="hidden md:block absolute -top-10 -left-6 text-red-500/50 w-5 h-5" />
           <Crosshair className="hidden md:block absolute -bottom-10 -left-6 text-red-500/50 w-5 h-5" />
 
+          {/* Caliper Interactive Scan Line */}
           <div
             className="relative mb-6"
             onMouseMove={(e) => {
@@ -94,7 +109,6 @@ export function Hero() {
             }}
             onMouseLeave={() => setScan((s) => ({ ...s, active: false }))}
           >
-            {/* Caliper tick */}
             <div
               aria-hidden
               className="pointer-events-none absolute inset-y-0 z-10 w-px bg-red-500 transition-opacity duration-200 hidden sm:block"
@@ -104,32 +118,72 @@ export function Hero() {
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 border-b border-l border-red-500" />
             </div>
 
+            {/* Staggered Text Transition */}
             <AnimatePresence mode="wait">
-              <motion.h1
+              <motion.div
                 key={currentSlide}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{
-                  duration: MOTION_DURATION.page,
-                  ease: MOTION_EASE_BRAND,
-                  delay: currentSlide === 0 ? 0.2 : 0,
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+                  },
+                  exit: {
+                    opacity: 0,
+                    transition: { staggerChildren: 0.05, staggerDirection: -1 },
+                  },
                 }}
-                className="text-3xl sm:text-5xl md:text-7xl lg:text-[88px] font-black uppercase tracking-tight sm:tracking-tighter leading-[0.95] sm:leading-[0.88] text-ink drop-shadow-2xl break-words"
+                className="space-y-3"
               >
-                {HERO_SLIDES[currentSlide].headline[0]}
-                <br />
-                <span className="text-chrome">
-                  {HERO_SLIDES[currentSlide].headline[1]}
-                </span>
-              </motion.h1>
+                {/* Dynamic Category/Feature Badge */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 12, filter: "blur(4px)" },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      filter: "blur(0px)",
+                      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+                    },
+                    exit: { opacity: 0, y: -10, filter: "blur(4px)", transition: { duration: 0.3 } },
+                  }}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest backdrop-blur-sm"
+                >
+                  <Sparkles className="w-3 h-3 text-red-500" />
+                  <span>{HERO_SLIDES[currentSlide].badge}</span>
+                </motion.div>
+
+                {/* Main Headline */}
+                <motion.h1
+                  variants={{
+                    hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      filter: "blur(0px)",
+                      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+                    },
+                    exit: { opacity: 0, y: -16, filter: "blur(6px)", transition: { duration: 0.4 } },
+                  }}
+                  className="text-3xl sm:text-5xl md:text-7xl lg:text-[84px] font-black uppercase tracking-tight sm:tracking-tighter leading-[0.96] sm:leading-[0.88] text-ink drop-shadow-2xl break-words"
+                >
+                  {HERO_SLIDES[currentSlide].headline[0]}
+                  <br />
+                  <span className="text-chrome">
+                    {HERO_SLIDES[currentSlide].headline[1]}
+                  </span>
+                </motion.h1>
+              </motion.div>
             </AnimatePresence>
           </div>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: MOTION_DURATION.page, ease: MOTION_EASE_BRAND }}
+            transition={{ delay: 0.35, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="text-ink-muted text-base sm:text-lg max-w-xl font-medium leading-relaxed mb-10 drop-shadow-md"
           >
             Carbon fiber styling and aerodynamic components, engineered to
@@ -139,10 +193,13 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.55, duration: MOTION_DURATION.page, ease: MOTION_EASE_BRAND }}
+            transition={{ delay: 0.45, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col sm:flex-row items-center gap-5 w-full sm:w-auto"
           >
-            <PrimaryCtaLink href="/shop" className="group relative overflow-hidden w-full sm:w-auto px-12 py-4 text-sm flex items-center justify-center gap-3 rounded shadow-2xl">
+            <Link
+              href="/shop"
+              className="group relative overflow-hidden w-full sm:w-auto px-10 py-4 text-sm font-bold uppercase tracking-wider flex items-center justify-center gap-3 rounded-xl bg-red-600 hover:bg-red-500 text-white shadow-2xl transition-all"
+            >
               <span className="pointer-events-none absolute inset-0 -translate-x-full transition-transform duration-500 ease-out group-hover:translate-x-full">
                 <span className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 bg-white/80 shadow-[0_0_12px_rgba(255,255,255,0.8)]" />
               </span>
@@ -150,7 +207,7 @@ export function Hero() {
                 Shop Catalog{" "}
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </span>
-            </PrimaryCtaLink>
+            </Link>
 
             <Link
               href="/work"
@@ -162,18 +219,18 @@ export function Hero() {
         </div>
       </div>
 
-      {/* 4. Slide Indicator Bar */}
+      {/* 3. Slide Indicator Bar with Smooth Active Bar Transition */}
       <div className="relative z-20 max-w-screen-2xl mx-auto w-full px-6 pb-6 pt-4 flex items-center justify-between gap-4 border-t border-hairline">
         <AnimatePresence mode="wait">
           <motion.span
             key={currentSlide}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: MOTION_DURATION.micro, ease: MOTION_EASE_BRAND }}
-            className="text-[10px] font-bold uppercase tracking-widest text-ink-muted"
+            initial={{ opacity: 0, y: 6, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -6, filter: "blur(4px)" }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="text-[11px] font-mono font-bold uppercase tracking-widest text-ink-muted"
           >
-            0{currentSlide + 1} — {HERO_SLIDES[currentSlide].caption}
+            0{currentSlide + 1} / 0{HERO_SLIDES.length} — {HERO_SLIDES[currentSlide].caption}
           </motion.span>
         </AnimatePresence>
 
@@ -186,9 +243,13 @@ export function Hero() {
               className="p-2 sm:py-2 flex items-center justify-center cursor-pointer min-w-[32px] min-h-[32px]"
             >
               <motion.div
-                animate={{ width: idx === currentSlide ? 36 : 10 }}
-                className={`h-1.5 rounded-full transition-colors duration-500 ${
-                  idx === currentSlide ? "bg-red-500 shadow-sm shadow-red-500/80" : "bg-white/30 hover:bg-white/60"
+                animate={{
+                  width: idx === currentSlide ? 40 : 10,
+                  opacity: idx === currentSlide ? 1 : 0.4,
+                }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className={`h-1.5 rounded-full ${
+                  idx === currentSlide ? "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]" : "bg-white/40 hover:bg-white/80"
                 }`}
               />
             </button>
