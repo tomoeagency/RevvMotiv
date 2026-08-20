@@ -128,10 +128,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <head>
         <RootSchema />
-        <link rel="preconnect" href="https://api.revvmotiv.com" crossOrigin="anonymous" />
-        <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://api.revvmotiv.com" />
-        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <link rel="preload" as="image" href="/hero-1-ai.jpg" fetchPriority="high" />
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
         <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLMs-full.txt" />
