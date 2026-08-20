@@ -24,14 +24,22 @@ export function CartDrawer() {
 
   const lenis = useLenis();
 
-  // Pause Lenis smooth scroll while drawer is open, resume when it closes.
-  // Using lenis.stop()/start() instead of body.overflow so the Lenis RAF
-  // loop stays intact and scroll resumes cleanly without getting stuck.
+  // Lock background scroll completely when cart drawer is open
   useEffect(() => {
     if (isDrawerOpen) {
-      lenis.stop();
+      try {
+        lenis?.stop();
+      } catch {}
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
     } else {
-      lenis.start();
+      try {
+        lenis?.start();
+      } catch {}
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      document.body.style.touchAction = "";
     }
 
     function handleKeydown(e: KeyboardEvent) {
@@ -44,6 +52,12 @@ export function CartDrawer() {
 
     return () => {
       document.removeEventListener("keydown", handleKeydown);
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      document.body.style.touchAction = "";
+      try {
+        lenis?.start();
+      } catch {}
     };
   }, [isDrawerOpen, closeDrawer, lenis]);
 
@@ -93,7 +107,7 @@ export function CartDrawer() {
               </div>
             ) : (
               <>
-                <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 sm:py-6 flex flex-col gap-5 sm:gap-6">
+                <div className="flex-1 overflow-y-auto px-5 sm:px-6 py-5 sm:py-6 flex flex-col gap-5 sm:gap-6 overscroll-contain" data-lenis-prevent>
                   {items.map((item) => (
                     <div key={`${item.productId}-${item.variantId || 'default'}`} className="flex gap-3.5 sm:gap-4">
                       <div className="relative w-20 h-20 flex-none bg-surface border border-hairline rounded-lg overflow-hidden">

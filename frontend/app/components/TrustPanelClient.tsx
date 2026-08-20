@@ -158,6 +158,7 @@ export function TrustPanelClient({
   return (
     <div
       className="hidden md:block fixed inset-y-0 left-0 right-[420px] z-[58] pointer-events-auto overflow-y-auto overscroll-contain p-6 pb-28 scroll-smooth"
+      data-lenis-prevent
       onClick={(e) => {
         if (e.target === e.currentTarget) closeDrawer();
       }}
