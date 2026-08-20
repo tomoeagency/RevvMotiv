@@ -201,12 +201,7 @@
 }
 
 .interactive-lift {
-  transition: transform 300ms var(--ease-brand), box-shadow 300ms var(--ease-brand), border-color 300ms var(--ease-brand);
-}
-@media (hover: hover) and (pointer: fine) {
-  .interactive-lift:hover {
-    transform: translateY(-4px);
-  }
+  transition: box-shadow 300ms var(--ease-brand), border-color 300ms var(--ease-brand);
 }
 
 .smooth-focus {

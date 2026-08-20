@@ -163,7 +163,7 @@ export function ProductCard({
       href={`/products/${product.slug}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="group cursor-pointer block interactive-lift"
+      className="group cursor-pointer block"
     >
       <div className="aspect-square bg-surface border border-hairline-strong mb-4 flex items-center justify-center relative overflow-hidden rounded-xl transition-all duration-300 group-hover:border-red-500/50 group-hover:shadow-[0_12px_32px_rgba(201,24,43,0.12)]">
         {/* Primary Image */}
@@ -194,7 +194,7 @@ export function ProductCard({
 
         {/* Hover Action Pill Overlay */}
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-3.5 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none">
-          <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-gradient-to-r from-[var(--brand-red)] to-[var(--brand-black)] px-3 py-1 rounded-md shadow-md backdrop-blur-xs transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+          <span className="text-[10px] font-bold text-white uppercase tracking-widest bg-gradient-to-r from-[var(--brand-red)] to-[var(--brand-black)] px-3 py-1 rounded-md shadow-md backdrop-blur-xs">
             View Details
           </span>
         </div>

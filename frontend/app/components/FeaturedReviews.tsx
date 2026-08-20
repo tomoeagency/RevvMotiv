@@ -28,7 +28,7 @@ function ReviewCard({
     .toUpperCase();
 
   return (
-    <div className="group/card relative z-0 hover:z-30 flex-none w-[82vw] max-w-[340px] sm:w-[400px] h-[290px] sm:h-[330px] bg-surface border border-hairline rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:scale-[1.02] hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
+    <div className="group/card relative z-0 hover:z-30 flex-none w-[82vw] max-w-[340px] sm:w-[400px] h-[290px] sm:h-[330px] bg-surface border border-hairline rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-lg transition-all duration-300 ease-[var(--ease-brand)] hover:shadow-2xl hover:shadow-red-500/20 hover:border-red-500/50">
       {/* Background ambient red glow on hover */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-red-500/10 rounded-full blur-2xl pointer-events-none opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
 
