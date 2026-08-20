@@ -87,13 +87,9 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
           <InstagramReelsRow embeds={embeds} />
         ) : (
           <div data-lenis-prevent className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-y touch-pan-x overscroll-x-contain sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0">
-            {GARAGE_GALLERY.map((reel, i) => (
-              <motion.div
+            {GARAGE_GALLERY.map((reel) => (
+              <div
                 key={reel.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: MOTION_DURATION.base, ease: MOTION_EASE_BRAND }}
                 onClick={() => setActiveReel(reel)}
                 className="flex-none w-[72vw] max-w-[260px] sm:max-w-none sm:w-auto snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
               >
@@ -102,8 +98,8 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
                   src={reel.img}
                   alt={reel.title}
                   fill
-                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 280px"
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-700 pointer-events-none"
                 />
 
                 {/* Gradient Overlays */}
@@ -168,7 +164,7 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}

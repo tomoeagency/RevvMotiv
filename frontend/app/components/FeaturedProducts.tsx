@@ -66,13 +66,7 @@ export function FeaturedProducts({
 
   return (
     <section className="py-12 sm:py-20 md:py-24 px-4 sm:px-6 max-w-screen-2xl mx-auto w-full overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: MOTION_DURATION.page, ease: MOTION_EASE_BRAND }}
-        className="flex flex-row items-end justify-between mb-8 sm:mb-12 gap-4"
-      >
+      <div className="flex flex-row items-end justify-between mb-8 sm:mb-12 gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-1 sm:mb-2">
             Customised Parts
@@ -113,7 +107,7 @@ export function FeaturedProducts({
             </div>
           )}
         </div>
-      </motion.div>
+      </div>
 
       {/* Responsive Carousel Track: Seamless for 4, 8, 12+ items */}
       <div
@@ -121,21 +115,13 @@ export function FeaturedProducts({
         data-lenis-prevent
         className="flex overflow-x-auto pb-4 pt-1 gap-4 sm:gap-6 snap-x snap-mandatory hide-scrollbar touch-pan-y touch-pan-x overscroll-x-contain -mx-4 px-4 sm:mx-0 sm:px-0"
       >
-        {products.map((item, i) => (
-          <motion.div
+        {products.map((item) => (
+          <div
             key={item.id}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{
-              duration: MOTION_DURATION.base,
-              delay: Math.min(i * 0.06, 0.4),
-              ease: MOTION_EASE_BRAND,
-            }}
             className="flex-none snap-start w-[76vw] max-w-[280px] sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]"
           >
             <ProductCard product={item} />
-          </motion.div>
+          </div>
         ))}
       </div>
 

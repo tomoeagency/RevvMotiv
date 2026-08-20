@@ -143,14 +143,13 @@ export function Hero() {
                 {/* Dynamic Category/Feature Badge */}
                 <motion.div
                   variants={{
-                    hidden: { opacity: 0, y: 12, filter: "blur(4px)" },
+                    hidden: { opacity: 0, y: 8 },
                     visible: {
                       opacity: 1,
                       y: 0,
-                      filter: "blur(0px)",
-                      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+                      transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] },
                     },
-                    exit: { opacity: 0, y: -10, filter: "blur(4px)", transition: { duration: 0.3 } },
+                    exit: { opacity: 0, y: -6, transition: { duration: 0.25 } },
                   }}
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest backdrop-blur-sm"
                 >
@@ -161,14 +160,13 @@ export function Hero() {
                 {/* Main Headline */}
                 <motion.h1
                   variants={{
-                    hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
+                    hidden: { opacity: 0, y: 12 },
                     visible: {
                       opacity: 1,
                       y: 0,
-                      filter: "blur(0px)",
-                      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+                      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
                     },
-                    exit: { opacity: 0, y: -16, filter: "blur(6px)", transition: { duration: 0.4 } },
+                    exit: { opacity: 0, y: -10, transition: { duration: 0.3 } },
                   }}
                   className="text-3xl sm:text-5xl md:text-7xl lg:text-[84px] font-black uppercase tracking-tight sm:tracking-tighter leading-[0.96] sm:leading-[0.88] text-ink drop-shadow-2xl break-words"
                 >
