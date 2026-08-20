@@ -42,6 +42,15 @@ function getTypeOrder(pathname: string): Array<"review" | "work" | "contact" | "
   return ["review", "work", "reel", "contact"];
 }
 
+const WORK_SLIDES = [
+  { img: "/images/projects/verna_cover.webp", title: "Hyundai Verna Stealth Build" },
+  { img: "/images/projects/i20_blackout_cover.webp", title: "i20 N-Line Blackout Aero" },
+  { img: "/images/projects/polo_track_cover.webp", title: "Polo GT TSI Track Spec" },
+  { img: "/images/projects/swift_aero_cover.webp", title: "Swift Sport Widebody" },
+  { img: "/images/projects/sonet_cover.webp", title: "Kia Sonet Custom Aero" },
+  { img: "/images/projects/tiago_cover.webp", title: "Tiago Street Edition" },
+];
+
 export function TrustPanelClient({
   whatsappDigits,
   workPhoto,
@@ -55,6 +64,17 @@ export function TrustPanelClient({
   const { isDrawerOpen, closeDrawer } = useCart();
   const { open: openConsultant } = useConsultant();
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
+
+  // Auto-rotating slideshow index for Our Work portfolio card
+  const [workIndex, setWorkIndex] = useState(0);
+
+  useEffect(() => {
+    if (!isDrawerOpen) return;
+    const timer = setInterval(() => {
+      setWorkIndex((prev) => (prev + 1) % WORK_SLIDES.length);
+    }, 3200);
+    return () => clearInterval(timer);
+  }, [isDrawerOpen]);
 
   // Opening the cart now changes the URL to /cart (see cart-context.tsx),
   // which makes usePathname() report "/cart" instead of whatever page the
@@ -248,31 +268,57 @@ export function TrustPanelClient({
 
                 {card.type === "work" && (
                   <div>
-                    {workPhoto && (
-                      <div className="relative w-full h-28 bg-surface-alt">
-                        <Image
-                          src={workPhoto}
-                          alt="A recent RevvMotiv install"
-                          fill
-                          sizes="256px"
-                          className="object-cover object-center"
-                        />
-                        <span className="absolute top-2 left-2 bg-[var(--brand-red)] text-white text-[9px] font-bold uppercase tracking-widest px-2 py-0.5">
-                          Portfolio
+                    <div className="relative w-full h-32 bg-surface-alt overflow-hidden">
+                      <AnimatePresence initial={false}>
+                        <motion.div
+                          key={workIndex}
+                          initial={{ opacity: 0, scale: 1.06 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.8, ease: "easeInOut" }}
+                          className="absolute inset-0"
+                        >
+                          <Image
+                            src={WORK_SLIDES[workIndex].img}
+                            alt={WORK_SLIDES[workIndex].title}
+                            fill
+                            sizes="256px"
+                            className="object-cover object-center"
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                      <span className="absolute top-2 left-2 z-10 bg-[var(--brand-red)] text-white text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 shadow-md">
+                        Portfolio
+                      </span>
+                      {/* Mini indicator dots at bottom right */}
+                      <div className="absolute bottom-2 right-2 z-10 flex gap-1 bg-black/60 px-1.5 py-0.5 rounded-full backdrop-blur-sm">
+                        {WORK_SLIDES.map((_, idx) => (
+                          <div
+                            key={idx}
+                            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                              idx === workIndex ? "bg-red-500 w-3" : "bg-white/40"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <Wrench className="w-5 h-5 text-[var(--brand-red)] mb-2.5" />
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <p className="text-sm text-ink font-bold">See Our Work</p>
+                        <span className="text-[10px] font-mono text-ink-muted">
+                          {workIndex + 1}/{WORK_SLIDES.length}
                         </span>
                       </div>
-                    )}
-                    <div className="p-5">
-                      <Wrench className="w-5 h-5 text-[var(--brand-red)] mb-3" />
-                      <p className="text-sm text-ink font-bold mb-1">See Our Work</p>
                       <p className="text-xs text-ink-muted mb-3 leading-relaxed">
                         Real installs on real cars — browse builds from the RevvMotiv community.
                       </p>
                       <Link
                         href="/work"
-                        className="text-xs font-bold text-ink uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors border-b border-[var(--brand-red)] pb-0.5"
+                        onClick={closeDrawer}
+                        className="text-xs font-bold text-ink uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors border-b border-[var(--brand-red)] pb-0.5 inline-block"
                       >
-                        View Projects
+                        View Projects →
                       </Link>
                     </div>
                   </div>
