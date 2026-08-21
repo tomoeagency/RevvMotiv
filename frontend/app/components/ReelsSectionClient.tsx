@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +17,9 @@ import {
   ArrowRight,
   Flame,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { GARAGE_GALLERY, type GarageReel } from "@/lib/garage-gallery";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
@@ -53,6 +55,7 @@ export function ReelsSectionClient({
   const [isLiked, setIsLiked] = useState<Record<string | number, boolean>>({});
   const [isMuted, setIsMuted] = useState(false);
   const [mediaItems, setMediaItems] = useState<InstagramMediaItem[]>(liveMedia);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (mediaItems.length === 0) {
@@ -66,6 +69,17 @@ export function ReelsSectionClient({
         .catch(() => {});
     }
   }, [mediaItems.length]);
+
+  const handleScroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = container.clientWidth * 0.85;
+      container.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   const toggleLike = (id: string | number, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -123,7 +137,7 @@ export function ReelsSectionClient({
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-red-600/5 blur-[140px] pointer-events-none rounded-full" />
 
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 relative z-10">
-        {/* Header with Live Badge & Instagram Handle */}
+        {/* Header with Live Badge & Instagram Handle & Scroll Arrows */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -150,7 +164,28 @@ export function ReelsSectionClient({
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE_BRAND }}
+            className="flex items-center gap-3"
           >
+            {/* Horizontal Scroll Arrows on Desktop & Tablet */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleScroll("left")}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface border border-hairline hover:border-red-500/60 hover:bg-neutral-900 text-ink flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105"
+                title="Previous Reels"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => handleScroll("right")}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface border border-hairline hover:border-red-500/60 hover:bg-neutral-900 text-ink flex items-center justify-center transition-all cursor-pointer shadow-sm hover:scale-105"
+                title="Next Reels"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
             <a
               href="https://instagram.com/revvmotiv"
               target="_blank"
@@ -165,19 +200,20 @@ export function ReelsSectionClient({
           </motion.div>
         </div>
 
-        {/* If live embeds exist, show them; else render interactive Reel Cards with modal popup */}
+        {/* If live embeds exist, show them; else render single-line side-scrolling cards */}
         {embeds.length > 0 ? (
           <InstagramReelsRow embeds={embeds} />
         ) : (
           <div
-            className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0"
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto pb-6 pt-1 gap-5 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
             {unifiedReels.map((reel) => (
               <div
                 key={reel.id}
                 onClick={() => setActiveReel(reel)}
-                className="flex-none w-[72vw] max-w-[260px] sm:max-w-none sm:w-auto snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
+                className="flex-none w-[75vw] max-w-[280px] sm:w-[calc(50%-12px)] sm:max-w-none md:w-[calc(33.333%-14px)] lg:w-[calc(25%-15px)] snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
               >
                 {/* Background Thumbnail Image with Direct Fallback & No-Referrer */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -267,33 +303,22 @@ export function ReelsSectionClient({
               exit={{ opacity: 0, scale: 0.92, y: 20 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-sm sm:max-w-md aspect-[9/16] max-h-[92vh] bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl flex flex-col justify-between p-4 sm:p-5"
+              className="relative w-full max-w-[360px] sm:max-w-[420px] h-[82vh] sm:h-[86vh] max-h-[760px] bg-black rounded-2xl overflow-hidden border border-white/20 shadow-2xl flex flex-col justify-between"
             >
-              {/* Modal Background Media */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={activeReel.image}
-                alt={activeReel.title}
-                referrerPolicy="no-referrer"
-                crossOrigin="anonymous"
-                className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/80 z-10 pointer-events-none" />
-
-              {/* TOP HEADER: Profile, Audio Toggle & Close */}
-              <div className="relative z-20 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-black text-xs border border-white/40 shadow-sm">
+              {/* TOP FLOATING CLOSE BAR */}
+              <div className="relative z-30 flex items-center justify-between p-3 bg-gradient-to-b from-black/90 via-black/50 to-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-red-600 flex items-center justify-center text-white font-black text-xs border border-white/40 shadow-sm">
                     RM
                   </div>
                   <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-black text-white block leading-none">
-                        revvmotiv
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs font-black text-white leading-none">
+                        @revvmotiv
                       </span>
                       <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                     </div>
-                    <span className="text-[10px] text-neutral-300 block font-mono mt-0.5">
+                    <span className="text-[10px] text-neutral-300 font-mono">
                       {activeReel.tag}
                     </span>
                   </div>
@@ -302,16 +327,8 @@ export function ReelsSectionClient({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setIsMuted(!isMuted)}
-                    className="p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors border border-white/20 cursor-pointer"
-                    title={isMuted ? "Unmute" : "Mute"}
-                  >
-                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                  </button>
-                  <button
-                    type="button"
                     onClick={() => setActiveReel(null)}
-                    className="p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors border border-white/20 cursor-pointer"
+                    className="p-1.5 rounded-full bg-black/70 text-white hover:bg-red-600 transition-colors border border-white/20 cursor-pointer shadow-md"
                     title="Close"
                   >
                     <X className="w-4 h-4" />
@@ -319,96 +336,53 @@ export function ReelsSectionClient({
                 </div>
               </div>
 
-              {/* CENTER: Simulated Live Play Indicator */}
-              <div className="relative z-20 self-center my-auto pointer-events-none opacity-80">
-                <div className="w-16 h-16 rounded-full bg-red-600/80 text-white flex items-center justify-center shadow-2xl backdrop-blur-sm border border-white/40">
-                  <Play className="w-7 h-7 fill-white ml-1" />
-                </div>
+              {/* CENTER: PLAYABLE INSTAGRAM IFRAME OR HD MEDIA */}
+              <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
+                {activeReel.permalink ? (
+                  <iframe
+                    src={`${activeReel.permalink.replace(/\/$/, "")}/embed`}
+                    className="w-full h-full border-0 rounded-b-none"
+                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                    allowFullScreen
+                    scrolling="yes"
+                  />
+                ) : (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={activeReel.image}
+                      alt={activeReel.title}
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
+                      className="w-full h-full object-cover object-center pointer-events-none"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
+                  </>
+                )}
               </div>
 
-              {/* BOTTOM DETAILS & INTERACTIVE ACTIONS */}
-              <div className="relative z-20 space-y-3">
-                {/* Progress bar */}
-                <div className="w-full bg-white/20 h-1 rounded-full overflow-hidden">
-                  <div className="bg-red-500 h-full w-3/4 animate-pulse" />
-                </div>
-
-                {/* Engagement Metrics Bar */}
-                <div className="flex items-center justify-between text-xs text-neutral-200 border-b border-white/10 pb-2">
-                  <button
-                    type="button"
-                    onClick={() => toggleLike(activeReel.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full border transition-all cursor-pointer ${
-                      isLiked[activeReel.id] 
-                        ? "bg-red-600 border-red-500 text-white font-bold" 
-                        : "bg-black/40 border-white/20 text-neutral-300 hover:text-white"
-                    }`}
+              {/* BOTTOM FLOATING ACTION BAR: Shop & WhatsApp */}
+              <div className="relative z-30 p-3.5 bg-neutral-950 border-t border-white/10 flex flex-col gap-2 shadow-2xl">
+                <div className="flex gap-2">
+                  <PrimaryCtaLink
+                    href="/shop"
+                    onClick={() => setActiveReel(null)}
+                    className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
                   >
-                    <Heart className={`w-3.5 h-3.5 ${isLiked[activeReel.id] ? "fill-white" : ""}`} />
-                    <span>{isLiked[activeReel.id] ? "Liked!" : activeReel.likes}</span>
-                  </button>
+                    <span>Shop Custom Parts</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </PrimaryCtaLink>
                   
-                  <div className="flex items-center gap-4 text-[11px] font-mono text-neutral-300">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5 text-red-400" />
-                      {activeReel.views} views
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MessageCircle className="w-3.5 h-3.5 text-neutral-400" />
-                      {activeReel.comments}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Caption / Title */}
-                <div className="max-h-24 overflow-y-auto hide-scrollbar space-y-1">
-                  <h4 className="text-sm sm:text-base font-black text-white leading-snug">
-                    {activeReel.title}
-                  </h4>
-                  {activeReel.caption && (
-                    <p className="text-xs text-neutral-300 leading-relaxed line-clamp-3">
-                      {activeReel.caption}
-                    </p>
-                  )}
-                </div>
-
-                {/* Direct Action Buttons */}
-                <div className="pt-1 space-y-2">
-                  <div className="flex gap-2">
-                    <PrimaryCtaLink
-                      href="/shop"
-                      onClick={() => setActiveReel(null)}
-                      className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
-                    >
-                      <span>Shop Custom Parts</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </PrimaryCtaLink>
-                    
-                    <a
-                      href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi RevvMotiv! I want to order/enquire about this build: ${activeReel.title}`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3.5 py-2.5 rounded bg-neutral-900 hover:bg-neutral-800 border border-white/20 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
-                      title="Enquire on WhatsApp"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5 text-red-400" />
-                      <span className="hidden sm:inline">WhatsApp</span>
-                    </a>
-                  </div>
-
-                  {activeReel.permalink && (
-                    <div className="text-center pt-0.5">
-                      <a
-                        href={activeReel.permalink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[10px] text-neutral-400 hover:text-red-400 transition-colors"
-                      >
-                        <span>View original post on Instagram</span>
-                        <ExternalLink className="w-2.5 h-2.5" />
-                      </a>
-                    </div>
-                  )}
+                  <a
+                    href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi RevvMotiv! I want to order/enquire about this setup: ${activeReel.title}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2.5 rounded bg-neutral-900 hover:bg-neutral-800 border border-white/20 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                    title="Enquire on WhatsApp"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5 text-red-400" />
+                    <span>WhatsApp</span>
+                  </a>
                 </div>
               </div>
             </motion.div>

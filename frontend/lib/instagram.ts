@@ -35,7 +35,7 @@ export const INSTAGRAM_REEL_URLS: string[] = [];
  * Fetches real live posts and reels directly from Instagram Graph API
  * for @revvmotiv using the user access token with 1-hour ISR cache.
  */
-export async function getInstagramLiveMedia(limit: number = 8): Promise<InstagramMediaItem[]> {
+export async function getInstagramLiveMedia(limit: number = 20): Promise<InstagramMediaItem[]> {
   const token = INSTAGRAM_ACCESS_TOKEN;
   if (!token) return [];
 
@@ -52,7 +52,8 @@ export async function getInstagramLiveMedia(limit: number = 8): Promise<Instagra
     }
 
     const json: { data?: InstagramMediaItem[] } = await res.json();
-    return json.data ?? [];
+    const list = json.data ?? [];
+    return list.filter((item) => item.media_type === "VIDEO" || item.permalink?.includes("/reel/"));
   } catch {
     return [];
   }

@@ -23,15 +23,20 @@ function getStableMetrics(id: string) {
 
 export async function GET() {
   try {
-    const rawMedia = await getInstagramLiveMedia(12);
-    const enriched = rawMedia.map((item) => {
+    const rawMedia = await getInstagramLiveMedia(25);
+    // Filter strictly to video reels only
+    const videoReelsOnly = rawMedia.filter(
+      (item) => item.media_type === "VIDEO" || item.permalink?.includes("/reel/")
+    );
+
+    const enriched = videoReelsOnly.map((item) => {
       const stats = getStableMetrics(item.id);
       const rawImage = item.thumbnail_url || item.media_url || "";
       const proxyImage = rawImage ? `/api/instagram/image?url=${encodeURIComponent(rawImage)}` : "/hero-1-ai.jpg";
 
       // Extract first hashtag if available
       const hashtagMatch = item.caption?.match(/#([a-zA-Z0-9_-]+)/);
-      const tag = hashtagMatch ? `#${hashtagMatch[1].toUpperCase()}` : "#REVVMOTIV";
+      const tag = hashtagMatch ? `#${hashtagMatch[1].toUpperCase()}` : "#REELS";
 
       return {
         ...item,
