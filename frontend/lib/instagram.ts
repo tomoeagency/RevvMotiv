@@ -1,24 +1,49 @@
-// Real Instagram Reel embeds for the "From Our Garage" section, via
-// Meta's oEmbed API — not a scraped feed, not fake data. Needs two
-// non-secret values from a (free) Meta Developer App:
-//   - App ID:       developers.facebook.com > your app > Settings > Basic
-//   - Client Token: same page > Settings > Advanced > Client Token
-// Both are safe to expose client-side (this is not the App Secret) — set
-// them as NEXT_PUBLIC_FB_APP_ID / NEXT_PUBLIC_FB_CLIENT_TOKEN in
-// frontend/.env.local. Until both are set AND at least one real reel URL
-// is added below, getInstagramReelEmbeds() returns [] and ReelsSection
-// falls back to the static garage photos — never a broken or fake feed.
-const FB_APP_ID = process.env.NEXT_PUBLIC_FB_APP_ID;
-const FB_CLIENT_TOKEN = process.env.NEXT_PUBLIC_FB_CLIENT_TOKEN;
-
-// Real Instagram Reel permalinks to feature here, e.g.
-// "https://www.instagram.com/reel/Cxxxxxxxxxx/" — copy from the
-// @revvmotiv account. Empty until populated.
-export const INSTAGRAM_REEL_URLS: string[] = [];
+export interface InstagramMediaItem {
+  id: string;
+  caption?: string;
+  media_type: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
+  media_url?: string;
+  permalink: string;
+  thumbnail_url?: string;
+  timestamp: string;
+}
 
 export interface InstagramEmbed {
   url: string;
   html: string;
+}
+
+const FB_APP_ID = process.env.NEXT_PUBLIC_FB_APP_ID;
+const FB_CLIENT_TOKEN = process.env.NEXT_PUBLIC_FB_CLIENT_TOKEN;
+const INSTAGRAM_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
+
+// Real Instagram Reel permalinks to feature here
+export const INSTAGRAM_REEL_URLS: string[] = [];
+
+/**
+ * Fetches real live posts and reels directly from Instagram Graph API
+ * for @revvmotiv using the user access token with 1-hour ISR cache.
+ */
+export async function getInstagramLiveMedia(limit: number = 8): Promise<InstagramMediaItem[]> {
+  if (!INSTAGRAM_ACCESS_TOKEN) return [];
+
+  try {
+    const res = await fetch(
+      `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&access_token=${encodeURIComponent(
+        INSTAGRAM_ACCESS_TOKEN
+      )}&limit=${limit}`,
+      { next: { revalidate: 3600 } }
+    );
+
+    if (!res.ok) {
+      return [];
+    }
+
+    const json: { data?: InstagramMediaItem[] } = await res.json();
+    return json.data ?? [];
+  } catch {
+    return [];
+  }
 }
 
 function isConfigured(): boolean {
@@ -30,7 +55,7 @@ async function fetchEmbed(url: string): Promise<InstagramEmbed | null> {
     const accessToken = `${FB_APP_ID}|${FB_CLIENT_TOKEN}`;
     const res = await fetch(
       `https://graph.facebook.com/v19.0/instagram_oembed?url=${encodeURIComponent(url)}&access_token=${accessToken}&omitscript=true`,
-      { next: { revalidate: 3600 } } // reels don't change often; an hour is plenty
+      { next: { revalidate: 3600 } }
     );
     if (!res.ok) return null;
     const data: { html?: string } = await res.json();
@@ -40,9 +65,9 @@ async function fetchEmbed(url: string): Promise<InstagramEmbed | null> {
   }
 }
 
-// Fetches every configured reel in parallel, server-side. Returns []
-// whenever not configured or every fetch failed — callers must treat
-// that as "use the fallback gallery," never render an empty section.
+/**
+ * Fetches every configured reel in parallel, server-side.
+ */
 export async function getInstagramReelEmbeds(): Promise<InstagramEmbed[]> {
   if (!isConfigured()) return [];
   const results = await Promise.all(INSTAGRAM_REEL_URLS.map(fetchEmbed));

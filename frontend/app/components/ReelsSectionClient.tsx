@@ -22,9 +22,15 @@ import { GARAGE_GALLERY, type GarageReel } from "@/lib/garage-gallery";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 import { InstagramReelsRow } from "@/app/components/InstagramReelsRow";
-import type { InstagramEmbed } from "@/lib/instagram";
+import type { InstagramEmbed, InstagramMediaItem } from "@/lib/instagram";
 
-export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
+export function ReelsSectionClient({
+  embeds,
+  liveMedia = [],
+}: {
+  embeds: InstagramEmbed[];
+  liveMedia?: InstagramMediaItem[];
+}) {
   const [activeReel, setActiveReel] = useState<GarageReel | null>(null);
   const [isLiked, setIsLiked] = useState<Record<number, boolean>>({});
   const [isMuted, setIsMuted] = useState(false);
@@ -85,6 +91,76 @@ export function ReelsSectionClient({ embeds }: { embeds: InstagramEmbed[] }) {
         {/* If live embeds exist, show them; else render interactive Reel Cards with horizontal swipe on mobile */}
         {embeds.length > 0 ? (
           <InstagramReelsRow embeds={embeds} />
+        ) : liveMedia.length > 0 ? (
+          <div
+            className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0"
+            style={{ WebkitOverflowScrolling: "touch" }}
+          >
+            {liveMedia.map((item) => {
+              const imageSrc = item.thumbnail_url || item.media_url || "/images/logo.png";
+              const isVideo = item.media_type === "VIDEO";
+              const title = item.caption ? item.caption.split("\n")[0] : "Workshop Build";
+
+              return (
+                <a
+                  key={item.id}
+                  href={item.permalink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-none w-[72vw] max-w-[260px] sm:max-w-none sm:w-auto snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
+                >
+                  {/* Background Thumbnail Image */}
+                  <Image
+                    src={imageSrc}
+                    alt={title}
+                    fill
+                    unoptimized
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 280px"
+                    className="object-cover object-center group-hover:scale-105 transition-transform duration-700 pointer-events-none"
+                  />
+
+                  {/* Gradient Overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/60 z-10 pointer-events-none" />
+                  <div className="absolute inset-0 bg-red-600/0 group-hover:bg-red-600/5 transition-colors duration-500 z-10 pointer-events-none" />
+
+                  {/* TOP BAR: Badge & Live Tag */}
+                  <div className="relative z-20 flex items-center justify-between gap-2">
+                    <span className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black uppercase tracking-wider text-white">
+                      {isVideo ? "Reel" : "Post"}
+                    </span>
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-bold text-neutral-200">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                      <span>Instagram</span>
+                    </div>
+                  </div>
+
+                  {/* CENTER: Floating Play Icon Button */}
+                  <div className="relative z-20 self-center my-auto">
+                    <div className="w-14 h-14 rounded-full bg-red-600/90 group-hover:bg-red-600 text-white flex items-center justify-center shadow-lg shadow-red-600/40 group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-white/30">
+                      <Play className="w-6 h-6 fill-white ml-0.5" />
+                    </div>
+                  </div>
+
+                  {/* BOTTOM INFO: Title, Caption & Action */}
+                  <div className="relative z-20 space-y-2">
+                    <div className="flex items-center gap-1 text-[11px] font-bold text-red-400 uppercase tracking-wide">
+                      <Flame className="w-3.5 h-3.5 fill-red-500 text-red-500" />
+                      <span>@revvmotiv</span>
+                    </div>
+
+                    <h3 className="text-base font-black text-white leading-snug group-hover:text-red-400 transition-colors line-clamp-2">
+                      {title}
+                    </h3>
+
+                    <div className="flex items-center justify-between pt-1 text-[11px] text-neutral-300 border-t border-white/10">
+                      <span className="text-[10px] text-neutral-400">Watch on Instagram</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-red-400 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
         ) : (
           <div
             className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0"

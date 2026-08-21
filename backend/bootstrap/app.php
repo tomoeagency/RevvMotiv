@@ -20,6 +20,12 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(function ($request) {
             return $request->is('api/*') ? null : route('admin.login');
         });
+
+        // Authenticated users trying to access guest pages (e.g. /admin/login)
+        // get redirected directly to the admin dashboard instead of root/storefront.
+        $middleware->redirectUsersTo(function ($request) {
+            return route('admin.dashboard');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // This is an API-only repo for the storefront (per CLAUDE.md) — every

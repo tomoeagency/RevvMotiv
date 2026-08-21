@@ -49,6 +49,7 @@ return [
 
     'icarry' => [
         'api_key' => env('ICARRY_API_KEY'),
+        'api_username' => env('ICARRY_API_USERNAME'),
         'api_secret' => env('ICARRY_API_SECRET'),
         'base_url' => env('ICARRY_BASE_URL', 'https://api.icarry.in/v1'),
         'webhook_secret' => env('ICARRY_WEBHOOK_SECRET'),

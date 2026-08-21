@@ -13,6 +13,7 @@ import {
   getAvailableCoupons,
   getSiteSettings,
   previewCoupon,
+  verifyOrderPayment,
   ApiRequestError,
   type ApiOrder,
   type AvailableCoupon,
@@ -24,6 +25,12 @@ declare global {
   interface Window {
     Razorpay: new (options: RazorpayOptions) => { open: () => void; on: (event: string, handler: () => void) => void };
   }
+}
+
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
 }
 
 interface RazorpayOptions {
@@ -39,7 +46,7 @@ interface RazorpayOptions {
     email?: string;
     contact?: string;
   };
-  handler: () => void;
+  handler: (response: RazorpayResponse) => void | Promise<void>;
   modal?: { ondismiss?: () => void };
   theme?: { color?: string };
 }
@@ -246,8 +253,18 @@ export default function CheckoutPage() {
         email: form.customer_email.trim() || undefined,
         contact: form.customer_phone.trim() || undefined,
       },
-      handler: () => {
+      handler: async (res) => {
         clearCart();
+        try {
+          await verifyOrderPayment(order.id, {
+            razorpay_payment_id: res.razorpay_payment_id,
+            razorpay_order_id: res.razorpay_order_id,
+            razorpay_signature: res.razorpay_signature,
+            token: order.access_token,
+          });
+        } catch (err) {
+          console.warn("Client verification ping fallback:", err);
+        }
         router.push(`/order-confirmation/${order.id}?just_paid=1${tokenParam}`);
       },
       modal: {

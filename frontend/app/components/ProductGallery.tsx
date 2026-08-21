@@ -25,16 +25,25 @@ export function ProductGallery({
   const safeImages = images && images.length > 0 ? images : ["/images/logo.png"];
   const currentImage = safeImages[selectedIndex] || safeImages[0];
 
-  // Amazon-style Mouse Move Lens Zoom Handler
+  // Amazon-style Mouse Move Lens Zoom Handler (PC/Desktop mouse only)
+  const isFinePointer = () =>
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!isFinePointer() || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
     const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
     setZoomPos({ x, y });
   };
 
-  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseEnter = () => {
+    if (isFinePointer()) {
+      setIsHovering(true);
+    }
+  };
+
   const handleMouseLeave = () => {
     setIsHovering(false);
     setZoomPos({ x: 50, y: 50 });
@@ -70,14 +79,17 @@ export function ProductGallery({
 
   // Touch Swipe handlers
   const handleTouchStart = (e: React.TouchEvent) => {
+    setIsHovering(false);
     touchStartX.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    setIsHovering(false);
     touchEndX.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchEnd = () => {
+    setIsHovering(false);
     if (!touchStartX.current || !touchEndX.current) return;
     const distance = touchStartX.current - touchEndX.current;
     const isSwipe = Math.abs(distance) > 40;
@@ -95,11 +107,13 @@ export function ProductGallery({
 
   const showNext = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    setIsHovering(false);
     setSelectedIndex((prev) => (prev < safeImages.length - 1 ? prev + 1 : 0));
   };
 
   const showPrev = (e?: React.MouseEvent) => {
     e?.stopPropagation();
+    setIsHovering(false);
     setSelectedIndex((prev) => (prev > 0 ? prev - 1 : safeImages.length - 1));
   };
 
@@ -111,11 +125,14 @@ export function ProductGallery({
         onMouseMove={handleMouseMove}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={() => setIsLightboxOpen(true)}
+        onClick={() => {
+          setIsHovering(false);
+          setIsLightboxOpen(true);
+        }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className="aspect-square w-full max-h-[520px] bg-surface border border-hairline rounded-2xl relative overflow-hidden shadow-lg group select-none touch-pan-y cursor-zoom-in flex items-center justify-center mx-auto"
+        className="aspect-square w-full max-h-[520px] bg-surface border border-hairline rounded-2xl relative overflow-hidden shadow-lg group select-none touch-pan-y cursor-pointer md:cursor-zoom-in flex items-center justify-center mx-auto"
       >
         <AnimatePresence mode="wait">
           <motion.div

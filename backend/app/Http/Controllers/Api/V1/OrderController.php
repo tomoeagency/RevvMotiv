@@ -51,6 +51,49 @@ class OrderController extends Controller
         return (new OrderResource($order))->response()->setStatusCode(201);
     }
 
+    public function verifyPayment(\Illuminate\Http\Request $request, Order $order)
+    {
+        $validated = $request->validate([
+            'razorpay_payment_id' => ['required', 'string'],
+            'razorpay_order_id' => ['required', 'string'],
+            'razorpay_signature' => ['required', 'string'],
+            'token' => ['nullable', 'string'],
+        ]);
+
+        $token = $validated['token'] ?? $request->query('token');
+        if (!$request->user() && (!$token || !hash_equals((string) $order->access_token, (string) $token))) {
+            return response()->json([
+                'message' => 'Unauthorized order access.',
+            ], 403);
+        }
+
+        if ($order->razorpay_order_id !== $validated['razorpay_order_id']) {
+            return response()->json([
+                'message' => 'Order ID mismatch.',
+            ], 400);
+        }
+
+        $expectedSignature = hash_hmac(
+            'sha256',
+            $validated['razorpay_order_id'] . '|' . $validated['razorpay_payment_id'],
+            config('services.razorpay.key_secret')
+        );
+
+        if (!hash_equals($expectedSignature, $validated['razorpay_signature'])) {
+            Log::warning("Razorpay client signature verification failed for Order #{$order->id}");
+            return response()->json([
+                'message' => 'Invalid payment signature.',
+            ], 400);
+        }
+
+        if (in_array($order->payment_status, ['pending', 'failed'], true)) {
+            $this->orderService->confirmPayment($order, $validated['razorpay_payment_id']);
+        }
+
+        $order->refresh();
+        return new OrderResource($order);
+    }
+
     public function invoice(\Illuminate\Http\Request $request, Order $order)
     {
         $token = $request->query('token');

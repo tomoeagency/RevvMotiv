@@ -52,6 +52,7 @@ Route::prefix('v1')->group(function () {
     // payment truth). OrderResource carries no customer PII, so this is
     // safe to leave public like the other storefront GET endpoints.
     Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::post('/orders/{order}/verify-payment', [OrderController::class, 'verifyPayment']);
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice']);
 
     // Not throttled by IP — Razorpay's own servers call this, and legitimate

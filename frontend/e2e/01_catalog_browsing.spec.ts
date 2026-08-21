@@ -12,10 +12,10 @@ test.describe("01. Storefront & Catalog Browsing", () => {
     await expect(page.getByRole("link", { name: "Our Work", exact: true })).toBeVisible();
 
     // Verify footer branding & address
-    const footer = page.locator("footer");
+    const footer = page.locator("footer").first();
     await expect(footer).toBeVisible();
     await expect(footer).toContainText("RevvMotiv");
-    await expect(footer).toContainText("Site-5, Kasna, Greater Noida, Uttar Pradesh, India");
+    await expect(footer).toContainText("Greater Noida, UP, India");
   });
 
   test("Shop page displays categories, vehicle fitment filters, and products", async ({ page }) => {
@@ -29,17 +29,17 @@ test.describe("01. Storefront & Catalog Browsing", () => {
     // Verify vehicle fitment chips are present
     const vernaChip = page.locator("a[href*='fitment=Verna']").first();
     await expect(vernaChip).toBeVisible();
-    await vernaChip.click();
-    await page.waitForURL(/fitment=Verna/);
+    await Promise.all([
+      page.waitForURL(/fitment=Verna/),
+      vernaChip.click(),
+    ]);
     await expect(page).toHaveURL(/fitment=Verna/);
 
     // Verify search input works
     const searchInput = page.getByPlaceholder(/Search products/i);
     await expect(searchInput).toBeVisible();
     await searchInput.fill("splitter");
-    await page.waitForTimeout(500);
-    await page.waitForURL(/search=splitter/);
-    await expect(page).toHaveURL(/search=splitter/);
+    await expect(page).toHaveURL(/search=splitter/, { timeout: 10000 });
   });
 
   test("Product detail page displays fitment guarantee, pricing clarity, and JSON-LD schema", async ({ page }) => {

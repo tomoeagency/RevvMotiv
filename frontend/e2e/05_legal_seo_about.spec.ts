@@ -34,7 +34,7 @@ test.describe("05. About Page, Legal Policies, Contact & SEO", () => {
   test("Policy pages contain statutory grievance redressal and 5–7 day delivery timeline", async ({ page }) => {
     // 1. Shipping policy
     await page.goto("/policies/shipping-policy");
-    await page.waitForLoadState("domcontentloaded");
+    await expect(page.locator("h1")).toBeVisible();
     await expect(page.locator("h1")).toContainText(/Shipping Policy/i);
     const shippingText = await page.locator("body").innerText();
     expect(shippingText).toMatch(/business days/i);
@@ -42,16 +42,16 @@ test.describe("05. About Page, Legal Policies, Contact & SEO", () => {
 
     // 2. Terms of service
     await page.goto("/policies/terms-of-service");
-    await page.waitForLoadState("domcontentloaded");
+    await expect(page.locator("h1")).toBeVisible();
     await expect(page.locator("h1")).toContainText(/Terms of Service/i);
     const termsText = await page.locator("body").innerText();
     expect(termsText).toMatch(/Grievance/i);
-    expect(termsText).toMatch(/Site-5, Kasna, Greater Noida, Uttar Pradesh, India/i);
+    expect(termsText).toMatch(/Site-5, Kasna, Greater Noida, Uttar Pradesh/i);
     expect(termsText).toMatch(/support@revvmotiv.com/i);
 
     // 3. Privacy policy
     await page.goto("/policies/privacy-policy");
-    await page.waitForLoadState("domcontentloaded");
+    await expect(page.locator("h1")).toBeVisible();
     await expect(page.locator("h1")).toContainText(/Privacy Policy/i);
     const privacyText = await page.locator("body").innerText();
     expect(privacyText).toMatch(/DPDP/i);

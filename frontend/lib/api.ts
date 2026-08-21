@@ -770,6 +770,30 @@ export async function getOrder(id: number | string, token?: string): Promise<Api
   return data;
 }
 
+export async function verifyOrderPayment(
+  id: number | string,
+  payload: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+    token?: string;
+  }
+): Promise<ApiOrder> {
+  const res = await fetch(apiUrl(`/api/v1/orders/${id}/verify-payment`), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(payload),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to verify payment (${res.status})`);
+  }
+
+  const { data }: ApiResponse<ApiOrder> = await res.json();
+  return data;
+}
+
 // Client-side fetch (announcement strip) — decorative, not indexable, and
 // the endpoint doesn't exist on the backend yet (separate session is still
 // building it). Swallows failures and returns null rather than throwing,

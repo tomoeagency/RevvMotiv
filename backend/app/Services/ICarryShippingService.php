@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 class ICarryShippingService
 {
     protected ?string $apiKey;
+    protected ?string $apiUsername;
     protected ?string $apiSecret;
     protected string $baseUrl;
     protected string $pickupPincode;
@@ -18,6 +19,7 @@ class ICarryShippingService
     public function __construct()
     {
         $this->apiKey = config('services.icarry.api_key');
+        $this->apiUsername = config('services.icarry.api_username');
         $this->apiSecret = config('services.icarry.api_secret');
         $this->baseUrl = rtrim(config('services.icarry.base_url', 'https://api.icarry.in/v1'), '/');
         $this->pickupPincode = (string) config('services.icarry.pickup_pincode', '201009');
@@ -85,11 +87,9 @@ class ICarryShippingService
                 'items' => $itemsSummary,
             ];
 
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$this->apiKey}",
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
-            ])->timeout(20)->post("{$this->baseUrl}/shipments/create", $payload);
+            $response = Http::withHeaders($this->getHeaders())
+                ->timeout(20)
+                ->post("{$this->baseUrl}/shipments/create", $payload);
 
             $data = $response->json();
 
@@ -121,6 +121,26 @@ class ICarryShippingService
     }
 
     /**
+     * Build HTTP headers for iCarry API calls
+     */
+    protected function getHeaders(): array
+    {
+        $headers = [
+            'Authorization' => "Bearer {$this->apiKey}",
+            'X-Api-Key' => $this->apiKey,
+            'Accept' => 'application/json',
+            'Content-Type' => 'application/json',
+        ];
+
+        if (!empty($this->apiUsername)) {
+            $headers['X-Api-User'] = $this->apiUsername;
+            $headers['X-Api-Username'] = $this->apiUsername;
+        }
+
+        return $headers;
+    }
+
+    /**
      * Fetch tracking status from iCarry.in
      */
     public function trackShipment(string $awbNumber): array
@@ -133,10 +153,9 @@ class ICarryShippingService
         }
 
         try {
-            $response = Http::withHeaders([
-                'Authorization' => "Bearer {$this->apiKey}",
-                'Accept' => 'application/json',
-            ])->timeout(15)->get("{$this->baseUrl}/track/{$awbNumber}");
+            $response = Http::withHeaders($this->getHeaders())
+                ->timeout(15)
+                ->get("{$this->baseUrl}/track/{$awbNumber}");
 
             return $response->json() ?? [];
         } catch (\Throwable $e) {
