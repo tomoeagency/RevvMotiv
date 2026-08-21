@@ -158,9 +158,9 @@ export function ProductDetailInteractive({
                     } ${!inStock ? "opacity-60" : ""}`}
                   >
                     {v.name}
-                    {v.price_override && (
+                    {v.price && v.price !== product.price && (
                       <span className="ml-1.5 text-[10px] text-ink-subtle">
-                        ({formatPrice(v.price_override)})
+                        ({formatPrice(v.price)})
                       </span>
                     )}
                   </button>

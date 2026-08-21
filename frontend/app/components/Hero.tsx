@@ -10,31 +10,26 @@ const HERO_SLIDES = [
   {
     image: "/hero-1-ai.jpg",
     caption: "Custom Street Styling",
-    badge: "PRECISION CRAFTSMANSHIP",
     headline: ["Crafted for the Street.", "Designed to Stand Out."],
   },
   {
     image: "/hero-2-ai.jpg",
     caption: "Track-Tested Durability",
-    badge: "EXTREME ENDURANCE",
     headline: ["Built Tough.", "Engineered to Endure."],
   },
   {
     image: "/hero-3-ai.jpg",
     caption: "Guaranteed 1:1 Fitment",
-    badge: "DIRECT OEM BOLT-ON",
     headline: ["Precision Molded.", "Direct Factory Fit."],
   },
   {
     image: "/hero-4-ai.jpg",
     caption: "Aerodynamic Performance",
-    badge: "TRACK-GRADE AERO",
     headline: ["Sculpted for Downforce.", "Uncompromised Speed."],
   },
   {
     image: "/hero-5-ai.jpg",
     caption: "Bespoke Workshop Builds",
-    badge: "CUSTOM FABRICATION",
     headline: ["Aggressive Stance.", "Precision Engineered."],
   },
 ];
