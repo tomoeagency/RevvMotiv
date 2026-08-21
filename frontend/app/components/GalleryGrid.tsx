@@ -4,9 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import { Play, Loader2 } from "lucide-react";
 import { GALLERY_CATEGORIES, type GalleryItem } from "@/lib/api";
 import { GalleryLightbox } from "@/app/components/GalleryLightbox";
-import { Pagination } from "@/app/components/Pagination";
-
-const ITEMS_PER_PAGE = 12;
 
 export function normalizeMediaUrl(url: string): string {
   if (!url) return "";
@@ -16,13 +13,54 @@ export function normalizeMediaUrl(url: string): string {
   return url;
 }
 
+// Without pagination, the whole gallery renders at once — a <video> tag
+// starts fetching the moment it's in the DOM, so N videos would all start
+// loading on page load with no pagination to cap that. This defers
+// mounting the real <video> until it's within 800px of the viewport
+// (generous enough that it's already loaded by the time a normal scroll
+// speed reaches it), same effect pagination used to have for free.
+function LazyGalleryVideo({ src, className }: { src: string; className: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || shouldLoad) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setShouldLoad(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [shouldLoad]);
+
+  return (
+    <div ref={containerRef} className={`${className} bg-surface-alt`}>
+      {shouldLoad && (
+        // eslint-disable-next-line jsx-a11y/media-has-caption
+        <video
+          src={src}
+          className="w-full h-full object-cover"
+          muted
+          playsInline
+          preload="metadata"
+        />
+      )}
+    </div>
+  );
+}
+
 export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }) {
   const [items, setItems] = useState<GalleryItem[]>(propItems);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(propItems.length === 0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const gridTopRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/v1/gallery")
@@ -40,20 +78,8 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
     ? items.filter((item) => item.category === activeCategory)
     : items;
 
-  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentItems = filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    if (gridTopRef.current) {
-      gridTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   const handleCategoryChange = (category: string | null) => {
     setActiveCategory(category);
-    setCurrentPage(1);
   };
 
   if (loading && items.length === 0) {
@@ -77,8 +103,6 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
 
   return (
     <>
-      <div ref={gridTopRef} className="scroll-mt-24" />
-
       <div className="flex flex-wrap gap-2 mb-6">
         <button
           type="button"
@@ -115,14 +139,13 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
         </p>
       ) : (
       <div className="columns-2 sm:columns-3 lg:columns-4 gap-4">
-        {currentItems.map((item, i) => {
+        {filteredItems.map((item, i) => {
           const mediaSrc = normalizeMediaUrl(item.media_url);
-          const globalIndex = startIndex + i;
 
           return (
             <button
               key={item.id}
-              onClick={() => setActiveIndex(globalIndex)}
+              onClick={() => setActiveIndex(i)}
               aria-label={item.caption ? `Open: ${item.caption}` : "Open gallery item"}
               className="block w-full mb-4 break-inside-avoid relative group overflow-hidden bg-surface border border-hairline-strong text-left rounded-xl hover:border-red-500/50 transition-colors cursor-pointer shadow-sm"
             >
@@ -131,15 +154,10 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
                   {/* iOS Safari doesn't reliably paint a frame from
                       preload="metadata" alone (unlike Android/Chrome) —
                       the #t=0.1 fragment forces it to seek to that frame
-                      and display it as a thumbnail. */}
-                  {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-                  <video
-                    src={`${mediaSrc}#t=0.1`}
-                    className="w-full h-auto block"
-                    muted
-                    playsInline
-                    preload="metadata"
-                  />
+                      and display it as a thumbnail. Loading is deferred
+                      until near-viewport (see LazyGalleryVideo) since
+                      there's no pagination capping how many mount at once. */}
+                  <LazyGalleryVideo src={`${mediaSrc}#t=0.1`} className="w-full aspect-[3/4]" />
                   <span className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
                     <span className="w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center shadow-lg">
                       <Play className="w-4 h-4 text-white fill-white ml-0.5" />
@@ -151,6 +169,8 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
                 <img
                   src={mediaSrc}
                   alt={item.caption ?? ""}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-auto block group-hover:scale-105 transition-transform duration-700"
                 />
               )}
@@ -163,16 +183,6 @@ export function GalleryGrid({ items: propItems = [] }: { items?: GalleryItem[] }
           );
         })}
       </div>
-      )}
-
-      {filteredItems.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredItems.length}
-          itemsPerPage={ITEMS_PER_PAGE}
-          onPageChange={handlePageChange}
-        />
       )}
 
       <GalleryLightbox
