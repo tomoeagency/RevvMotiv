@@ -6,6 +6,11 @@ export interface InstagramMediaItem {
   permalink: string;
   thumbnail_url?: string;
   timestamp: string;
+  proxy_image?: string;
+  views?: string;
+  likes?: string;
+  comments?: string;
+  tag?: string;
 }
 
 export interface InstagramEmbed {
