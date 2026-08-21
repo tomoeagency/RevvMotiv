@@ -1,6 +1,6 @@
 import { Hero } from "@/app/components/Hero";
 import { CategoryStrip } from "@/app/components/CategoryStrip";
-import { FitmentProcessSection } from "@/app/components/FitmentProcessSection";
+import { WhyRevvMotivSection } from "@/app/components/WhyRevvMotivSection";
 import { PlatformSelectorSection } from "@/app/components/PlatformSelectorSection";
 import { FeaturedProducts } from "@/app/components/FeaturedProducts";
 import { TransformationSection } from "@/app/components/TransformationSection";
@@ -49,7 +49,7 @@ export default async function Home() {
       <Hero />
       <CategoryStrip categories={categories} />
       <PlatformSelectorSection />
-      <FitmentProcessSection />
+      <WhyRevvMotivSection />
       <FeaturedProducts products={featured} />
       <TransformationSection />
       <FeaturedReviews reviews={featuredReviews} />

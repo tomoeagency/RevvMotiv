@@ -129,12 +129,12 @@ export function ReelsSectionClient() {
   // Convert admin-uploaded reels into unified cards; fall back to the
   // static garage gallery showcase when no reels have been added yet.
   const unifiedReels: UnifiedReel[] = customReels.length > 0
-    ? customReels.map((r) => ({
+    ? customReels.map((r, i) => ({
         id: r.id,
         title: r.title,
         category: r.category || "Live Workshop Reel",
         car: r.car || "Bespoke Workshop Build",
-        image: r.thumbnail_url || "/hero-1-ai.jpg",
+        image: r.thumbnail_url || `/hero-${(i % 5) + 1}-ai.jpg`,
         videoUrl: r.video_url,
         caption: r.caption || r.title,
         instagramUrl: r.instagram_url || undefined,

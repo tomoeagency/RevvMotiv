@@ -88,6 +88,8 @@ upload_dir('backend/database/migrations', 'public_html/database/migrations')
 upload_dir('backend/database/seeders', 'public_html/database/seeders')
 upload_dir('backend/public/build', 'public_html/build')
 upload_dir('backend/public/build', 'public_html/public/build')
+upload_dir('backend/public/videos', 'public_html/videos')
+upload_dir('backend/public/videos', 'public_html/public/videos')
 
 # Now run a deployment sync script to migrate, seed, and clear cache
 sync_script = r"""<?php
