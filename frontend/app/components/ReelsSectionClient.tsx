@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Play,
@@ -69,31 +69,41 @@ export function ReelsSectionClient() {
 
   // Convert admin-uploaded reels into unified cards; fall back to the
   // static garage gallery showcase when no reels have been added yet.
-  const unifiedReels: UnifiedReel[] = customReels.length > 0
-    ? customReels.map((r, i) => ({
-        id: r.id,
-        title: r.title,
-        category: r.category || "Live Workshop Reel",
-        car: r.car || "Bespoke Workshop Build",
-        image: r.thumbnail_url || `/hero-${(i % 5) + 1}-ai.jpg`,
-        videoUrl: r.video_url,
-        caption: r.caption || r.title,
-        instagramUrl: r.instagram_url || undefined,
-        tag: r.tag || "#REVVMOTIV",
-        audio: "@revvmotiv • Original Audio",
-        product: r.product,
-      }))
-    : GARAGE_GALLERY.map((g) => ({
-        id: g.id,
-        title: g.title,
-        category: g.category,
-        car: g.car,
-        image: g.img,
-        videoUrl: "",
-        caption: g.description,
-        tag: g.tag,
-        audio: g.audio,
-      }));
+  // Memoized on customReels — without this, a fresh array (with fresh
+  // object references) was built on every render, including the ones
+  // triggered by the playback progress bar's onTimeUpdate (~4x/sec). That
+  // gave activeReel a new reference each time, which retriggered the
+  // "reset video to 0 and play" effect below constantly — the video never
+  // got past its first couple of frames before being restarted.
+  const unifiedReels: UnifiedReel[] = useMemo(
+    () =>
+      customReels.length > 0
+        ? customReels.map((r, i) => ({
+            id: r.id,
+            title: r.title,
+            category: r.category || "Live Workshop Reel",
+            car: r.car || "Bespoke Workshop Build",
+            image: r.thumbnail_url || `/hero-${(i % 5) + 1}-ai.jpg`,
+            videoUrl: r.video_url,
+            caption: r.caption || r.title,
+            instagramUrl: r.instagram_url || undefined,
+            tag: r.tag || "#REVVMOTIV",
+            audio: "@revvmotiv • Original Audio",
+            product: r.product,
+          }))
+        : GARAGE_GALLERY.map((g) => ({
+            id: g.id,
+            title: g.title,
+            category: g.category,
+            car: g.car,
+            image: g.img,
+            videoUrl: "",
+            caption: g.description,
+            tag: g.tag,
+            audio: g.audio,
+          })),
+    [customReels]
+  );
 
   const activeReel = activeIndex !== null ? unifiedReels[activeIndex] ?? null : null;
 
@@ -264,7 +274,7 @@ export function ReelsSectionClient() {
               <div
                 key={reel.id}
                 onClick={() => setActiveIndex(index)}
-                className="flex-none w-[75vw] max-w-[280px] sm:w-[calc(50%-12px)] sm:max-w-none md:w-[calc(33.333%-14px)] lg:w-[calc(25%-15px)] snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
+                className="flex-none w-[75vw] max-w-[280px] sm:w-[calc(50%-12px)] sm:max-w-none md:w-[calc(33.333%-14px)] lg:w-[calc(25%-15px)] snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-white/10 hover:border-red-500/70 shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_12px_40px_rgba(220,38,38,0.25)] transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
               >
                 {/* Background Thumbnail Image with Direct Fallback & No-Referrer */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -276,8 +286,10 @@ export function ReelsSectionClient() {
                   className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 pointer-events-none"
                 />
 
-                {/* Gradient Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60 z-10 pointer-events-none" />
+                {/* Gradient Overlays — deeper at the bottom for stronger
+                    text contrast, subtle brand tint on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-black/20 z-10 pointer-events-none" />
+                <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 to-transparent z-10 pointer-events-none" />
                 <div className="absolute inset-0 bg-red-600/0 group-hover:bg-red-600/5 transition-colors duration-500 z-10 pointer-events-none" />
 
                 {/* TOP BAR: Tag */}
@@ -287,9 +299,10 @@ export function ReelsSectionClient() {
                   </span>
                 </div>
 
-                {/* CENTER: Floating Play Icon Button */}
-                <div className="relative z-20 self-center my-auto">
-                  <div className="w-14 h-14 rounded-full bg-red-600/90 group-hover:bg-red-600 text-white flex items-center justify-center shadow-lg shadow-red-600/40 group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-white/30">
+                {/* CENTER: Floating Play Icon Button with ambient pulse ring */}
+                <div className="relative z-20 self-center my-auto flex items-center justify-center">
+                  <span className="absolute w-14 h-14 rounded-full bg-red-600/40 animate-ping motion-reduce:animate-none [animation-duration:2.2s]" />
+                  <div className="relative w-14 h-14 rounded-full bg-red-600/90 group-hover:bg-red-600 text-white flex items-center justify-center shadow-[0_0_25px_rgba(220,38,38,0.5)] group-hover:scale-110 transition-all duration-300 backdrop-blur-sm border border-white/30">
                     <Play className="w-6 h-6 fill-white ml-0.5" />
                   </div>
                 </div>
@@ -297,7 +310,7 @@ export function ReelsSectionClient() {
                 {/* BOTTOM INFO: Title & Category */}
                 <div className="relative z-20 space-y-2">
                   {/* Category */}
-                  <div className="flex items-center gap-1 text-[11px] font-bold text-red-400 uppercase tracking-wide">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-red-400 uppercase tracking-widest">
                     <Flame className="w-3.5 h-3.5 fill-red-500 text-red-500" />
                     <span>{reel.category}</span>
                   </div>
@@ -309,7 +322,7 @@ export function ReelsSectionClient() {
 
                   {/* Audio Track */}
                   {reel.audio && (
-                    <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 pt-1 border-t border-white/10">
+                    <div className="flex items-center gap-1.5 text-[10px] text-neutral-400 pt-1.5 border-t border-white/10">
                       <Music2 className="w-3 h-3 text-neutral-400 flex-none" />
                       <span className="truncate">{reel.audio}</span>
                     </div>
