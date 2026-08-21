@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { 
   Play, 
   Eye, 
@@ -26,6 +27,12 @@ import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 import { InstagramReelsRow } from "@/app/components/InstagramReelsRow";
 import type { InstagramEmbed, InstagramMediaItem } from "@/lib/instagram";
+
+declare global {
+  interface Window {
+    instgrm?: { Embeds: { process: () => void } };
+  }
+}
 
 export interface UnifiedReel {
   id: string | number;
@@ -69,6 +76,15 @@ export function ReelsSectionClient({
         .catch(() => {});
     }
   }, [mediaItems.length]);
+
+  useEffect(() => {
+    if (activeReel) {
+      const timer = setTimeout(() => {
+        window.instgrm?.Embeds?.process();
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [activeReel]);
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -336,16 +352,53 @@ export function ReelsSectionClient({
                 </div>
               </div>
 
-              {/* CENTER: PLAYABLE INSTAGRAM IFRAME OR HD MEDIA */}
-              <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
+              {/* CENTER: PLAYABLE INSTAGRAM BLOCKQUOTE EMBED */}
+              <div className="relative flex-1 w-full h-full bg-black overflow-y-auto hide-scrollbar flex flex-col items-center justify-start p-2">
+                <Script
+                  src="https://www.instagram.com/embed.js"
+                  strategy="lazyOnload"
+                  onLoad={() => window.instgrm?.Embeds?.process()}
+                />
+
                 {activeReel.permalink ? (
-                  <iframe
-                    src={`${activeReel.permalink.replace(/\/$/, "")}/embed`}
-                    className="w-full h-full border-0 rounded-b-none"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                    allowFullScreen
-                    scrolling="yes"
-                  />
+                  <div key={activeReel.id} className="w-full flex flex-col items-center justify-center my-auto">
+                    <blockquote
+                      className="instagram-media"
+                      data-instgrm-permalink={activeReel.permalink}
+                      data-instgrm-version="14"
+                      style={{
+                        background: "#000",
+                        border: 0,
+                        borderRadius: "12px",
+                        boxShadow: "none",
+                        margin: "0 auto",
+                        maxWidth: "380px",
+                        minWidth: "280px",
+                        padding: 0,
+                        width: "100%",
+                      }}
+                    >
+                      <div className="p-4 text-center text-white flex flex-col items-center gap-3">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={activeReel.image}
+                          alt={activeReel.title}
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
+                          className="w-full aspect-[9/16] max-h-[420px] object-cover rounded-xl border border-white/10"
+                        />
+                        <a
+                          href={activeReel.permalink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="px-4 py-2 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-colors inline-flex items-center gap-2 shadow-lg"
+                        >
+                          <Play className="w-4 h-4 fill-white" />
+                          <span>Watch Reel on Instagram</span>
+                        </a>
+                      </div>
+                    </blockquote>
+                  </div>
                 ) : (
                   <>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -354,9 +407,8 @@ export function ReelsSectionClient({
                       alt={activeReel.title}
                       referrerPolicy="no-referrer"
                       crossOrigin="anonymous"
-                      className="w-full h-full object-cover object-center pointer-events-none"
+                      className="w-full h-full object-cover object-center pointer-events-none rounded-xl"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none" />
                   </>
                 )}
               </div>
