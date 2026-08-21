@@ -1,5 +1,6 @@
 import io
 import os
+import sys
 import paramiko
 import urllib.request
 import time
@@ -33,18 +34,21 @@ ehm9qkKVRlKlEg1sWVBRPnL6PmUIAdiPJOx4cA/U88uAH2QJCLI+AsfOwnRAxOexsSLgeN
 UqylBYpw==
 -----END OPENSSH PRIVATE KEY-----"""
 
-print("Connecting to GoDaddy SFTP...")
+def log(msg):
+    print(msg, flush=True)
+
+log("Connecting to GoDaddy SFTP...")
 pkey = paramiko.RSAKey.from_private_key(io.StringIO(key_str), password='Revvmotiv@123')
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 client.connect('api.revvmotiv.com', port=22, username='t4kgltlmxs1l', pkey=pkey, timeout=15)
 sftp = client.open_sftp()
-print("SFTP CONNECTED SUCCESSFULLY!")
+log("SFTP CONNECTED SUCCESSFULLY!")
 
 def sftp_mkdirs(sftp, remote_directory):
     dirs = []
     d = remote_directory
-    while d and d != '/':
+    while d and d != '/' and d != '.':
         dirs.append(d)
         d = os.path.dirname(d)
     for d in reversed(dirs):
@@ -59,7 +63,7 @@ def sftp_mkdirs(sftp, remote_directory):
 def upload_file(local_path, remote_path):
     sftp_mkdirs(sftp, os.path.dirname(remote_path))
     sftp.put(local_path, remote_path)
-    print(f"Uploaded: {remote_path}")
+    log(f"Uploaded: {remote_path}")
 
 def upload_dir(local_dir, remote_dir):
     for root, dirs, files in os.walk(local_dir):
@@ -71,69 +75,24 @@ def upload_dir(local_dir, remote_dir):
             try:
                 upload_file(local_file, remote_file)
             except Exception as e:
-                print(f"Error uploading {local_file}: {e}")
+                log(f"Error uploading {local_file}: {e}")
 
-# Upload core backend folders to public_html
-print("\n--- Uploading Backend App ---")
+# Target specific files and folders that were updated
+log("\n--- Uploading Changed Backend Controllers, Models, Routes, Views, Migrations ---")
 upload_dir('backend/app', 'public_html/app')
-
-print("\n--- Uploading Config ---")
-upload_dir('backend/config', 'public_html/config')
-
-print("\n--- Uploading Bootstrap ---")
-upload_dir('backend/bootstrap', 'public_html/bootstrap')
-
-print("\n--- Uploading Routes ---")
 upload_dir('backend/routes', 'public_html/routes')
-
-print("\n--- Uploading Resources (Views & Emails) ---")
-upload_dir('backend/resources', 'public_html/resources')
-
-print("\n--- Uploading Public Images (Logos, Projects PNGs) ---")
-upload_dir('backend/public/images', 'public_html/public/images')
-
-print("\n--- Uploading Compiled Vite Assets (CSS & JS) ---")
+upload_dir('backend/resources/views/admin', 'public_html/resources/views/admin')
+upload_dir('backend/resources/views/components', 'public_html/resources/views/components')
+upload_dir('backend/database/migrations', 'public_html/database/migrations')
+upload_dir('backend/database/seeders', 'public_html/database/seeders')
 upload_dir('backend/public/build', 'public_html/build')
 upload_dir('backend/public/build', 'public_html/public/build')
 
-print("\n--- Uploading Database Migrations ---")
-upload_dir('backend/database/migrations', 'public_html/database/migrations')
-
-print("\n--- Uploading Database Seeders ---")
-upload_dir('backend/database/seeders', 'public_html/database/seeders')
-
-# Sync critical environment variables to remote .env
-print("\n--- Syncing Environment Variables to Remote .env ---")
-try:
-    with sftp.file('public_html/.env', 'r') as f:
-        env_content = f.read().decode('utf-8')
-    
-    new_keys = {
-        'ICARRY_API_KEY': 'qg9vFeW2UpWdVkno6gx6DuoBXkuSs7JZvaPGknMYwpbDsjMFDZVxPURgijBDsl7elYsIFmuqVAGmV8GGAEqL96XA2f42CZ5rQpRLs9usZrLBAl4uWohvNG92iMcQu7kETmEVM6Vra9nxG7cA62UHLZFOes6V1SOrbyCUD6ReTxXzLyNR5x5mOoMfRHxGSilMxDcTDqYkhdynWSnu3LqZdYfeW6TA72qijo04bcIY0uKWjlLdkQjAKRmYzu7FAUPe',
-        'ICARRY_API_USERNAME': 'ela40651',
-        'ICARRY_PICKUP_PINCODE': '201009',
-        'ICARRY_AUTO_FULFILL': 'false',
-        'INSTAGRAM_ACCESS_TOKEN': 'IGAAOtRJT9zI5BZAGF6SlBkTzhfYkZAYUFl4SnlOa2FGa3E5TkRBT215ZAHg2V2t3c2J4a0RDNW5qelRSd1pRNTBNQmpoWW9ZAX013Y3R2eVl3Qkl4ZAV9Ha0dBdXc2WXRjX29KRHBYcDNOZAm5RNnJzSHdNNzBRS0xQUEZAzTi1neDNpbwZDZD',
-    }
-    
-    import re
-    for k, v in new_keys.items():
-        if re.search(rf'^{k}=', env_content, flags=re.MULTILINE):
-            env_content = re.sub(rf'^{k}=.*$', f'{k}={v}', env_content, flags=re.MULTILINE)
-        else:
-            env_content += f"\n{k}={v}"
-            
-    with sftp.file('public_html/.env', 'w') as f:
-        f.write(env_content)
-    print("Updated public_html/.env with latest API credentials!")
-except Exception as e:
-    print(f"Note on .env sync: {e}")
-
-# Now run a sync script to clear views, clear config, and run migrations
-sync_script = """<?php
+# Now run a deployment sync script to migrate, seed, and clear cache
+sync_script = r"""<?php
 require __DIR__ . '/../vendor/autoload.php';
 $app = require_once __DIR__ . '/../bootstrap/app.php';
-$kernel = $app->make(Illuminate\\Contracts\\Console\\Kernel::class);
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 $kernel->bootstrap();
 
 date_default_timezone_set('Asia/Kolkata');
@@ -141,8 +100,12 @@ date_default_timezone_set('Asia/Kolkata');
 Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
 $migrateOut = Illuminate\Support\Facades\Artisan::output();
 
-if (class_exists('Database\\Seeders\\ReelSeeder')) {
+$seedOut = '';
+try {
     Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'Database\\Seeders\\ReelSeeder', '--force' => true]);
+    $seedOut = Illuminate\Support\Facades\Artisan::output();
+} catch (\Throwable $e) {
+    $seedOut = 'Seed error: ' . $e->getMessage();
 }
 
 Illuminate\Support\Facades\Artisan::call('view:clear');
@@ -163,6 +126,7 @@ echo json_encode([
     'timezone' => date_default_timezone_get(),
     'now_ist' => date('l, d F Y · H:i:s T'),
     'migrate' => trim($migrateOut),
+    'seed' => trim($seedOut),
     'view_clear' => trim($viewClear),
     'config_clear' => trim($configClear),
     'cache_clear' => trim($cacheClear),
@@ -172,21 +136,24 @@ echo json_encode([
 
 with sftp.file('public_html/public/live_deploy_sync.php', 'w') as f:
     f.write(sync_script)
-print("\nUploaded live_deploy_sync.php!")
+log("\nUploaded live_deploy_sync.php!")
 
 time.sleep(1)
 req = urllib.request.Request('http://api.revvmotiv.com/live_deploy_sync.php', headers={'User-Agent': 'Mozilla/5.0'})
-with urllib.request.urlopen(req, timeout=20) as resp:
-    res = resp.read().decode('utf-8')
-    print("\n=== GODADDY DEPLOYMENT OUTPUT ===")
-    print(res)
+try:
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        res = resp.read().decode('utf-8')
+        log("\n=== GODADDY DEPLOYMENT OUTPUT ===")
+        log(res)
+except Exception as e:
+    log(f"Error calling live_deploy_sync.php: {e}")
 
 try:
     sftp.remove('public_html/public/live_deploy_sync.php')
-    print("Cleaned up live_deploy_sync.php!")
+    log("Cleaned up live_deploy_sync.php!")
 except Exception as e:
     pass
 
 sftp.close()
 client.close()
-print("\n>>> ALL BACKEND CHANGES SUCCESSFULLY DEPLOYED TO GODADDY! <<<")
+log("\n>>> ALL BACKEND CHANGES SUCCESSFULLY DEPLOYED TO GODADDY! <<<")

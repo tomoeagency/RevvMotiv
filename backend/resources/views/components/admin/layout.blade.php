@@ -63,6 +63,7 @@
                         ['Content', [
                             ['admin.reviews.index', 'Reviews', 'reviews'],
                             ['admin.projects.index', 'Our Work', 'projects'],
+                            ['admin.reels.index', 'Garage Reels', 'reels'],
                             ['admin.gallery.index', 'Gallery', 'gallery'],
                             ['admin.announcements.index', 'Announcements', 'announcements'],
                             ['admin.policies.index', 'Policies', 'policies'],

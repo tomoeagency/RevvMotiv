@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PolicyController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ProjectViewController;
+use App\Http\Controllers\Admin\ReelController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -58,6 +59,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('coupons', CouponController::class)->except('show');
         Route::resource('announcements', AnnouncementController::class)->except('show');
         Route::resource('gallery', GalleryController::class)->except('show')->parameters(['gallery' => 'galleryItem']);
+        Route::resource('reels', ReelController::class)->except('show');
         Route::resource('policies', PolicyController::class)->except('show');
 
         Route::resource('projects', ProjectController::class)->except('show');

@@ -8,8 +8,6 @@ import {
   Play, 
   Pause,
   Eye, 
-  Heart, 
-  MessageCircle, 
   Volume2, 
   VolumeX, 
   X, 
@@ -20,20 +18,36 @@ import {
   ExternalLink,
   MessageSquare,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ShoppingBag
 } from "lucide-react";
-import { GARAGE_GALLERY, type GarageReel } from "@/lib/garage-gallery";
+import { GARAGE_GALLERY } from "@/lib/garage-gallery";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 import { InstagramReelsRow } from "@/app/components/InstagramReelsRow";
 import type { InstagramEmbed, InstagramMediaItem } from "@/lib/instagram";
 
-const REEL_VIDEOS = [
-  "/videos/reels/reel_fog_light.mp4",
-  "/videos/reels/reel_exhaust.mp4",
-  "/videos/reels/reel_track_run.mp4",
-  "/videos/reels/reel_street_run.mp4",
-];
+export interface CustomReelProduct {
+  id: number;
+  title: string;
+  slug: string;
+  price: string | number;
+  compare_at_price?: string | number | null;
+  primary_image_url?: string | null;
+}
+
+export interface CustomReelItem {
+  id: string | number;
+  title: string;
+  car?: string;
+  category?: string;
+  tag?: string;
+  video_url: string;
+  thumbnail_url?: string | null;
+  caption?: string | null;
+  instagram_url?: string | null;
+  product?: CustomReelProduct | null;
+}
 
 export interface UnifiedReel {
   id: string | number;
@@ -42,14 +56,11 @@ export interface UnifiedReel {
   car: string;
   image: string;
   videoUrl: string;
-  views: string;
-  likes: string;
-  comments: string;
   caption?: string;
-  permalink?: string;
+  instagramUrl?: string;
   tag: string;
   audio?: string;
-  isLiveInstagram?: boolean;
+  product?: CustomReelProduct | null;
 }
 
 export function ReelsSectionClient({
@@ -60,17 +71,30 @@ export function ReelsSectionClient({
   liveMedia?: InstagramMediaItem[];
 }) {
   const [activeReel, setActiveReel] = useState<UnifiedReel | null>(null);
-  const [isLiked, setIsLiked] = useState<Record<string | number, boolean>>({});
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [customReels, setCustomReels] = useState<CustomReelItem[]>([]);
   const [mediaItems, setMediaItems] = useState<InstagramMediaItem[]>(liveMedia);
   
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Fetch admin uploaded reels from Laravel API
   useEffect(() => {
-    if (mediaItems.length === 0) {
+    fetch("/api/v1/reels")
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.data && res.data.length > 0) {
+          setCustomReels(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fallback to Instagram Graph API if no custom reels are uploaded yet
+  useEffect(() => {
+    if (customReels.length === 0 && mediaItems.length === 0) {
       fetch("/api/instagram")
         .then((r) => r.json())
         .then((res) => {
@@ -80,7 +104,7 @@ export function ReelsSectionClient({
         })
         .catch(() => {});
     }
-  }, [mediaItems.length]);
+  }, [customReels.length, mediaItems.length]);
 
   // Handle active video playback on modal open
   useEffect(() => {
@@ -105,11 +129,6 @@ export function ReelsSectionClient({
     }
   };
 
-  const toggleLike = (id: string | number, e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    setIsLiked((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
   const togglePlayPause = () => {
     if (videoRef.current) {
       if (videoRef.current.paused) {
@@ -129,9 +148,23 @@ export function ReelsSectionClient({
     }
   };
 
-  // Convert live Instagram media or static gallery into unified reel cards with direct playable video loops
-  const unifiedReels: UnifiedReel[] = mediaItems.length > 0
-    ? mediaItems.map((item, idx) => {
+  // Convert uploaded custom reels or Instagram media into unified cards
+  const unifiedReels: UnifiedReel[] = customReels.length > 0
+    ? customReels.map((r) => ({
+        id: r.id,
+        title: r.title,
+        category: r.category || "Live Workshop Reel",
+        car: r.car || "Bespoke Workshop Build",
+        image: r.thumbnail_url || "/hero-1-ai.jpg",
+        videoUrl: r.video_url,
+        caption: r.caption || r.title,
+        instagramUrl: r.instagram_url || undefined,
+        tag: r.tag || "#REVVMOTIV",
+        audio: "@revvmotiv • Original Audio",
+        product: r.product,
+      }))
+    : mediaItems.length > 0
+    ? mediaItems.map((item) => {
         const rawImage = item.proxy_image || (item.thumbnail_url 
           ? `/api/instagram/image?url=${encodeURIComponent(item.thumbnail_url)}` 
           : item.media_url 
@@ -140,8 +173,7 @@ export function ReelsSectionClient({
 
         const firstLine = item.caption ? item.caption.split("\n")[0] : "Workshop Custom Build";
         const hashtagMatch = item.caption?.match(/#([a-zA-Z0-9_-]+)/);
-        const tag = item.tag || (hashtagMatch ? `#${hashtagMatch[1].toUpperCase()}` : "#REELS");
-        const videoUrl = REEL_VIDEOS[idx % REEL_VIDEOS.length];
+        const tag = item.tag || (hashtagMatch ? `#${hashtagMatch[1].toUpperCase()}` : "#REVVMOTIV");
 
         return {
           id: item.id,
@@ -149,31 +181,23 @@ export function ReelsSectionClient({
           category: "Live Workshop Reel",
           car: "Bespoke Workshop Build",
           image: rawImage,
-          videoUrl,
-          views: item.views || "24.5k",
-          likes: item.likes || "1.4k",
-          comments: item.comments || "48",
+          videoUrl: "",
           caption: item.caption || firstLine,
-          permalink: item.permalink,
+          instagramUrl: item.permalink,
           tag,
           audio: "@revvmotiv • Original Audio",
-          isLiveInstagram: true,
         };
       })
-    : GARAGE_GALLERY.map((g, idx) => ({
+    : GARAGE_GALLERY.map((g) => ({
         id: g.id,
         title: g.title,
         category: g.category,
         car: g.car,
         image: g.img,
-        videoUrl: REEL_VIDEOS[idx % REEL_VIDEOS.length],
-        views: g.views,
-        likes: g.likes,
-        comments: g.comments,
+        videoUrl: "",
         caption: g.description,
         tag: g.tag,
         audio: g.audio,
-        isLiveInstagram: false,
       }));
 
   return (
@@ -293,7 +317,7 @@ export function ReelsSectionClient({
                   {/* Category */}
                   <div className="flex items-center gap-1 text-[11px] font-bold text-red-400 uppercase tracking-wide">
                     <Flame className="w-3.5 h-3.5 fill-red-500 text-red-500" />
-                    <span>{reel.isLiveInstagram ? "@revvmotiv" : reel.category}</span>
+                    <span>{reel.category}</span>
                   </div>
 
                   {/* Title */}
@@ -315,7 +339,7 @@ export function ReelsSectionClient({
         )}
       </div>
 
-      {/* IN-PAGE REEL MODAL / LIGHTBOX VIEWER */}
+      {/* IN-PAGE REAL VIDEO MODAL / LIGHTBOX VIEWER */}
       <AnimatePresence>
         {activeReel && (
           <div 
@@ -330,39 +354,47 @@ export function ReelsSectionClient({
               onClick={(e) => e.stopPropagation()}
               className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[9/16] max-h-[88vh] bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl flex flex-col justify-between"
             >
-              {/* AUTHENTIC REEL PHOTO MEDIA WITH CLICKABLE PLAY ACTION */}
+              {/* REAL HTML5 VIDEO PLAYER (IF VIDEO URL EXISTS) OR AUTHENTIC COVER */}
               <div 
                 className="absolute inset-0 w-full h-full bg-neutral-950 cursor-pointer group"
-                onClick={() => {
-                  if (activeReel.permalink) {
-                    window.open(activeReel.permalink, "_blank", "noopener,noreferrer");
-                  }
-                }}
+                onClick={activeReel.videoUrl ? togglePlayPause : undefined}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={activeReel.image}
-                  alt={activeReel.title}
-                  referrerPolicy="no-referrer"
-                  crossOrigin="anonymous"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                />
+                {activeReel.videoUrl ? (
+                  <video
+                    ref={videoRef}
+                    src={activeReel.videoUrl}
+                    autoPlay
+                    loop
+                    muted={isMuted}
+                    playsInline
+                    onTimeUpdate={handleTimeUpdate}
+                    className="w-full h-full object-cover object-center"
+                  />
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={activeReel.image}
+                    alt={activeReel.title}
+                    referrerPolicy="no-referrer"
+                    crossOrigin="anonymous"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                  />
+                )}
                 
                 {/* Dark Gradient Overlay for legible text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/70 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-black/70 pointer-events-none" />
 
-                {/* Center Play Reel Button */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none">
-                  <div className="w-16 h-16 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-2xl shadow-red-600/50 backdrop-blur-sm border border-white/40 group-hover:scale-110 group-hover:bg-red-600 transition-all duration-300">
-                    <Play className="w-8 h-8 fill-white ml-1" />
+                {/* Pause/Play Center Overlay Icon if video */}
+                {activeReel.videoUrl && !isPlaying && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-16 h-16 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-2xl backdrop-blur-sm border border-white/40 animate-scale">
+                      <Play className="w-8 h-8 fill-white ml-1" />
+                    </div>
                   </div>
-                  <span className="px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-lg group-hover:border-red-500 transition-colors">
-                    Watch Reel On Instagram ↗
-                  </span>
-                </div>
+                )}
               </div>
 
-              {/* TOP FLOATING HEADER: Profile & Close */}
+              {/* TOP FLOATING HEADER: Profile, Sound Toggle & Close */}
               <div className="relative z-30 flex items-center justify-between p-3 sm:p-4 pointer-events-none">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-black text-xs border border-white/40 shadow-sm">
@@ -382,6 +414,19 @@ export function ReelsSectionClient({
                 </div>
 
                 <div className="flex items-center gap-2 pointer-events-auto">
+                  {activeReel.videoUrl && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsMuted(!isMuted);
+                      }}
+                      className="p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors border border-white/20 cursor-pointer shadow-md"
+                      title={isMuted ? "Unmute" : "Mute"}
+                    >
+                      {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-white" />}
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={(e) => {
@@ -398,6 +443,16 @@ export function ReelsSectionClient({
 
               {/* BOTTOM FLOATING CONTROLS & SHOP CTAS */}
               <div className="relative z-30 p-4 space-y-3 bg-gradient-to-t from-black via-black/90 to-transparent">
+                {/* Live Progress Bar (if video) */}
+                {activeReel.videoUrl && (
+                  <div className="w-full bg-white/20 h-1 rounded-full overflow-hidden">
+                    <div 
+                      className="bg-red-500 h-full transition-all duration-100 ease-linear"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                )}
+
                 {/* Caption / Title */}
                 <div className="max-h-24 overflow-y-auto hide-scrollbar space-y-1">
                   <h4 className="text-sm font-black text-white leading-snug">
@@ -411,27 +466,55 @@ export function ReelsSectionClient({
                 </div>
 
                 {/* Action CTAs */}
-                <div className="pt-1 flex gap-2">
-                  <PrimaryCtaLink
-                    href="/shop"
-                    onClick={() => setActiveReel(null)}
-                    className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
-                  >
-                    <span>Shop Custom Parts</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </PrimaryCtaLink>
-                  
-                  <a
-                    href={`https://wa.me/919999999999?text=${encodeURIComponent(`Hi RevvMotiv! I want to order/enquire about this setup: ${activeReel.title}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="px-3.5 py-2.5 rounded bg-neutral-900 hover:bg-neutral-800 border border-white/20 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
-                    title="Enquire on WhatsApp"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5 text-red-400" />
-                    <span>WhatsApp</span>
-                  </a>
+                <div className="pt-1 flex flex-col gap-2">
+                  <div className="flex gap-2">
+                    {activeReel.product ? (
+                      <PrimaryCtaLink
+                        href={`/products/${activeReel.product.slug}`}
+                        onClick={() => setActiveReel(null)}
+                        className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
+                      >
+                        <ShoppingBag className="w-3.5 h-3.5" />
+                        <span>Shop {activeReel.product.title.slice(0, 20)}...</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </PrimaryCtaLink>
+                    ) : (
+                      <PrimaryCtaLink
+                        href="/shop"
+                        onClick={() => setActiveReel(null)}
+                        className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
+                      >
+                        <span>Shop Custom Parts</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </PrimaryCtaLink>
+                    )}
+                    
+                    <a
+                      href={`https://wa.me/918368343232?text=${encodeURIComponent(`Hi RevvMotiv! I want to order/enquire about this setup: ${activeReel.title}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="px-3.5 py-2.5 rounded bg-neutral-900 hover:bg-neutral-800 border border-white/20 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      title="Enquire on WhatsApp"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-red-400" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </div>
+
+                  {activeReel.instagramUrl && (
+                    <div className="text-center pt-0.5">
+                      <a
+                        href={activeReel.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[10px] text-neutral-400 hover:text-red-400 transition-colors"
+                      >
+                        <span>View on Instagram</span>
+                        <ExternalLink className="w-2.5 h-2.5" />
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>

@@ -30,7 +30,17 @@
             <rect x="2.5" y="2.5" width="8" height="8" rx="1.2"/>
             <rect x="13.5" y="2.5" width="8" height="8" rx="1.2"/>
             <rect x="2.5" y="13.5" width="8" height="8" rx="1.2"/>
-            <rect x="13.5" y="13.5" width="8" height="8" rx="1.2"/>
+            <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.2"/>
+            @break
+        @case('reels')
+            <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+            <line x1="7" y1="2" x2="7" y2="22"/>
+            <line x1="17" y1="2" x2="17" y2="22"/>
+            <line x1="2" y1="12" x2="22" y2="12"/>
+            <line x1="2" y1="7" x2="7" y2="7"/>
+            <line x1="2" y1="17" x2="7" y2="17"/>
+            <line x1="17" y1="17" x2="22" y2="17"/>
+            <line x1="17" y1="7" x2="22" y2="7"/>
             @break
         @case('reviews')
             <path d="M12 2.5l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5-4.7-4.6 6.5-.9z"/>

@@ -29,6 +29,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/recent-purchases', [RecentPurchaseController::class, 'index']);
     Route::get('/announcement', [AnnouncementController::class, 'index']);
     Route::get('/gallery', [GalleryController::class, 'index']);
+    Route::get('/reels', [\App\Http\Controllers\Api\V1\ReelController::class, 'index']);
     Route::get('/site-settings', [SiteSettingsController::class, 'index']);
     Route::get('/policies/{slug}', [PolicyController::class, 'show']);
     Route::get('/projects', [ProjectController::class, 'index']);
