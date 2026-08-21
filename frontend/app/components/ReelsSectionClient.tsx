@@ -315,7 +315,7 @@ export function ReelsSectionClient({
         )}
       </div>
 
-      {/* IN-PAGE REAL VIDEO MODAL / LIGHTBOX VIEWER */}
+      {/* IN-PAGE REEL MODAL / LIGHTBOX VIEWER */}
       <AnimatePresence>
         {activeReel && (
           <div 
@@ -328,39 +328,42 @@ export function ReelsSectionClient({
               exit={{ opacity: 0, scale: 0.92, y: 20 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
               onClick={(e) => e.stopPropagation()}
-              className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[9/16] max-h-[88vh] bg-black rounded-2xl overflow-hidden border border-white/20 shadow-2xl flex flex-col justify-between"
+              className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[9/16] max-h-[88vh] bg-neutral-950 rounded-2xl overflow-hidden border border-white/20 shadow-2xl flex flex-col justify-between"
             >
-              {/* REAL HTML5 VIDEO PLAYER */}
+              {/* AUTHENTIC REEL PHOTO MEDIA WITH CLICKABLE PLAY ACTION */}
               <div 
-                className="absolute inset-0 w-full h-full bg-black cursor-pointer"
-                onClick={togglePlayPause}
+                className="absolute inset-0 w-full h-full bg-neutral-950 cursor-pointer group"
+                onClick={() => {
+                  if (activeReel.permalink) {
+                    window.open(activeReel.permalink, "_blank", "noopener,noreferrer");
+                  }
+                }}
               >
-                <video
-                  ref={videoRef}
-                  src={activeReel.videoUrl}
-                  autoPlay
-                  loop
-                  muted={isMuted}
-                  playsInline
-                  onTimeUpdate={handleTimeUpdate}
-                  className="w-full h-full object-cover object-center"
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={activeReel.image}
+                  alt={activeReel.title}
+                  referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                 />
                 
                 {/* Dark Gradient Overlay for legible text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/70 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/70 pointer-events-none" />
 
-                {/* Pause/Play Center Overlay Icon */}
-                {!isPlaying && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-16 h-16 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-2xl backdrop-blur-sm border border-white/40 animate-scale">
-                      <Play className="w-8 h-8 fill-white ml-1" />
-                    </div>
+                {/* Center Play Reel Button */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none">
+                  <div className="w-16 h-16 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-2xl shadow-red-600/50 backdrop-blur-sm border border-white/40 group-hover:scale-110 group-hover:bg-red-600 transition-all duration-300">
+                    <Play className="w-8 h-8 fill-white ml-1" />
                   </div>
-                )}
+                  <span className="px-3.5 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-white/20 text-white text-xs font-bold shadow-lg group-hover:border-red-500 transition-colors">
+                    Watch Reel On Instagram ↗
+                  </span>
+                </div>
               </div>
 
-              {/* TOP FLOATING HEADER: Profile, Sound Toggle & Close */}
-              <div className="relative z-30 flex items-center justify-between p-3 sm:p-4">
+              {/* TOP FLOATING HEADER: Profile & Close */}
+              <div className="relative z-30 flex items-center justify-between p-3 sm:p-4 pointer-events-none">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-black text-xs border border-white/40 shadow-sm">
                     RM
@@ -378,18 +381,7 @@ export function ReelsSectionClient({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsMuted(!isMuted);
-                    }}
-                    className="p-2 rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors border border-white/20 cursor-pointer shadow-md"
-                    title={isMuted ? "Unmute" : "Mute"}
-                  >
-                    {isMuted ? <VolumeX className="w-4 h-4 text-red-400" /> : <Volume2 className="w-4 h-4 text-white" />}
-                  </button>
+                <div className="flex items-center gap-2 pointer-events-auto">
                   <button
                     type="button"
                     onClick={(e) => {
@@ -405,15 +397,7 @@ export function ReelsSectionClient({
               </div>
 
               {/* BOTTOM FLOATING CONTROLS & SHOP CTAS */}
-              <div className="relative z-30 p-4 space-y-3">
-                {/* Live Progress Bar */}
-                <div className="w-full bg-white/20 h-1 rounded-full overflow-hidden">
-                  <div 
-                    className="bg-red-500 h-full transition-all duration-100 ease-linear"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-
+              <div className="relative z-30 p-4 space-y-3 bg-gradient-to-t from-black via-black/90 to-transparent">
                 {/* Caption / Title */}
                 <div className="max-h-24 overflow-y-auto hide-scrollbar space-y-1">
                   <h4 className="text-sm font-black text-white leading-snug">
