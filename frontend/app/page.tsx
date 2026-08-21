@@ -8,7 +8,7 @@ import { FeaturedReviews } from "@/app/components/FeaturedReviews";
 import { ReelsSection } from "@/app/components/ReelsSection";
 import { ClosingCta } from "@/app/components/ClosingCta";
 import { getProducts, getCategories, getFeaturedReviews } from "@/lib/api";
-import { FALLBACK_CATEGORIES, FALLBACK_REVIEWS } from "@/lib/constants";
+import { FALLBACK_CATEGORIES } from "@/lib/constants";
 
 export const revalidate = 60;
 
@@ -42,9 +42,6 @@ export default async function Home() {
     featuredReviews = res.data || [];
   } catch {
     featuredReviews = [];
-  }
-  if (!featuredReviews || featuredReviews.length === 0) {
-    featuredReviews = [...FALLBACK_REVIEWS];
   }
 
   return (

@@ -41,3 +41,4 @@ Thumbs.db
 .claude/
 .gemini/
 lighthouse-reports/
+tools/*.exe

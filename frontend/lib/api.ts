@@ -1,4 +1,4 @@
-import { FALLBACK_CATEGORIES, FALLBACK_REVIEWS } from "@/lib/constants";
+import { FALLBACK_CATEGORIES } from "@/lib/constants";
 
 // Central client for the Laravel backend — see
 // .claude/skills/api-integration/SKILL.md for the fetch pattern and
@@ -311,7 +311,7 @@ export async function getProducts(params?: {
 
     const qs = query.toString();
     const res = await fetch(apiUrl(`/api/v1/products${qs ? `?${qs}` : ""}`), {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) {
@@ -327,7 +327,7 @@ export async function getProducts(params?: {
 export async function getProduct(idOrSlug: string): Promise<ApiProduct | null> {
   try {
     const res = await fetch(apiUrl(`/api/v1/products/${idOrSlug}`), {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) {
@@ -385,17 +385,17 @@ export async function getProductReviews(
 export async function getFeaturedReviews(): Promise<ApiResponse<Review[]>> {
   try {
     const res = await fetch(apiUrl("/api/v1/reviews/featured"), {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (!res.ok) {
-      return { data: FALLBACK_REVIEWS };
+      return { data: [] };
     }
 
     const body = await res.json();
-    return body.data && body.data.length > 0 ? body : { data: FALLBACK_REVIEWS };
+    return body.data ? body : { data: [] };
   } catch {
-    return { data: FALLBACK_REVIEWS };
+    return { data: [] };
   }
 }
 
@@ -459,183 +459,23 @@ export async function getSiteSettings(): Promise<SiteSettings> {
   }
 }
 
-// Server-side fetch (Our Work listing) — real project case studies, meant
-// to be indexed like product pages.
-const FALLBACK_PROJECTS: ProjectDetail[] = [
-  {
-    id: 101,
-    title: "2019 Hyundai Verna — Stealth Aero & Carbon Edition",
-    slug: "2019-hyundai-verna-stealth-aero-edition",
-    car_make: "Hyundai",
-    car_model: "Verna 2019",
-    description:
-      "Complete dark-stealth aero package: precision 3D-scanned front carbon lip splitter with red accents, gloss black de-chromed cascading grille, concave forged satin black alloys with 3D white REVV MOTIV tyre lettering, and an aggressive quad-fin carbon rear diffuser with quad titanium tips.",
-    cover_image: "/images/projects/verna_cover.webp",
-    created_at: new Date().toISOString(),
-    views: [
-      {
-        id: 1,
-        view_type: "front",
-        work_description:
-          "Precision 3D laser-scanned carbon fiber front splitter with subtle red aero accent trim and de-chromed gloss black grille.",
-        images: ["/images/projects/verna_front.webp"],
-      },
-      {
-        id: 2,
-        view_type: "rear",
-        work_description:
-          "Aggressive quad-fin carbon fiber rear diffuser paired with quad titanium burnt exhaust tips and gloss black ducktail spoiler.",
-        images: ["/images/projects/verna_rear.webp"],
-      },
-    ],
-  },
-  {
-    id: 102,
-    title: "2025 Kia Sonet GT-Line — Wide Aero & Carbon Package",
-    slug: "2025-kia-sonet-gt-line-aero-package",
-    car_make: "Kia",
-    car_model: "Sonet 2025",
-    description:
-      "Matte pewter gray compact SUV build featuring RevvMotiv carbon fiber front splitter with red GT-Line corner winglets, floating gloss black roof wrap, rally-style roof spoiler with aero endplates, and multi-fin carbon rear diffuser.",
-    cover_image: "/images/projects/sonet_cover.webp",
-    created_at: new Date().toISOString(),
-    views: [
-      {
-        id: 3,
-        view_type: "front",
-        work_description:
-          "Front carbon fiber lip splitter with red GT-Line corner winglets and gloss black tiger-nose grille styling.",
-        images: ["/images/projects/sonet_front.webp"],
-      },
-      {
-        id: 4,
-        view_type: "rear",
-        work_description:
-          "Extended rally-inspired carbon fiber roof wing spoiler with aero endplates and deep multi-fin rear diffuser.",
-        images: ["/images/projects/sonet_rear.webp"],
-      },
-    ],
-  },
-  {
-    id: 103,
-    title: "2023 Tata Tiago — JTP-Inspired Track Hatch Build",
-    slug: "2023-tata-tiago-jtp-track-look-build",
-    car_make: "Tata",
-    car_model: "Tiago 2023",
-    description:
-      "Fiery magma orange hot hatch build equipped with high-downforce front splitter with red anodized support struts, rally-style carbon fiber roof wing spoiler, center-exit quad diffuser, and motorsport lightweight wheels with white tyre lettering.",
-    cover_image: "/images/projects/tiago_cover.webp",
-    created_at: new Date().toISOString(),
-    views: [
-      {
-        id: 5,
-        view_type: "front",
-        work_description:
-          "Motorsport front carbon splitter with red anodized tie-rod support struts and lowered track suspension setup.",
-        images: ["/images/projects/tiago_front.webp"],
-      },
-      {
-        id: 6,
-        view_type: "rear",
-        work_description:
-          "Carbon fiber rally roof wing spoiler, center dual-exit diffuser, and smoked LED taillamp treatment.",
-        images: ["/images/projects/tiago_rear.webp"],
-      },
-    ],
-  },
-  {
-    id: 104,
-    title: "2023 Maruti Swift — Full Aero Kit",
-    slug: "2023-maruti-swift-full-aero-kit",
-    car_make: "Maruti Suzuki",
-    car_model: "Swift",
-    description:
-      "Complete exterior transformation: carbon front lip, side skirt extensions, and a rear diffuser to match. Customer wanted an aggressive stance without touching the suspension.",
-    cover_image: "/images/projects/swift_cover.png",
-    created_at: new Date().toISOString(),
-    views: [
-      {
-        id: 7,
-        view_type: "front",
-        work_description:
-          "V-style carbon front lip fitted with factory-matched clips, no drilling. Repainted the surrounding bumper section for a seamless line.",
-        images: ["/images/projects/swift_front.png"],
-      },
-      {
-        id: 8,
-        view_type: "rear",
-        work_description:
-          "Rear diffuser insert fitted below the bumper, paired with a dual-exit exhaust tip upgrade for visual balance.",
-        images: ["/images/projects/swift_rear.png"],
-      },
-    ],
-  },
-  {
-    id: 105,
-    title: "Hyundai i20 N Line — Blackout Package",
-    slug: "hyundai-i20-n-line-blackout-package",
-    car_make: "Hyundai",
-    car_model: "i20 N Line",
-    description:
-      "Full gloss-black trim package: mirror caps, grille surround, and sequential tails, finished with a satin roof wrap for contrast against the factory red paint.",
-    cover_image: "/images/projects/i20_cover.png",
-    created_at: new Date().toISOString(),
-    views: [
-      {
-        id: 9,
-        view_type: "front",
-        work_description:
-          "Grille surround and badge blacked out, factory chrome removed entirely for a cleaner front end.",
-        images: ["/images/projects/i20_front.png"],
-      },
-      {
-        id: 10,
-        view_type: "rear",
-        work_description:
-          "OLED sequential tail lights installed plug-and-play, no wiring modifications needed on this generation.",
-        images: ["/images/projects/i20_rear.png"],
-      },
-    ],
-  },
-  {
-    id: 106,
-    title: "Volkswagen Polo GT — Track Look Build",
-    slug: "volkswagen-polo-gt-track-look-build",
-    car_make: "Volkswagen",
-    car_model: "Polo GT",
-    description:
-      "Motorsport-inspired refresh for a customer who wanted a track-day look for weekend use — front splitter, tyre stickers, and an audio upgrade for the drive there.",
-    cover_image: "/images/projects/polo_cover.png",
-    created_at: new Date().toISOString(),
-    views: [
-      {
-        id: 11,
-        view_type: "front",
-        work_description:
-          "Wind-tunnel profiled front splitter for a lower, more planted stance at speed.",
-        images: ["/images/projects/polo_front.png"],
-      },
-    ],
-  },
-];
-
 export async function getProjects(): Promise<ApiCollection<ProjectListItem>> {
   try {
     const res = await fetch(apiUrl("/api/v1/projects"), {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (res.ok) {
       const body = await res.json();
-      if (body?.data && Array.isArray(body.data) && body.data.length > 0) {
+      if (body?.data && Array.isArray(body.data)) {
         return body;
       }
     }
   } catch {}
 
   return {
-    data: FALLBACK_PROJECTS,
-    meta: { current_page: 1, last_page: 1, per_page: 10, total: FALLBACK_PROJECTS.length },
+    data: [],
+    meta: { current_page: 1, last_page: 1, per_page: 10, total: 0 },
   };
 }
 
@@ -663,7 +503,7 @@ export async function getGallery(): Promise<GalleryItem[]> {
 export async function getProject(slug: string): Promise<ProjectDetail | null> {
   try {
     const res = await fetch(apiUrl(`/api/v1/projects/${slug}`), {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     if (res.ok) {
@@ -672,8 +512,7 @@ export async function getProject(slug: string): Promise<ProjectDetail | null> {
     }
   } catch {}
 
-  const fallback = FALLBACK_PROJECTS.find((p) => p.slug === slug);
-  return fallback ?? null;
+  return null;
 }
 
 const DEFAULT_CATEGORIES: Category[] = [...FALLBACK_CATEGORIES];
