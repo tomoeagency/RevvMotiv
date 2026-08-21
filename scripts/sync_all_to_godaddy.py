@@ -97,6 +97,9 @@ print("\n--- Uploading Compiled Vite Assets (CSS & JS) ---")
 upload_dir('backend/public/build', 'public_html/build')
 upload_dir('backend/public/build', 'public_html/public/build')
 
+print("\n--- Uploading PHP ini overrides (.user.ini) ---")
+upload_file('backend/public/.user.ini', 'public_html/.user.ini')
+
 print("\n--- Uploading Database Migrations ---")
 upload_dir('backend/database/migrations', 'public_html/database/migrations')
 

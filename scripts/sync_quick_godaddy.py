@@ -90,6 +90,7 @@ upload_dir('backend/public/build', 'public_html/build')
 upload_dir('backend/public/build', 'public_html/public/build')
 upload_dir('backend/public/videos', 'public_html/videos')
 upload_dir('backend/public/videos', 'public_html/public/videos')
+upload_file('backend/public/.user.ini', 'public_html/.user.ini')
 
 # Now run a deployment sync script to migrate, seed, and clear cache
 sync_script = r"""<?php

@@ -126,15 +126,31 @@
         const submitBtnText = document.getElementById('submitBtnText');
         const uploadForm = document.getElementById('galleryUploadForm');
 
+        // This server's PHP max_file_uploads is 20 (a PHP_INI_SYSTEM
+        // setting — can't be raised via .user.ini or app code, only the
+        // hosting control panel's PHP settings). Above that, PHP silently
+        // drops the extra files before Laravel ever sees them, so anything
+        // selected past #20 is capped here instead — same effective limit,
+        // but the admin is actually told about it rather than losing files
+        // with no explanation.
+        const MAX_FILES_PER_BATCH = 20;
         mediaInput.addEventListener('change', handleFileSelect);
 
         function handleFileSelect(e) {
-            const files = e.target.files;
+            let files = e.target.files;
             if (!files || files.length === 0) {
                 previewSection.classList.add('hidden');
                 previewGrid.innerHTML = '';
                 submitBtnText.textContent = 'Upload All Files';
                 return;
+            }
+
+            if (files.length > MAX_FILES_PER_BATCH) {
+                const dataTransfer = new DataTransfer();
+                Array.from(files).slice(0, MAX_FILES_PER_BATCH).forEach((f) => dataTransfer.items.add(f));
+                mediaInput.files = dataTransfer.files;
+                files = mediaInput.files;
+                alert(`This server accepts a maximum of ${MAX_FILES_PER_BATCH} files per upload. The first ${MAX_FILES_PER_BATCH} are selected — upload the rest as a separate batch.`);
             }
 
             fileCountBadge.textContent = files.length;
