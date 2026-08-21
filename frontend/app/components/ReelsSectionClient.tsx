@@ -459,8 +459,12 @@ export function ReelsSectionClient() {
                 </div>
               </div>
 
-              {/* BOTTOM FLOATING CONTROLS & SHOP CTAS */}
-              <div className="relative z-30 p-4 space-y-3 bg-gradient-to-t from-black via-black/90 to-transparent">
+              {/* BOTTOM FLOATING CONTROLS & SHOP CTAS — source videos often
+                  have their own captions burned into the footage; fading
+                  all the way to transparent let that bleed through behind
+                  our title/description, so this stays at least half-opaque
+                  the whole way up instead of clearing completely. */}
+              <div className="relative z-30 p-4 space-y-3 bg-gradient-to-t from-black via-black/95 to-black/60">
                 {/* Live Progress Bar (if video) */}
                 {activeReel.videoUrl && (
                   <div className="w-full bg-white/20 h-1 rounded-full overflow-hidden">
