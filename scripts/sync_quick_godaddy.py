@@ -80,9 +80,10 @@ def upload_dir(local_dir, remote_dir):
 # Target specific files and folders that were updated
 log("\n--- Uploading Changed Backend Controllers, Models, Routes, Views, Migrations ---")
 upload_dir('backend/app', 'public_html/app')
+upload_dir('backend/config', 'public_html/config')
+upload_dir('backend/bootstrap', 'public_html/bootstrap')
 upload_dir('backend/routes', 'public_html/routes')
-upload_dir('backend/resources/views/admin', 'public_html/resources/views/admin')
-upload_dir('backend/resources/views/components', 'public_html/resources/views/components')
+upload_dir('backend/resources', 'public_html/resources')
 upload_dir('backend/database/migrations', 'public_html/database/migrations')
 upload_dir('backend/database/seeders', 'public_html/database/seeders')
 upload_dir('backend/public/build', 'public_html/build')
