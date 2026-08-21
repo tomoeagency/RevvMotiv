@@ -644,7 +644,7 @@ export default function CheckoutPage() {
                 onClick={() => setPaymentOption("full")}
                 className={`p-3.5 border text-left transition-all rounded cursor-pointer relative ${
                   paymentOption === "full"
-                    ? "border-emerald-500 bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                    ? "border-red-600 bg-red-500/10 shadow-[0_0_15px_rgba(225,29,72,0.15)]"
                     : "border-hairline bg-surface-alt hover:border-hairline-strong opacity-75"
                 }`}
               >
@@ -652,14 +652,14 @@ export default function CheckoutPage() {
                   <span className="text-xs font-bold text-ink uppercase">
                     100% Full Payment
                   </span>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase rounded">
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 bg-red-500/20 text-red-400 border border-red-500/30 uppercase rounded">
                     Fast Track
                   </span>
                 </div>
                 <p className="text-sm font-black text-ink">
                   {formatPrice(totalAfterDiscount)} Online
                 </p>
-                <p className="text-[10px] text-emerald-400 mt-1">
+                <p className="text-[10px] text-red-400 mt-1">
                   ₹0 COD Due · Priority Workshop Queue
                 </p>
               </button>
@@ -825,7 +825,7 @@ export default function CheckoutPage() {
                   </span>
                   <span className="text-[10px] text-ink-muted">Via Razorpay Secure Gateway</span>
                 </div>
-                <span className="text-emerald-400 font-black text-sm">
+                <span className="text-ink font-black text-sm">
                   {formatPrice(
                     paymentOption === "full"
                       ? totalAfterDiscount

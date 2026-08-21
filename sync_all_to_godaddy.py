@@ -80,6 +80,12 @@ upload_dir('backend/app', 'public_html/app')
 print("\n--- Uploading Config ---")
 upload_dir('backend/config', 'public_html/config')
 
+print("\n--- Uploading Bootstrap ---")
+upload_dir('backend/bootstrap', 'public_html/bootstrap')
+
+print("\n--- Uploading Routes ---")
+upload_dir('backend/routes', 'public_html/routes')
+
 print("\n--- Uploading Resources (Views & Emails) ---")
 upload_dir('backend/resources', 'public_html/resources')
 
@@ -95,6 +101,33 @@ upload_dir('backend/database/migrations', 'public_html/database/migrations')
 
 print("\n--- Uploading Database Seeders ---")
 upload_dir('backend/database/seeders', 'public_html/database/seeders')
+
+# Sync critical environment variables to remote .env
+print("\n--- Syncing Environment Variables to Remote .env ---")
+try:
+    with sftp.file('public_html/.env', 'r') as f:
+        env_content = f.read().decode('utf-8')
+    
+    new_keys = {
+        'ICARRY_API_KEY': 'qg9vFeW2UpWdVkno6gx6DuoBXkuSs7JZvaPGknMYwpbDsjMFDZVxPURgijBDsl7elYsIFmuqVAGmV8GGAEqL96XA2f42CZ5rQpRLs9usZrLBAl4uWohvNG92iMcQu7kETmEVM6Vra9nxG7cA62UHLZFOes6V1SOrbyCUD6ReTxXzLyNR5x5mOoMfRHxGSilMxDcTDqYkhdynWSnu3LqZdYfeW6TA72qijo04bcIY0uKWjlLdkQjAKRmYzu7FAUPe',
+        'ICARRY_API_USERNAME': 'ela40651',
+        'ICARRY_PICKUP_PINCODE': '201009',
+        'ICARRY_AUTO_FULFILL': 'false',
+        'INSTAGRAM_ACCESS_TOKEN': 'IGAAOtRJT9zI5BZAGF6SlBkTzhfYkZAYUFl4SnlOa2FGa3E5TkRBT215ZAHg2V2t3c2J4a0RDNW5qelRSd1pRNTBNQmpoWW9ZAX013Y3R2eVl3Qkl4ZAV9Ha0dBdXc2WXRjX29KRHBYcDNOZAm5RNnJzSHdNNzBRS0xQUEZAzTi1neDNpbwZDZD',
+    }
+    
+    import re
+    for k, v in new_keys.items():
+        if re.search(rf'^{k}=', env_content, flags=re.MULTILINE):
+            env_content = re.sub(rf'^{k}=.*$', f'{k}={v}', env_content, flags=re.MULTILINE)
+        else:
+            env_content += f"\n{k}={v}"
+            
+    with sftp.file('public_html/.env', 'w') as f:
+        f.write(env_content)
+    print("Updated public_html/.env with latest API credentials!")
+except Exception as e:
+    print(f"Note on .env sync: {e}")
 
 # Now run a sync script to clear views, clear config, and run migrations
 sync_script = """<?php

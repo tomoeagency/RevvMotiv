@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
-import { Gauge, Sparkles, SlidersHorizontal, CheckCircle2, MoveHorizontal } from "lucide-react";
+import { Gauge, Disc, SlidersHorizontal, CheckCircle2, MoveHorizontal } from "lucide-react";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 export function TransformationSection() {
@@ -58,7 +58,7 @@ export function TransformationSection() {
               </div>
 
               <div className="flex items-start gap-3 p-4 rounded border border-hairline bg-surface">
-                <Sparkles className="w-5 h-5 text-red-500 flex-none mt-0.5" />
+                <Disc className="w-5 h-5 text-red-500 flex-none mt-0.5" />
                 <div>
                   <div className="text-sm font-bold text-ink uppercase tracking-wider mb-1">
                     Durable Wheel & Tyre Styling

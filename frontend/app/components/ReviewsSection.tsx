@@ -212,8 +212,8 @@ export function ReviewsSection({
           >
             {copiedLink ? (
               <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-400">Direct Link Copied!</span>
+                <Check className="w-4 h-4 text-red-500" />
+                <span className="text-red-500">Direct Link Copied!</span>
               </>
             ) : (
               <>
@@ -316,7 +316,7 @@ export function ReviewsSection({
                               </span>
                             )}
                             {review.verified_purchase && (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 uppercase tracking-wider bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                              <span className="inline-flex items-center gap-1 text-[10px] font-bold text-red-500 uppercase tracking-wider bg-red-500/10 px-2 py-0.5 rounded-full border border-red-500/20">
                                 <ShieldCheck className="w-3 h-3" /> Verified Purchase
                               </span>
                             )}
@@ -388,7 +388,7 @@ export function ReviewsSection({
 
               {submitSuccess ? (
                 <div className="py-8 text-center space-y-4">
-                  <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto">
+                  <div className="w-14 h-14 rounded-full bg-red-500/10 border border-red-500/30 text-red-500 flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-7 h-7" />
                   </div>
                   <h3 className="text-xl font-bold text-ink">Review Submitted!</h3>

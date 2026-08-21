@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import {
   VolumeX, 
   X, 
   Music2, 
-  Sparkles, 
+  Car, 
   ArrowRight,
   Flame,
   Film
@@ -34,6 +34,20 @@ export function ReelsSectionClient({
   const [activeReel, setActiveReel] = useState<GarageReel | null>(null);
   const [isLiked, setIsLiked] = useState<Record<number, boolean>>({});
   const [isMuted, setIsMuted] = useState(false);
+  const [mediaItems, setMediaItems] = useState<InstagramMediaItem[]>(liveMedia);
+
+  useEffect(() => {
+    if (mediaItems.length === 0) {
+      fetch("/api/instagram")
+        .then((r) => r.json())
+        .then((res) => {
+          if (res?.data && res.data.length > 0) {
+            setMediaItems(res.data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [mediaItems.length]);
 
   const toggleLike = (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -75,7 +89,7 @@ export function ReelsSectionClient({
             transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE_BRAND }}
           >
             <a
-              href="https://instagram.com"
+              href="https://instagram.com/revvmotiv"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-surface border border-hairline hover:border-red-500/50 hover:bg-neutral-900 transition-all text-xs font-bold text-ink shadow-sm group"
@@ -91,12 +105,12 @@ export function ReelsSectionClient({
         {/* If live embeds exist, show them; else render interactive Reel Cards with horizontal swipe on mobile */}
         {embeds.length > 0 ? (
           <InstagramReelsRow embeds={embeds} />
-        ) : liveMedia.length > 0 ? (
+        ) : mediaItems.length > 0 ? (
           <div
             className="flex overflow-x-auto pb-4 pt-1 gap-4 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:gap-6 -mx-4 px-4 sm:mx-0 sm:px-0"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
-            {liveMedia.map((item) => {
+            {mediaItems.map((item) => {
               const imageSrc = item.thumbnail_url || item.media_url || "/images/logo.png";
               const isVideo = item.media_type === "VIDEO";
               const title = item.caption ? item.caption.split("\n")[0] : "Workshop Build";
@@ -317,7 +331,7 @@ export function ReelsSectionClient({
                 </p>
 
                 <div className="flex items-center gap-2 text-xs font-semibold text-neutral-300">
-                  <Sparkles className="w-3.5 h-3.5 text-red-400" />
+                  <Car className="w-3.5 h-3.5 text-red-400" />
                   <span>Platform: {activeReel.car}</span>
                 </div>
 

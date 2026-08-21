@@ -86,6 +86,8 @@ class ReviewController extends Controller
     {
         return Review::query()
             ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
-            ->when($request->filled('product_id'), fn ($q) => $q->where('product_id', $request->integer('product_id')));
+            ->when($request->filled('product_id'), fn ($q) => $q->where('product_id', $request->integer('product_id')))
+            ->when($request->input('type') === 'product', fn ($q) => $q->whereNotNull('product_id'))
+            ->when($request->input('type') === 'general', fn ($q) => $q->whereNull('product_id'));
     }
 }

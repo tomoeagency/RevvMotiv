@@ -170,7 +170,7 @@ export async function Footer() {
                     href="https://wa.me/918368343232?text=Hi%20RevvMotiv%2C%20I'm%20looking%20for%20styling%20%26%20aero%20parts%20for%20my%20car.%20Can%20you%20assist%20me%3F"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-red-500 transition-colors flex items-center gap-1 group text-emerald-400 font-semibold text-[11px] sm:text-xs"
+                    className="hover:text-red-500 transition-colors flex items-center gap-1 group text-ink-muted font-medium text-[11px] sm:text-xs"
                   >
                     WhatsApp
                     <ArrowUpRight className="w-3 h-3 opacity-50 group-hover:opacity-100 transition-opacity" />

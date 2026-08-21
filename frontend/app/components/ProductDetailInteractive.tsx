@@ -73,8 +73,8 @@ export function ProductDetailInteractive({
           </span>
           <span className="text-ink-subtle">·</span>
           {isAvailable ? (
-            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" /> In Stock & Ready to Dispatch
+            <span className="text-[10px] font-bold text-ink-muted uppercase tracking-wider flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-red-500" /> In Stock & Ready to Dispatch
             </span>
           ) : (
             <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1">
@@ -157,15 +157,12 @@ export function ProductDetailInteractive({
                         : "border-hairline bg-surface hover:border-slate-400 text-ink-muted hover:text-ink"
                     } ${!inStock ? "opacity-60" : ""}`}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <span className="truncate">{v.name}</span>
-                      {!inStock && (
-                        <span className="text-[9px] text-rose-400 uppercase font-mono font-bold">(Out)</span>
-                      )}
-                    </div>
-                    <span className="font-mono text-[11px] text-ink-subtle">
-                      {formatPrice(v.price)}
-                    </span>
+                    {v.name}
+                    {v.price_override && (
+                      <span className="ml-1.5 text-[10px] text-ink-subtle">
+                        ({formatPrice(v.price_override)})
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -179,13 +176,12 @@ export function ProductDetailInteractive({
           </p>
         )}
 
-        {/* Structured Machine-Parseable Fitment Data Block (AEO / GEO) */}
         <div className="border border-hairline bg-surface p-4 rounded-xl mb-6 max-w-md text-xs space-y-2 shadow-2xs">
           <div className="flex items-center justify-between border-b border-hairline pb-2">
             <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest">
               Fitment & Vehicle Compatibility
             </span>
-            <span className="text-[10px] text-emerald-500 font-bold uppercase">100% Pre-Checked</span>
+            <span className="text-[10px] text-red-500 font-bold uppercase">100% Pre-Checked</span>
           </div>
           <div className="font-mono text-xs font-semibold text-ink">
             Fits: {product.category.name} & Compatible Models — Direct OEM Bolt-On
@@ -195,14 +191,13 @@ export function ProductDetailInteractive({
           </p>
         </div>
 
-        {/* Quality & Policy Badges */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-3.5 rounded-lg border border-hairline bg-surface mb-8 max-w-md text-xs">
           <div className="flex items-center gap-2 text-ink">
             <ShieldCheck className="w-4 h-4 text-red-500 flex-none" />
             <span>100% Fitment Guarantee</span>
           </div>
           <div className="flex items-center gap-2 text-ink">
-            <Truck className="w-4 h-4 text-emerald-400 flex-none" />
+            <Truck className="w-4 h-4 text-red-500 flex-none" />
             <span>Standard Tracked Courier (5–7 Days)</span>
           </div>
           <div className="flex items-center gap-2 text-ink-muted col-span-full pt-1 border-t border-hairline text-[11px]">

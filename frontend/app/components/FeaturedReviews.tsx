@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Quote, Camera, Sparkles, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Quote, Camera, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Review } from "@/lib/api";
 import { parseReviewComment } from "@/lib/api";
 import { StarRating } from "@/app/components/StarRating";
@@ -169,8 +169,8 @@ export function FeaturedReviews({ reviews: initialReviews = [] }: { reviews?: Re
         {/* Section Header */}
         <div className="mb-6 sm:mb-12 flex flex-row items-end justify-between gap-3 sm:gap-4">
           <div>
-            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1.5 sm:mb-2 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Customer Feedback
+            <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1.5 sm:mb-2">
+              Customer Feedback
             </span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight">
               What Drivers Are Saying

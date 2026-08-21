@@ -2,8 +2,8 @@
 @php
     $config = match ($status) {
         'active', 'approved', 'delivered', 'fully_paid' => [
-            'bg' => 'bg-emerald-50 border-emerald-200/80 text-emerald-700',
-            'dot' => 'bg-emerald-500',
+            'bg' => 'bg-red-50 border-red-200/80 text-red-700',
+            'dot' => 'bg-red-500',
         ],
         'confirmed', 'shipped' => [
             'bg' => 'bg-blue-50 border-blue-200/80 text-blue-700',

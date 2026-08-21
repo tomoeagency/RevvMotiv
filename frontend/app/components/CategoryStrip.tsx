@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import type { Category } from "@/lib/api";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 
@@ -16,9 +16,8 @@ export function CategoryStrip({ categories }: { categories: Category[] }) {
         className="md:hidden py-3 px-4 overflow-x-auto hide-scrollbar flex items-center gap-2 snap-x snap-mandatory scroll-smooth touch-pan-x touch-pan-y"
         style={{ WebkitOverflowScrolling: "touch" }}
       >
-        <div className="flex-none flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-600/10 border border-red-500/20 text-[10px] font-black text-red-500 uppercase tracking-wider">
-          <Sparkles className="w-3 h-3" />
-          <span>Categories</span>
+        <div className="flex-none px-3 py-1.5 rounded-lg bg-red-600/10 border border-red-500/20 text-[10px] font-black text-red-500 uppercase tracking-wider">
+          Categories
         </div>
         {categories.map((cat) => (
           <Link

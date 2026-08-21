@@ -67,7 +67,7 @@
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Status colors, fixed across themes like the other brand accents. */
-  --color-success: #22c55e; /* green-500 */
+  --color-success: #dc2626; /* brand red */
   --color-star-fill: #facc15; /* yellow-400 */
 }
 

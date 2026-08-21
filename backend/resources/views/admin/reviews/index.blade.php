@@ -2,13 +2,19 @@
     <!-- Header Controls & View Switcher -->
     <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3">
-            <form method="GET" class="flex gap-2">
+            <form method="GET" class="flex flex-wrap gap-2">
                 <select name="status" onchange="this.form.submit()"
-                        class="rounded-lg border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs focus:border-[#1e3a5f] focus:ring-2 focus:ring-[#1e3a5f]/20">
+                        class="rounded-lg border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs focus:border-red-600 focus:ring-2 focus:ring-red-600/20">
                     <option value="">All moderation statuses</option>
                     @foreach (['pending', 'approved', 'rejected'] as $status)
                         <option value="{{ $status }}" @selected(request('status') === $status)>{{ ucfirst($status) }}</option>
                     @endforeach
+                </select>
+                <select name="type" onchange="this.form.submit()"
+                        class="rounded-lg border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs focus:border-red-600 focus:ring-2 focus:ring-red-600/20">
+                    <option value="">All Review Types</option>
+                    <option value="product" @selected(request('type') === 'product')>📦 Product Reviews Only</option>
+                    <option value="general" @selected(request('type') === 'general')>🏎️ General Workshop Reviews Only</option>
                 </select>
             </form>
             <a href="{{ route('admin.reviews.export', request()->query()) }}" 
@@ -43,7 +49,7 @@
 
     <!-- 1. TABLE LIST VIEW -->
     <div id="reviewListView">
-        <x-admin.data-table :headers="['Media', 'Customer', 'Product', 'Rating', 'Comment', 'Verified', 'Status', '']" :paginator="$reviews">
+        <x-admin.data-table :headers="['Media', 'Customer', 'Review Type / Product', 'Rating', 'Comment', 'Verified', 'Status', '']" :paginator="$reviews">
             @foreach ($reviews as $review)
                 <tr class="hover:bg-slate-50/70 transition-colors">
                     <td class="px-4 py-3 w-24">
@@ -70,8 +76,16 @@
                         <span class="font-bold text-slate-900 block text-xs whitespace-nowrap">{{ $review->customer_name }}</span>
                         <span class="text-[11px] text-slate-400 font-mono block whitespace-nowrap">{{ $review->customer_email }}</span>
                     </td>
-                    <td class="px-4 py-3 text-xs font-medium text-slate-700 max-w-[180px] truncate" title="{{ $review->product?->title ?? '—' }}">
-                        {{ $review->product?->title ?? '—' }}
+                    <td class="px-4 py-3 text-xs font-medium text-slate-700 max-w-[200px]">
+                        @if ($review->product)
+                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 line-clamp-1" title="{{ $review->product->title }}">
+                                📦 {{ $review->product->title }}
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200">
+                                🏎️ General Workshop Review
+                            </span>
+                        @endif
                     </td>
                     <td class="px-4 py-3 text-amber-500 font-bold font-mono text-xs whitespace-nowrap">
                         <div class="flex items-center gap-0.5">
@@ -85,7 +99,7 @@
                     </td>
                     <td class="px-4 py-3 text-xs">
                         @if ($review->verified_purchase)
-                            <span class="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200">Verified</span>
+                            <span class="rounded bg-slate-900 px-2 py-0.5 text-[10px] font-bold text-white">Verified</span>
                         @else
                             <span class="text-slate-400 text-xs">No</span>
                         @endif
@@ -96,7 +110,7 @@
                             @if ($review->status !== 'approved')
                                 <form method="POST" action="{{ route('admin.reviews.approve', $review) }}" class="inline">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer">
+                                    <button type="submit" class="rounded-md bg-red-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-red-700 shadow-2xs transition-all cursor-pointer">
                                         Approve
                                     </button>
                                 </form>
@@ -104,7 +118,7 @@
                             @if ($review->status !== 'rejected')
                                 <form method="POST" action="{{ route('admin.reviews.reject', $review) }}" class="inline">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="rounded-md bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 hover:bg-amber-100 border border-amber-200 transition-all cursor-pointer">
+                                    <button type="submit" class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer">
                                         Reject
                                     </button>
                                 </form>
@@ -129,7 +143,7 @@
                                 <div class="flex items-center gap-1.5">
                                     <span class="font-bold text-slate-900 text-xs">{{ $review->customer_name }}</span>
                                     @if ($review->verified_purchase)
-                                        <span class="rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 border border-emerald-200">Verified Driver</span>
+                                        <span class="rounded bg-slate-900 px-1.5 py-0.5 text-[9px] font-bold text-white">Verified Driver</span>
                                     @endif
                                 </div>
                                 <span class="text-[11px] text-slate-400 font-mono">{{ $review->customer_email }}</span>
@@ -144,7 +158,11 @@
                                     <svg class="w-3.5 h-3.5 {{ $s <= $review->rating ? 'fill-amber-400 text-amber-400' : 'fill-slate-200 text-slate-200' }}" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                                 @endfor
                             </div>
-                            <span class="font-medium text-slate-500 truncate max-w-[140px] text-[11px]">{{ $review->product?->title ?? 'General Review' }}</span>
+                            @if ($review->product)
+                                <span class="font-semibold text-slate-700 truncate max-w-[140px] text-[11px]">📦 {{ $review->product->title }}</span>
+                            @else
+                                <span class="font-bold text-red-600 text-[10px] uppercase">🏎️ Workshop Review</span>
+                            @endif
                         </div>
 
                         <!-- Review Comment -->
@@ -169,7 +187,7 @@
                             @if ($review->status !== 'approved')
                                 <form method="POST" action="{{ route('admin.reviews.approve', $review) }}" class="inline">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer">
+                                    <button type="submit" class="rounded-lg bg-red-600 px-2.5 py-1 text-xs font-bold text-white hover:bg-red-700 shadow-2xs transition-all cursor-pointer">
                                         Approve
                                     </button>
                                 </form>
@@ -177,7 +195,7 @@
                             @if ($review->status !== 'rejected')
                                 <form method="POST" action="{{ route('admin.reviews.reject', $review) }}" class="inline">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="rounded-lg bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 hover:bg-amber-100 border border-amber-200 transition-all cursor-pointer">
+                                    <button type="submit" class="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700 hover:bg-slate-200 border border-slate-200 transition-all cursor-pointer">
                                         Reject
                                     </button>
                                 </form>

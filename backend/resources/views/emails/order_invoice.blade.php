@@ -194,8 +194,8 @@
       color: #0f172a;
     }
     .advance-paid-row td {
-      background-color: #ecfdf5;
-      color: #047857;
+      background-color: #f8fafc;
+      color: #0f172a;
       font-weight: 700;
     }
     .balance-due-row td {
@@ -369,8 +369,8 @@
             <td class="calc-val">₹{{ number_format($order->total_amount, 2) }}</td>
           </tr>
           <tr class="advance-paid-row">
-            <td class="calc-label" style="color: #047857;">Advance Paid Online ({{ $order->advance_percent_applied }}%):</td>
-            <td class="calc-val" style="color: #047857;">₹{{ number_format($order->advance_amount, 2) }}</td>
+            <td class="calc-label" style="color: #0f172a;">Advance Paid Online ({{ $order->advance_percent_applied }}%):</td>
+            <td class="calc-val" style="color: #0f172a;">₹{{ number_format($order->advance_amount, 2) }}</td>
           </tr>
           <tr class="balance-due-row">
             <td class="calc-label" style="color: #be123c;">Balance Due on Delivery (COD):</td>

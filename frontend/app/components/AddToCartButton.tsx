@@ -107,7 +107,7 @@ export function AddToCartButton({
         className="w-full h-13 py-3.5 text-sm font-black flex items-center justify-center gap-2 shadow-md cursor-pointer"
       >
         <Zap className="w-4 h-4 fill-white text-white flex-none" />
-        <span>Buy Now — Direct Order</span>
+        <span>Buy Now</span>
       </PrimaryCtaButton>
     </div>
   );

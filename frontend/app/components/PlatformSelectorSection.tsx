@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronRight, ChevronLeft } from "lucide-react";
 
 const PLATFORMS = [
   {
@@ -150,10 +150,9 @@ export function PlatformSelectorSection() {
       {/* Header Row with Arrows */}
       <div className="flex flex-row items-end justify-between mb-8 sm:mb-12 gap-4 relative z-10">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-black uppercase tracking-widest mb-2 sm:mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
+          <span className="text-xs font-bold text-red-500 uppercase tracking-widest block mb-1.5 sm:mb-2">
             Workshop Projects
-          </div>
+          </span>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-ink">
             Featured Builds
           </h2>

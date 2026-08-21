@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Crosshair, Sparkles } from "lucide-react";
+import { ArrowRight, Crosshair } from "lucide-react";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 const HERO_SLIDES = [
@@ -117,13 +117,7 @@ export function Hero() {
             </div>
 
             {/* Zero-CLS Stable Headline Container with Reserved Height */}
-            <div className="space-y-3 min-h-[140px] sm:min-h-[190px] md:min-h-[250px] flex flex-col justify-center">
-              {/* Dynamic Category/Feature Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/10 border border-red-500/30 text-red-400 text-[10px] sm:text-xs font-bold uppercase tracking-widest backdrop-blur-sm w-fit transition-all duration-300">
-                <Sparkles className="w-3 h-3 text-red-500" />
-                <span>{HERO_SLIDES[currentSlide].badge}</span>
-              </div>
-
+            <div className="space-y-3 min-h-[140px] sm:min-h-[190px] md:min-h-[220px] flex flex-col justify-center">
               {/* Main Headline */}
               <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-[84px] font-black uppercase tracking-tight sm:tracking-tighter leading-[0.96] sm:leading-[0.88] text-ink drop-shadow-2xl break-words transition-all duration-300">
                 {HERO_SLIDES[currentSlide].headline[0]}

@@ -85,7 +85,7 @@ export function ProductCard({
           {!product.in_stock ? (
             <Ban className="w-3.5 h-3.5 text-slate-400" />
           ) : justAdded ? (
-            <span className="flex items-center gap-1 text-emerald-400">
+            <span className="flex items-center gap-1 text-red-500">
               <Check className="w-3.5 h-3.5" />
               <span className="text-[10px]">Added</span>
             </span>
@@ -129,7 +129,7 @@ export function ProductCard({
             {!product.in_stock ? (
               <Ban className="w-3.5 h-3.5 text-slate-400" />
             ) : justAdded ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400" />
+              <Check className="w-3.5 h-3.5 text-red-500" />
             ) : (
               <ShoppingCart className="w-3.5 h-3.5" />
             )}
@@ -220,7 +220,7 @@ export function ProductCard({
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
-              <Check className="w-4 h-4 text-emerald-400" />
+              <Check className="w-4 h-4 text-red-500" />
             </motion.div>
           ) : (
             <ShoppingCart className="w-4 h-4" />

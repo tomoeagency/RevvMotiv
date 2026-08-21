@@ -15,7 +15,13 @@ export interface InstagramEmbed {
 
 const FB_APP_ID = process.env.NEXT_PUBLIC_FB_APP_ID;
 const FB_CLIENT_TOKEN = process.env.NEXT_PUBLIC_FB_CLIENT_TOKEN;
-const INSTAGRAM_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN;
+const DEFAULT_INSTAGRAM_ACCESS_TOKEN =
+  "IGAAOtRJT9zI5BZAGF6SlBkTzhfYkZAYUFl4SnlOa2FGa3E5TkRBT215ZAHg2V2t3c2J4a0RDNW5qelRSd1pRNTBNQmpoWW9ZAX013Y3R2eVl3Qkl4ZAV9Ha0dBdXc2WXRjX29KRHBYcDNOZAm5RNnJzSHdNNzBRS0xQUEZAzTi1neDNpbwZDZD";
+
+const INSTAGRAM_ACCESS_TOKEN =
+  process.env.INSTAGRAM_ACCESS_TOKEN ||
+  process.env.NEXT_PUBLIC_INSTAGRAM_ACCESS_TOKEN ||
+  DEFAULT_INSTAGRAM_ACCESS_TOKEN;
 
 // Real Instagram Reel permalinks to feature here
 export const INSTAGRAM_REEL_URLS: string[] = [];
@@ -25,12 +31,13 @@ export const INSTAGRAM_REEL_URLS: string[] = [];
  * for @revvmotiv using the user access token with 1-hour ISR cache.
  */
 export async function getInstagramLiveMedia(limit: number = 8): Promise<InstagramMediaItem[]> {
-  if (!INSTAGRAM_ACCESS_TOKEN) return [];
+  const token = INSTAGRAM_ACCESS_TOKEN;
+  if (!token) return [];
 
   try {
     const res = await fetch(
       `https://graph.instagram.com/me/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp&access_token=${encodeURIComponent(
-        INSTAGRAM_ACCESS_TOKEN
+        token
       )}&limit=${limit}`,
       { next: { revalidate: 3600 } }
     );

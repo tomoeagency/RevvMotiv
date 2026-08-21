@@ -102,7 +102,7 @@ export default function OrderConfirmationPage({
             <span
               className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded border ${
                 order.payment_status === "fully_paid" || order.remaining_amount === 0
-                  ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                  ? "bg-red-500/10 border-red-500/30 text-red-500"
                   : order.payment_status === "advance_paid"
                   ? "bg-amber-500/10 border-amber-500/30 text-amber-400"
                   : "bg-surface border-hairline text-ink-muted"
@@ -208,10 +208,10 @@ function OrderStatus({
       <div className="space-y-3.5">
         {/* Banner */}
         {isFullyPaid ? (
-          <div className="border border-emerald-500/40 bg-emerald-500/5 p-4 sm:p-5 rounded relative overflow-hidden">
+          <div className="border border-red-500/40 bg-red-500/5 p-4 sm:p-5 rounded relative overflow-hidden">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-none">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-none">
+                <CheckCircle2 className="w-4 h-4 text-red-500" />
               </div>
               <div>
                 <h2 className="text-base sm:text-lg font-black text-ink uppercase tracking-tight mb-1">
@@ -225,11 +225,11 @@ function OrderStatus({
                   has been verified online. ₹0 balance due at delivery. Parts are queued for priority workshop inspection & express dispatch.
                 </p>
                 <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold text-ink uppercase tracking-wider">
-                  <span className="flex items-center gap-1 text-emerald-400">
-                    <ShieldCheck className="w-3.5 h-3.5" /> 100% Fitment Guarantee
+                  <span className="flex items-center gap-1 text-red-400">
+                    <ShieldCheck className="w-3.5 h-3.5 text-red-500" /> 100% Fitment Guarantee
                   </span>
                   <span className="text-ink-subtle">·</span>
-                  <span className="text-emerald-400 font-bold">₹0 COD Due</span>
+                  <span className="text-red-400 font-bold">₹0 COD Due</span>
                   <span className="text-ink-subtle">·</span>
                   <span className="text-ink-muted">Invoice sent to email</span>
                 </div>
@@ -237,10 +237,10 @@ function OrderStatus({
             </div>
           </div>
         ) : (
-          <div className="border border-[var(--color-success)]/40 bg-[var(--color-success)]/5 p-4 sm:p-5 rounded relative overflow-hidden">
+          <div className="border border-red-500/40 bg-red-500/5 p-4 sm:p-5 rounded relative overflow-hidden">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-[var(--color-success)]/20 flex items-center justify-center flex-none">
-                <CheckCircle2 className="w-4 h-4 text-[var(--color-success)]" />
+              <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center flex-none">
+                <CheckCircle2 className="w-4 h-4 text-red-500" />
               </div>
               <div>
                 <h2 className="text-base sm:text-lg font-black text-ink uppercase tracking-tight mb-1">
@@ -369,7 +369,7 @@ function OrderStatus({
               rel="noopener noreferrer"
               className="px-4 py-2.5 bg-surface-alt hover:bg-hover border border-hairline text-ink font-bold text-xs uppercase tracking-wider rounded flex items-center justify-center gap-1.5 transition-colors"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+              <MessageCircle className="w-3.5 h-3.5 text-red-500" />
               <span>Pay via Direct UPI</span>
             </a>
           </div>
@@ -456,9 +456,9 @@ function OrderTotals({ order }: { order: ApiOrder }) {
 
       {isFullyPaid ? (
         <>
-          <div className="flex items-center justify-between text-xs bg-emerald-500/10 p-2.5 rounded border border-emerald-500/20">
+          <div className="flex items-center justify-between text-xs bg-surface-alt p-2.5 rounded border border-hairline">
             <div>
-              <span className="text-emerald-400 font-bold block">
+              <span className="text-ink font-bold block">
                 Full Payment (100% Online)
               </span>
               <span className="text-[10px] text-ink-muted">
@@ -467,7 +467,7 @@ function OrderTotals({ order }: { order: ApiOrder }) {
                   : "Payable via Gateway"}
               </span>
             </div>
-            <span className="text-emerald-400 font-black text-sm">
+            <span className="text-ink font-black text-sm">
               {formatPrice(order.total_amount)}
             </span>
           </div>
@@ -477,12 +477,12 @@ function OrderTotals({ order }: { order: ApiOrder }) {
               <span className="text-ink-muted font-bold block">
                 Balance Due on Delivery (COD)
               </span>
-              <span className="text-[10px] text-emerald-400 font-semibold inline-flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <span className="text-[10px] text-ink-muted font-semibold inline-flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-red-500" />
                 Fully Settled — Nothing to pay at doorstep
               </span>
             </div>
-            <span className="text-emerald-400 font-bold text-sm">
+            <span className="text-ink font-bold text-sm">
               ₹0
             </span>
           </div>
@@ -500,7 +500,7 @@ function OrderTotals({ order }: { order: ApiOrder }) {
                   : "Payable via Gateway"}
               </span>
             </div>
-            <span className="text-emerald-400 font-black text-sm">
+            <span className="text-ink font-black text-sm">
               {formatPrice(order.advance_amount)}
             </span>
           </div>
@@ -525,8 +525,7 @@ function OrderTotals({ order }: { order: ApiOrder }) {
 }
 
 const TONE_CLASSES = {
-  green:
-    "border-[var(--color-success)]/40 bg-[var(--color-success)]/5 text-[var(--color-success)]",
+  green: "border-red-500/40 bg-red-500/5 text-ink",
   red: "border-red-500/40 bg-red-500/10 text-red-400",
   amber: "border-amber-500/40 bg-amber-500/10 text-amber-400",
   blue: "border-blue-500/40 bg-blue-500/5 text-blue-400",

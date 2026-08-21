@@ -146,7 +146,7 @@ export default function CartPage() {
                 </div>
                 <div className="flex justify-between text-ink-muted">
                   <span>Express Shipping</span>
-                  <span className="text-green-400 font-bold uppercase text-xs">FREE</span>
+                  <span className="text-ink font-bold uppercase text-xs">FREE</span>
                 </div>
                 <div className="border-t border-hairline pt-4 flex justify-between items-baseline">
                   <span className="text-base font-bold text-ink uppercase">Total</span>

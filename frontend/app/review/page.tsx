@@ -10,7 +10,6 @@ import {
   Search,
   X,
   Loader2,
-  Sparkles,
   ArrowRight,
   ShieldCheck,
   Camera,
