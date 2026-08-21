@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ShieldCheck, Truck, Video, CheckCircle2 } from "lucide-react";
 import { getProduct, getProducts, getProductReviews, formatPrice } from "@/lib/api";
@@ -47,6 +48,7 @@ export default async function ProductDetailPage({
 }) {
   const { slug } = await params;
   const product = await getProduct(slug);
+  const nonce = (await headers()).get("x-nonce") || undefined;
 
   if (!product) {
     notFound();
@@ -151,10 +153,12 @@ export default async function ProductDetailPage({
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 

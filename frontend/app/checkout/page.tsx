@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader2, Lock, ShieldCheck } from "lucide-react";
+import { Loader2, Lock, ShieldCheck, Video } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import {
   createOrder,
@@ -852,6 +852,11 @@ export default function CheckoutPage() {
                   )}
                 </span>
               </div>
+            </div>
+
+            <div className="flex items-start gap-1.5 text-[11px] text-ink-subtle pt-1">
+              <Video className="w-3.5 h-3.5 text-ink-subtle flex-none mt-px" />
+              <span>Note: Uninterrupted unboxing video required for damage claims.</span>
             </div>
           </div>
         </div>

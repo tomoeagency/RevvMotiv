@@ -1,4 +1,4 @@
-export function RootSchema() {
+export function RootSchema({ nonce }: { nonce?: string }) {
   const schemaData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -189,7 +189,7 @@ export function RootSchema() {
             name: "Does RevvMotiv deliver across India?",
             acceptedAnswer: {
               "@type": "Answer",
-              text: "Yes, RevvMotiv provides insured Pan-India express shipping across 45+ cities and all postal PIN codes in India. Every package is shipped in heavy-duty impact-resistant crates with edge-protection guards.",
+              text: "Yes, RevvMotiv provides insured Pan-India express shipping to every postal PIN code in India. Every package is shipped in heavy-duty impact-resistant crates with edge-protection guards.",
             },
           },
           {
@@ -224,6 +224,7 @@ export function RootSchema() {
   return (
     <script
       type="application/ld+json"
+      nonce={nonce}
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
     />
   );

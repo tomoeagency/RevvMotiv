@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Concerns\CreatesManualOrders;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreManualOrderRequest;
 use App\Http\Requests\Admin\UpdateOrderRequest;
@@ -11,13 +12,12 @@ use App\Models\Product;
 use App\Services\OrderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use Throwable;
 
 class OrderController extends Controller
 {
+    use CreatesManualOrders;
+
     public function __construct(private readonly OrderService $orderService) {}
 
     public function index(Request $request): View
@@ -65,17 +65,9 @@ class OrderController extends Controller
 
     public function store(StoreManualOrderRequest $request): RedirectResponse
     {
-        try {
-            $order = $this->orderService->create(
-                $request->toOrderInput(),
-                $request->toOrderOverrides(),
-                withRazorpay: false
-            );
-        } catch (ValidationException $e) {
-            throw $e;
-        } catch (Throwable $e) {
-            Log::error('Manual order creation failed', ['error' => $e->getMessage()]);
+        $order = $this->tryCreateManualOrder($request);
 
+        if (! $order) {
             return back()->withInput()->withErrors([
                 'items' => 'Could not create the order. Please try again.',
             ]);

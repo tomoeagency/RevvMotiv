@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -77,6 +78,7 @@ export default async function ShopPage({
   searchParams: SearchParams;
 }) {
   const { category, search, page: pageParam, focus, fitment } = await searchParams;
+  const nonce = (await headers()).get("x-nonce") || undefined;
   const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
 
   // Combine search and fitment for query
@@ -131,6 +133,7 @@ export default async function ShopPage({
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <div className="w-full bg-carbon text-ink">

@@ -9,6 +9,7 @@ import { Film, MessageCircle, Wrench } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
 import { useConsultant } from "@/lib/consultant-context";
 import { getFeaturedReviewsClient, parseReviewComment, type Review } from "@/lib/api";
+import { BUSINESS_DETAILS } from "@/lib/constants";
 import { GARAGE_GALLERY } from "@/lib/garage-gallery";
 import { StarRating } from "@/app/components/StarRating";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
@@ -52,12 +53,10 @@ const WORK_SLIDES = [
 ];
 
 export function TrustPanelClient({
-  whatsappDigits,
-  workPhoto,
+  whatsappDigits = BUSINESS_DETAILS.whatsappDigits,
   initialReviews = [],
 }: {
-  whatsappDigits: string | null;
-  workPhoto: string | null;
+  whatsappDigits?: string | null;
   initialReviews?: Review[];
 }) {
   const rawPathname = usePathname();

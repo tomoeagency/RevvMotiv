@@ -16,7 +16,10 @@ class ReelSeeder extends Seeder
                 'category' => 'Lighting Upgrade',
                 'tag' => '#FOGLIGHTS',
                 'video_path' => '/videos/reels/reel_fog_light.mp4',
-                'thumbnail_path' => 'https://revvmotiv.com/api/instagram/image?url=' . urlencode('https://instagram.fdel55-1.fna.fbcdn.net/v/t15.5256-10/777800050_1644681736994088_4462003032925245599_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ccb=7-5&_nc_sid=18de74&efg=eyJlZmdfdGFnIjoiQ0xJUFMuYmVzdF9pbWFnZV91cmxnZW4uQzMifQ%3D%3D&_nc_ohc=qd5caeGPa3YQ7kNvwHVjIzS&_nc_oc=AdpGGUhmwnPpphl7TrTJPfYlJ6GGgBzPIfFYAzFHkITmrKjy5Ts03YZL7dp8av8mVTY&_nc_zt=23&_nc_ht=instagram.fdel55-1.fna&edm=ANQ71j8EAAAA&_nc_gid=gCEm8or7wc5vspjoGKeUZg&_nc_tpa=Q5bMBQISoYf9Vu0IfOYznR2zaBcc51-IAN-S0rR6q91DVvZeDi_Rw8fUaPQJUJ3gdMfBftyS844nunkfMw&oh=00_AQGIDz0TmSrTOJ_HmO3rpCkaebIp1PElIxozvykFxxQfRA&oe=6A8E29D6'),
+                // No thumbnail yet — was previously a proxied Instagram CDN
+                // URL from the old live-fetch system (now removed); admin
+                // uploads a real one from the panel going forward.
+                'thumbnail_path' => null,
                 'product_id' => 25,
                 'caption' => "Tri colour fog lamp and auxiliary light installed in kia seltos .\n.\n.\n#modified #revvmotiv #modification #kia",
                 'instagram_url' => 'https://www.instagram.com/reel/DcJgyA5PgDA/',

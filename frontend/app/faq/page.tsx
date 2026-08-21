@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
 import { ArrowLeft, HelpCircle, CheckCircle2, ShieldCheck, Truck, Wrench, MessageCircle } from "lucide-react";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
@@ -91,7 +92,9 @@ const FAQ_ITEMS: FAQItem[] = [
   },
 ];
 
-export default function FAQPage() {
+export default async function FAQPage() {
+  const nonce = (await headers()).get("x-nonce") || undefined;
+
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -128,10 +131,12 @@ export default function FAQPage() {
     <>
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <script
         type="application/ld+json"
+        nonce={nonce}
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 

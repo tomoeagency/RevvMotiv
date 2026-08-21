@@ -7,6 +7,7 @@ export const viewport: Viewport = {
   themeColor: "#0b0d10",
 };
 import { Orbitron, Inter } from "next/font/google";
+import { headers } from "next/headers";
 import Script from "next/script";
 import "./globals.css";
 import { Navbar } from "@/app/components/Navbar";
@@ -120,7 +121,9 @@ export const metadata: Metadata = {
 
 import { SmoothScrollProvider } from "@/app/components/SmoothScrollProvider";
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const nonce = (await headers()).get("x-nonce") || undefined;
+
   return (
     <html
       lang="en"
@@ -128,13 +131,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
-        <RootSchema />
+        <RootSchema nonce={nonce} />
         <link rel="preload" as="image" href="/hero-1-ai.jpg" fetchPriority="high" />
         <link rel="alternate" type="text/plain" href="/llms.txt" title="LLMs.txt" />
         <link rel="alternate" type="text/plain" href="/llms-full.txt" title="LLMs-full.txt" />
       </head>
       <body className="min-h-screen flex flex-col bg-carbon font-sans text-ink w-full max-w-full relative">
-        <Script id="theme-init" strategy="beforeInteractive">
+        <Script id="theme-init" strategy="beforeInteractive" nonce={nonce}>
           {`try {
             if (localStorage.getItem("revvmotiv-theme") === "light") {
               document.documentElement.setAttribute("data-theme", "light");

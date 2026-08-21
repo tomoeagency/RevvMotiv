@@ -55,10 +55,7 @@ class DashboardController extends Controller
 
         // Valid orders: must be paid (advance_paid or fully_paid) or a manual order entered by admin.
         // Unpaid/abandoned website checkout attempts are excluded.
-        $ordersInRange = Order::where(function ($q) {
-                $q->whereIn('payment_status', ['advance_paid', 'fully_paid'])
-                  ->orWhere('source', '!=', 'website');
-            })
+        $ordersInRange = Order::where($this->validOrdersScope())
             ->when($start, fn ($q) => $q->whereBetween('created_at', [$start, $end]))
             ->when($source !== '', fn ($q) => $q->where('source', $source));
 
@@ -98,10 +95,7 @@ class DashboardController extends Controller
             'isCustomTrend' => $isCustomTrend,
             'productCount' => Product::count(),
             'pendingOrderCount' => Order::where('order_status', 'pending')
-                ->where(function ($q) {
-                    $q->whereIn('payment_status', ['advance_paid', 'fully_paid'])
-                      ->orWhere('source', '!=', 'website');
-                })->count(),
+                ->where($this->validOrdersScope())->count(),
             'pendingReviewCount' => Review::where('status', 'pending')->count(),
             'newLeadsCount' => \App\Models\Lead::count() + \App\Models\Enquiry::count(),
             'lowStockCount' => Product::where('stock', '<', 5)->count(),
@@ -198,14 +192,28 @@ class DashboardController extends Controller
             : "DATE_FORMAT({$column}, '%Y-%m')";
     }
 
+    // Valid orders: must be paid (advance_paid or fully_paid) or a manual
+    // order entered by admin. Unpaid/abandoned website checkout attempts
+    // are excluded. $prefix is the table-qualifying prefix (e.g. "orders.")
+    // needed when this is applied to a query joined against other tables.
+    private function validOrdersScope(string $prefix = ''): \Closure
+    {
+        return function ($q) use ($prefix) {
+            $q->whereIn("{$prefix}payment_status", ['advance_paid', 'fully_paid'])
+              ->orWhere("{$prefix}source", '!=', 'website');
+        };
+    }
+
+    private function formatMonthLabels(array $months): array
+    {
+        return array_map(fn ($m) => Carbon::createFromFormat('Y-m', $m)->format('M Y'), $months);
+    }
+
     private function salesTrendData(array $months, Carbon $since, Carbon $until, string $source = ''): array
     {
         $monthExpr = $this->monthFormatSql('created_at');
         $rows = Order::where('order_status', '!=', 'cancelled')
-            ->where(function ($q) {
-                $q->whereIn('payment_status', ['advance_paid', 'fully_paid'])
-                  ->orWhere('source', '!=', 'website');
-            })
+            ->where($this->validOrdersScope())
             ->whereBetween('created_at', [$since, $until])
             ->when($source !== '', fn ($q) => $q->where('source', $source))
             ->selectRaw("{$monthExpr} as month, SUM(total_amount) as revenue")
@@ -213,7 +221,7 @@ class DashboardController extends Controller
             ->pluck('revenue', 'month');
 
         return [
-            'labels' => array_map(fn ($m) => Carbon::createFromFormat('Y-m', $m)->format('M Y'), $months),
+            'labels' => $this->formatMonthLabels($months),
             'revenue' => collect($months)->map(fn ($m) => (float) ($rows[$m] ?? 0))->all(),
         ];
     }
@@ -225,10 +233,7 @@ class DashboardController extends Controller
 
         $profitRows = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.order_status', 'delivered')
-            ->where(function ($q) {
-                $q->whereIn('orders.payment_status', ['advance_paid', 'fully_paid'])
-                  ->orWhere('orders.source', '!=', 'website');
-            })
+            ->where($this->validOrdersScope('orders.'))
             ->whereBetween('orders.created_at', [$since, $until])
             ->when($source !== '', fn ($q) => $q->where('orders.source', $source))
             ->selectRaw("
@@ -244,7 +249,7 @@ class DashboardController extends Controller
             ->pluck('total', 'month');
 
         return [
-            'labels' => array_map(fn ($m) => Carbon::createFromFormat('Y-m', $m)->format('M Y'), $months),
+            'labels' => $this->formatMonthLabels($months),
             'grossProfit' => collect($months)->map(fn ($m) => (float) ($profitRows[$m] ?? 0))->all(),
             'expenses' => collect($months)->map(fn ($m) => (float) ($expenseRows[$m] ?? 0))->all(),
         ];
@@ -256,10 +261,7 @@ class DashboardController extends Controller
             ->join('products', 'products.id', '=', 'order_items.product_id')
             ->join('categories', 'categories.id', '=', 'products.category_id')
             ->where('orders.order_status', '!=', 'cancelled')
-            ->where(function ($q) {
-                $q->whereIn('orders.payment_status', ['advance_paid', 'fully_paid'])
-                  ->orWhere('orders.source', '!=', 'website');
-            })
+            ->where($this->validOrdersScope('orders.'))
             ->when($start, fn ($q) => $q->whereBetween('orders.created_at', [$start, $end]))
             ->when($source !== '', fn ($q) => $q->where('orders.source', $source))
             ->selectRaw('categories.name as category, SUM(order_items.subtotal) as revenue')
@@ -277,10 +279,7 @@ class DashboardController extends Controller
     {
         $rows = OrderItem::join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.order_status', '!=', 'cancelled')
-            ->where(function ($q) {
-                $q->whereIn('orders.payment_status', ['advance_paid', 'fully_paid'])
-                  ->orWhere('orders.source', '!=', 'website');
-            })
+            ->where($this->validOrdersScope('orders.'))
             ->when($start, fn ($q) => $q->whereBetween('orders.created_at', [$start, $end]))
             ->when($source !== '', fn ($q) => $q->where('orders.source', $source))
             ->selectRaw('order_items.product_title as product, SUM(order_items.quantity) as units, SUM(order_items.subtotal) as revenue')

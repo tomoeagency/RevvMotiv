@@ -7,13 +7,13 @@ const RouteLoader = dynamic(() => import("@/app/components/RouteLoader").then((m
 const ConsultantModal = dynamic(() => import("@/app/components/ConsultantModal").then((mod) => mod.ConsultantModal), { ssr: false });
 const ConsultantFabTrigger = dynamic(() => import("@/app/components/ConsultantFabTrigger").then((mod) => mod.ConsultantFabTrigger), { ssr: false });
 const CookieConsent = dynamic(() => import("@/app/components/CookieConsent").then((mod) => mod.CookieConsent), { ssr: false });
-const TrustPanel = dynamic(() => import("@/app/components/TrustPanel").then((mod) => mod.TrustPanel), { ssr: false });
+const TrustPanelClient = dynamic(() => import("@/app/components/TrustPanelClient").then((mod) => mod.TrustPanelClient), { ssr: false });
 
 export function ClientOverlays() {
   return (
     <>
       <CartDrawer />
-      <TrustPanel />
+      <TrustPanelClient />
       <RouteLoader />
       <ConsultantModal />
       <ConsultantFabTrigger />

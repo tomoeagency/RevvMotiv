@@ -1,5 +1,6 @@
 import io
 import os
+import sys
 import paramiko
 import urllib.request
 import time
@@ -108,14 +109,25 @@ try:
     with sftp.file('public_html/.env', 'r') as f:
         env_content = f.read().decode('utf-8')
     
+    # ICarry credentials are read from the local environment, never
+    # hardcoded here — set them in your shell or a local (gitignored)
+    # .env before running this script:
+    #   ICARRY_API_KEY, ICARRY_API_USERNAME
+    # ICARRY_PICKUP_PINCODE / ICARRY_AUTO_FULFILL have safe defaults
+    # below since they're not secrets, just deploy config.
+    required_env = ['ICARRY_API_KEY', 'ICARRY_API_USERNAME']
+    missing = [k for k in required_env if not os.environ.get(k)]
+    if missing:
+        print(f"Missing required env vars: {', '.join(missing)} — set them before running this script.")
+        sys.exit(1)
+
     new_keys = {
-        'ICARRY_API_KEY': 'qg9vFeW2UpWdVkno6gx6DuoBXkuSs7JZvaPGknMYwpbDsjMFDZVxPURgijBDsl7elYsIFmuqVAGmV8GGAEqL96XA2f42CZ5rQpRLs9usZrLBAl4uWohvNG92iMcQu7kETmEVM6Vra9nxG7cA62UHLZFOes6V1SOrbyCUD6ReTxXzLyNR5x5mOoMfRHxGSilMxDcTDqYkhdynWSnu3LqZdYfeW6TA72qijo04bcIY0uKWjlLdkQjAKRmYzu7FAUPe',
-        'ICARRY_API_USERNAME': 'ela40651',
-        'ICARRY_PICKUP_PINCODE': '201009',
-        'ICARRY_AUTO_FULFILL': 'false',
-        'INSTAGRAM_ACCESS_TOKEN': 'IGAAOtRJT9zI5BZAGF6SlBkTzhfYkZAYUFl4SnlOa2FGa3E5TkRBT215ZAHg2V2t3c2J4a0RDNW5qelRSd1pRNTBNQmpoWW9ZAX013Y3R2eVl3Qkl4ZAV9Ha0dBdXc2WXRjX29KRHBYcDNOZAm5RNnJzSHdNNzBRS0xQUEZAzTi1neDNpbwZDZD',
+        'ICARRY_API_KEY': os.environ['ICARRY_API_KEY'],
+        'ICARRY_API_USERNAME': os.environ['ICARRY_API_USERNAME'],
+        'ICARRY_PICKUP_PINCODE': os.environ.get('ICARRY_PICKUP_PINCODE', '201009'),
+        'ICARRY_AUTO_FULFILL': os.environ.get('ICARRY_AUTO_FULFILL', 'false'),
     }
-    
+
     import re
     for k, v in new_keys.items():
         if re.search(rf'^{k}=', env_content, flags=re.MULTILINE):

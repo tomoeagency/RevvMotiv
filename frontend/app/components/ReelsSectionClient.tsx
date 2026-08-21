@@ -24,8 +24,6 @@ import {
 import { GARAGE_GALLERY } from "@/lib/garage-gallery";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
-import { InstagramReelsRow } from "@/app/components/InstagramReelsRow";
-import type { InstagramEmbed, InstagramMediaItem } from "@/lib/instagram";
 
 export interface CustomReelProduct {
   id: number;
@@ -63,24 +61,18 @@ export interface UnifiedReel {
   product?: CustomReelProduct | null;
 }
 
-export function ReelsSectionClient({
-  embeds,
-  liveMedia = [],
-}: {
-  embeds: InstagramEmbed[];
-  liveMedia?: InstagramMediaItem[];
-}) {
+export function ReelsSectionClient() {
   const [activeReel, setActiveReel] = useState<UnifiedReel | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
   const [customReels, setCustomReels] = useState<CustomReelItem[]>([]);
-  const [mediaItems, setMediaItems] = useState<InstagramMediaItem[]>(liveMedia);
-  
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Fetch admin uploaded reels from Laravel API
+  // Fetch admin-uploaded reels from the Laravel API — the only source of
+  // reel content now (no live Instagram fetch fallback).
   useEffect(() => {
     fetch("/api/v1/reels")
       .then((r) => r.json())
@@ -91,20 +83,6 @@ export function ReelsSectionClient({
       })
       .catch(() => {});
   }, []);
-
-  // Fallback to Instagram Graph API if no custom reels are uploaded yet
-  useEffect(() => {
-    if (customReels.length === 0 && mediaItems.length === 0) {
-      fetch("/api/instagram")
-        .then((r) => r.json())
-        .then((res) => {
-          if (res?.data && res.data.length > 0) {
-            setMediaItems(res.data);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [customReels.length, mediaItems.length]);
 
   // Handle active video playback on modal open
   useEffect(() => {
@@ -148,7 +126,8 @@ export function ReelsSectionClient({
     }
   };
 
-  // Convert uploaded custom reels or Instagram media into unified cards
+  // Convert admin-uploaded reels into unified cards; fall back to the
+  // static garage gallery showcase when no reels have been added yet.
   const unifiedReels: UnifiedReel[] = customReels.length > 0
     ? customReels.map((r) => ({
         id: r.id,
@@ -163,31 +142,6 @@ export function ReelsSectionClient({
         audio: "@revvmotiv • Original Audio",
         product: r.product,
       }))
-    : mediaItems.length > 0
-    ? mediaItems.map((item) => {
-        const rawImage = item.proxy_image || (item.thumbnail_url 
-          ? `/api/instagram/image?url=${encodeURIComponent(item.thumbnail_url)}` 
-          : item.media_url 
-            ? `/api/instagram/image?url=${encodeURIComponent(item.media_url)}` 
-            : "/hero-1-ai.jpg");
-
-        const firstLine = item.caption ? item.caption.split("\n")[0] : "Workshop Custom Build";
-        const hashtagMatch = item.caption?.match(/#([a-zA-Z0-9_-]+)/);
-        const tag = item.tag || (hashtagMatch ? `#${hashtagMatch[1].toUpperCase()}` : "#REVVMOTIV");
-
-        return {
-          id: item.id,
-          title: firstLine,
-          category: "Live Workshop Reel",
-          car: "Bespoke Workshop Build",
-          image: rawImage,
-          videoUrl: "",
-          caption: item.caption || firstLine,
-          instagramUrl: item.permalink,
-          tag,
-          audio: "@revvmotiv • Original Audio",
-        };
-      })
     : GARAGE_GALLERY.map((g) => ({
         id: g.id,
         title: g.title,
@@ -269,11 +223,7 @@ export function ReelsSectionClient({
           </motion.div>
         </div>
 
-        {/* If live embeds exist, show them; else render single-line side-scrolling cards */}
-        {embeds.length > 0 ? (
-          <InstagramReelsRow embeds={embeds} />
-        ) : (
-          <div
+        <div
             ref={scrollContainerRef}
             className="flex overflow-x-auto pb-6 pt-1 gap-5 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
             style={{ WebkitOverflowScrolling: "touch" }}
@@ -336,7 +286,6 @@ export function ReelsSectionClient({
               </div>
             ))}
           </div>
-        )}
       </div>
 
       {/* IN-PAGE REAL VIDEO MODAL / LIGHTBOX VIEWER */}
