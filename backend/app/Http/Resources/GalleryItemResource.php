@@ -13,6 +13,7 @@ class GalleryItemResource extends JsonResource
             'id' => $this->id,
             'media_url' => $this->media_url,
             'media_type' => $this->media_type,
+            'category' => $this->category,
             'caption' => $this->caption,
         ];
     }

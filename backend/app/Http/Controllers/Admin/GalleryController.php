@@ -37,6 +37,7 @@ class GalleryController extends Controller
                 GalleryItem::create([
                     'media_url' => $upload['secure_url'],
                     'media_type' => ($upload['resource_type'] ?? 'image') === 'video' ? 'video' : 'image',
+                    'category' => $request->validated('category'),
                     'caption' => $request->validated('caption'),
                     'sort_order' => $startOrder + $index,
                     'active' => true,

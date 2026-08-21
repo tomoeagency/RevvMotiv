@@ -17,6 +17,16 @@
         @csrf
         @method('PUT')
 
+        <x-admin.form-field name="category" label="Category" hint="Powers the filter buttons on the public gallery page.">
+            <select name="category" id="category"
+                    class="block w-full rounded-md border-slate-300 shadow-sm focus:border-slate-500 focus:ring-slate-500 sm:text-sm">
+                <option value="">Uncategorized</option>
+                @foreach (\App\Models\GalleryItem::CATEGORIES as $value => $label)
+                    <option value="{{ $value }}" @selected(old('category', $item->category) === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+        </x-admin.form-field>
+
         <x-admin.form-field name="caption" label="Caption" hint="Optional — shown under the media on the Gallery page.">
             <input type="text" name="caption" id="caption" value="{{ old('caption', $item->caption) }}" maxlength="255"
                    class="block w-full rounded-md border-slate-300 shadow-sm focus:border-slate-500 focus:ring-slate-500 sm:text-sm">

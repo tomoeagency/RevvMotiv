@@ -43,6 +43,7 @@ export interface ApiProduct {
   in_stock: boolean;
   is_featured: boolean;
   images: string[];
+  video_url: string | null;
   category: Category;
   variants?: ProductVariant[];
   average_rating?: number | null;
@@ -152,8 +153,17 @@ export interface GalleryItem {
   id: number;
   media_url: string;
   media_type: "image" | "video";
+  category: string | null;
   caption: string | null;
 }
+
+// Mirrors the backend's GalleryItem::CATEGORIES — value => display label.
+export const GALLERY_CATEGORIES: Record<string, string> = {
+  build: "Builds",
+  product: "Products",
+  workshop: "Workshop",
+  review: "Reviews",
+};
 
 export interface Policy {
   slug: string;

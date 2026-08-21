@@ -65,8 +65,22 @@
             </div>
         </div>
 
-        <!-- 3. Metadata Fields (Optional Default Caption & Starting Sort) -->
+        <!-- 3. Metadata Fields (Category, Optional Default Caption & Starting Sort) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div>
+                <label for="category" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Category <span class="text-slate-400 font-normal">(Optional)</span>
+                </label>
+                <select name="category" id="category"
+                        class="block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
+                    <option value="">Uncategorized</option>
+                    @foreach (\App\Models\GalleryItem::CATEGORIES as $value => $label)
+                        <option value="{{ $value }}" @selected(old('category') === $value)>{{ $label }}</option>
+                    @endforeach
+                </select>
+                <p class="mt-1 text-[11px] text-slate-400">Powers the filter buttons on the public gallery page.</p>
+            </div>
+
             <div>
                 <label for="caption" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Default Caption <span class="text-slate-400 font-normal">(Optional)</span>

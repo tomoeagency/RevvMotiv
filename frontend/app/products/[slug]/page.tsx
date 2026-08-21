@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ShieldCheck, Truck, Video, CheckCircle2 } from "lucide-react";
 import { getProduct, getProducts, getProductReviews, formatPrice } from "@/lib/api";
 import { ProductDetailInteractive } from "@/app/components/ProductDetailInteractive";
+import { ProductVideoWidget } from "@/app/components/ProductVideoWidget";
 import { ReviewsSection } from "@/app/components/ReviewsSection";
 import { ClosingCta } from "@/app/components/ClosingCta";
 import { ProductCard } from "@/app/components/ProductCard";
@@ -180,6 +181,10 @@ export default async function ProductDetailPage({
           product={product}
           reviewsMeta={reviews?.meta}
         />
+
+        {product.video_url && (
+          <ProductVideoWidget videoUrl={product.video_url} title={product.title} />
+        )}
 
         {/* Product FAQ Accordion / Quick Answers (AEO) */}
         <section className="mt-16 pt-12 border-t border-hairline max-w-3xl">

@@ -139,6 +139,42 @@
         </x-admin.form-field>
     </div>
 
+    <!-- Card 4b: Product Video (Optional) -->
+    <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
+        <div>
+            <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-3 mb-1">
+                Product Video <span class="text-slate-400 normal-case font-normal">(Optional)</span>
+            </h2>
+            <p class="text-xs text-slate-500">
+                Shown as a floating video player in the bottom-right corner of the product page. Leave empty to skip it.
+            </p>
+        </div>
+
+        @if ($product && $product->video_url)
+            <div class="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <video src="{{ $product->video_url }}" class="w-24 aspect-[9/16] rounded object-cover bg-black flex-none" muted></video>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-slate-700">Current video</p>
+                    <p class="text-[11px] text-slate-400 truncate">{{ $product->video_url }}</p>
+                    <label class="mt-2 flex items-center gap-1.5 text-[11px] font-semibold text-rose-600 hover:text-rose-800 cursor-pointer w-fit">
+                        <input type="checkbox" name="remove_video" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500">
+                        <span>Remove video</span>
+                    </label>
+                </div>
+            </div>
+        @endif
+
+        <x-admin.form-field name="video_file" label="{{ $product && $product->video_url ? 'Replace Video (Upload)' : 'Upload Video' }}" hint="MP4, MOV, or WEBM — up to 50MB.">
+            <input type="file" name="video_file" id="video_file" accept="video/mp4,video/quicktime,video/webm"
+                   class="block w-full text-xs text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 file:px-3.5 file:py-2 file:text-xs file:font-semibold file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
+        </x-admin.form-field>
+
+        <x-admin.form-field name="video_url" label="Or Paste a Video URL" hint="Use this instead of uploading if the video is already hosted elsewhere.">
+            <input type="text" name="video_url" id="video_url" value="{{ old('video_url') }}" placeholder="https://..."
+                   class="block w-full rounded-lg border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
+        </x-admin.form-field>
+    </div>
+
     <!-- Card 5: Product Variants -->
     <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">

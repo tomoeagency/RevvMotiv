@@ -69,10 +69,10 @@ export function FeaturedProducts({
       <div className="flex flex-row items-end justify-between mb-8 sm:mb-12 gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-1 sm:mb-2">
-            Customised Parts
+            Best Sellers
           </h2>
           <p className="text-xs sm:text-sm text-ink-muted font-medium tracking-wide">
-            Select upgrades for maximum visual and functional impact.
+            Our most popular upgrades, chosen by customers.
           </p>
         </div>
 

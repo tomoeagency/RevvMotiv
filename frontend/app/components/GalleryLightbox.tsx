@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { GalleryItem } from "@/lib/api";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
+import { useSwipeNavigation } from "@/lib/useSwipeNavigation";
 
 export function GalleryLightbox({
   items,
@@ -19,6 +20,12 @@ export function GalleryLightbox({
 }) {
   const isOpen = activeIndex !== null;
   const item = isOpen ? items[activeIndex] : null;
+
+  const swipeHandlers = useSwipeNavigation({
+    onSwipeLeft: () => activeIndex !== null && onNavigate((activeIndex + 1) % items.length),
+    onSwipeRight: () => activeIndex !== null && onNavigate((activeIndex - 1 + items.length) % items.length),
+    onSwipeDown: onClose,
+  });
 
   // Body scroll lock + keyboard nav while open, same pattern CartDrawer
   // uses — without the lock the backdrop reads as decorative while the
@@ -51,6 +58,8 @@ export function GalleryLightbox({
           exit={{ opacity: 0 }}
           transition={{ duration: MOTION_DURATION.base, ease: MOTION_EASE_BRAND }}
           onClick={onClose}
+          onTouchStart={swipeHandlers.onTouchStart}
+          onTouchEnd={swipeHandlers.onTouchEnd}
           className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-xl flex items-center justify-center p-6"
         >
           <button

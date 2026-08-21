@@ -58,6 +58,14 @@ class ProductController extends Controller
             return back()->withInput()->withErrors(['images' => 'Image upload failed: '.$e->getMessage()]);
         }
 
+        // Optional product video: an uploaded file takes priority over a
+        // pasted URL if both are somehow given.
+        $videoUrl = $validated['video_url'] ?? null;
+        if ($request->hasFile('video_file')) {
+            $uploadedVideo = $uploader->upload($request->file('video_file'), 'revvmotiv/products/videos');
+            $videoUrl = $uploadedVideo['secure_url'] ?? $uploadedVideo['relative_path'] ?? null;
+        }
+
         $product = Product::create([
             'title' => $validated['title'],
             'slug' => ($validated['slug'] ?? null) ?: Str::slug($validated['title']),
@@ -72,6 +80,7 @@ class ProductController extends Controller
             'featured_order' => $validated['featured_order'] ?? 0,
             'status' => $validated['status'],
             'images' => $newImages,
+            'video_url' => $videoUrl,
         ]);
 
         if (! empty($validated['variants'])) {
@@ -129,6 +138,17 @@ class ProductController extends Controller
 
         $images = [...$images, ...$newImages];
 
+        $videoUrl = $product->video_url;
+        if ($request->boolean('remove_video')) {
+            $videoUrl = null;
+        }
+        if ($request->hasFile('video_file')) {
+            $uploadedVideo = $uploader->upload($request->file('video_file'), 'revvmotiv/products/videos');
+            $videoUrl = $uploadedVideo['secure_url'] ?? $uploadedVideo['relative_path'] ?? null;
+        } elseif (! empty($validated['video_url'])) {
+            $videoUrl = $validated['video_url'];
+        }
+
         $product->update([
             'title' => $validated['title'],
             'slug' => ($validated['slug'] ?? null) ?: Str::slug($validated['title']),
@@ -143,6 +163,7 @@ class ProductController extends Controller
             'featured_order' => $validated['featured_order'] ?? 0,
             'status' => $validated['status'],
             'images' => $images,
+            'video_url' => $videoUrl,
         ]);
 
         if (! empty($validated['delete_variant_ids'])) {

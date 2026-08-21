@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\GalleryItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 // Metadata only — replacing the media file itself means deleting/creating
@@ -18,6 +19,7 @@ class GalleryItemUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category' => ['nullable', 'string', 'in:' . implode(',', array_keys(GalleryItem::CATEGORIES))],
             'caption' => ['nullable', 'string', 'max:255'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'active' => ['nullable', 'boolean'],

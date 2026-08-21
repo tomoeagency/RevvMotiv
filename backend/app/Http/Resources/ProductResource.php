@@ -16,6 +16,11 @@ class ProductResource extends JsonResource
             return $img;
         })->values()->all();
 
+        $videoUrl = $this->video_url;
+        if (is_string($videoUrl) && preg_match('#https?://[^/]+(/uploads/.*)#', $videoUrl, $matches)) {
+            $videoUrl = $matches[1];
+        }
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -27,6 +32,7 @@ class ProductResource extends JsonResource
             'fitment' => $this->fitment,
             'is_featured' => (bool) $this->is_featured,
             'images' => $normalizedImages,
+            'video_url' => $videoUrl,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'variants' => ProductVariantResource::collection($this->variants),
             'average_rating' => $this->relationLoaded('reviews') || $this->reviews()->exists()

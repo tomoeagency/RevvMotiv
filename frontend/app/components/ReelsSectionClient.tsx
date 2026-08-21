@@ -2,17 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
-import { 
-  Play, 
-  Pause,
-  Eye, 
-  Volume2, 
-  VolumeX, 
-  X, 
-  Music2, 
-  Car, 
+import {
+  Play,
+  Volume2,
+  VolumeX,
+  X,
+  Music2,
   ArrowRight,
   Flame,
   ExternalLink,
@@ -23,6 +18,7 @@ import {
 } from "lucide-react";
 import { GARAGE_GALLERY } from "@/lib/garage-gallery";
 import { MOTION_DURATION, MOTION_EASE_BRAND } from "@/lib/motion-tokens";
+import { useSwipeNavigation } from "@/lib/useSwipeNavigation";
 import { PrimaryCtaLink } from "@/app/components/PrimaryCtaButton";
 
 export interface CustomReelProduct {
@@ -62,7 +58,7 @@ export interface UnifiedReel {
 }
 
 export function ReelsSectionClient() {
-  const [activeReel, setActiveReel] = useState<UnifiedReel | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -70,6 +66,48 @@ export function ReelsSectionClient() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Convert admin-uploaded reels into unified cards; fall back to the
+  // static garage gallery showcase when no reels have been added yet.
+  const unifiedReels: UnifiedReel[] = customReels.length > 0
+    ? customReels.map((r, i) => ({
+        id: r.id,
+        title: r.title,
+        category: r.category || "Live Workshop Reel",
+        car: r.car || "Bespoke Workshop Build",
+        image: r.thumbnail_url || `/hero-${(i % 5) + 1}-ai.jpg`,
+        videoUrl: r.video_url,
+        caption: r.caption || r.title,
+        instagramUrl: r.instagram_url || undefined,
+        tag: r.tag || "#REVVMOTIV",
+        audio: "@revvmotiv • Original Audio",
+        product: r.product,
+      }))
+    : GARAGE_GALLERY.map((g) => ({
+        id: g.id,
+        title: g.title,
+        category: g.category,
+        car: g.car,
+        image: g.img,
+        videoUrl: "",
+        caption: g.description,
+        tag: g.tag,
+        audio: g.audio,
+      }));
+
+  const activeReel = activeIndex !== null ? unifiedReels[activeIndex] ?? null : null;
+
+  const closeReel = () => setActiveIndex(null);
+  const goToNext = () =>
+    setActiveIndex((i) => (i === null ? null : (i + 1) % unifiedReels.length));
+  const goToPrev = () =>
+    setActiveIndex((i) => (i === null ? null : (i - 1 + unifiedReels.length) % unifiedReels.length));
+
+  const swipeHandlers = useSwipeNavigation({
+    onSwipeLeft: goToNext,
+    onSwipeRight: goToPrev,
+    onSwipeDown: closeReel,
+  });
 
   // Fetch admin-uploaded reels from the Laravel API — the only source of
   // reel content now (no live Instagram fetch fallback).
@@ -95,6 +133,28 @@ export function ReelsSectionClient() {
       }
     }
   }, [activeReel]);
+
+  // Escape to close, arrow keys to navigate, body scroll lock while open —
+  // same pattern GalleryLightbox uses.
+  useEffect(() => {
+    if (activeIndex === null) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") closeReel();
+      if (e.key === "ArrowRight") goToNext();
+      if (e.key === "ArrowLeft") goToPrev();
+    }
+    document.addEventListener("keydown", handleKeydown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeydown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
 
   const handleScroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -125,34 +185,6 @@ export function ReelsSectionClient() {
       setProgress(current);
     }
   };
-
-  // Convert admin-uploaded reels into unified cards; fall back to the
-  // static garage gallery showcase when no reels have been added yet.
-  const unifiedReels: UnifiedReel[] = customReels.length > 0
-    ? customReels.map((r, i) => ({
-        id: r.id,
-        title: r.title,
-        category: r.category || "Live Workshop Reel",
-        car: r.car || "Bespoke Workshop Build",
-        image: r.thumbnail_url || `/hero-${(i % 5) + 1}-ai.jpg`,
-        videoUrl: r.video_url,
-        caption: r.caption || r.title,
-        instagramUrl: r.instagram_url || undefined,
-        tag: r.tag || "#REVVMOTIV",
-        audio: "@revvmotiv • Original Audio",
-        product: r.product,
-      }))
-    : GARAGE_GALLERY.map((g) => ({
-        id: g.id,
-        title: g.title,
-        category: g.category,
-        car: g.car,
-        image: g.img,
-        videoUrl: "",
-        caption: g.description,
-        tag: g.tag,
-        audio: g.audio,
-      }));
 
   return (
     <section id="from-our-garage" className="border-t border-hairline py-12 sm:py-20 md:py-24 bg-surface-alt relative overflow-hidden">
@@ -228,10 +260,10 @@ export function ReelsSectionClient() {
             className="flex overflow-x-auto pb-6 pt-1 gap-5 snap-x snap-mandatory hide-scrollbar touch-pan-x touch-pan-y scroll-smooth -mx-4 px-4 sm:mx-0 sm:px-0"
             style={{ WebkitOverflowScrolling: "touch" }}
           >
-            {unifiedReels.map((reel) => (
+            {unifiedReels.map((reel, index) => (
               <div
                 key={reel.id}
-                onClick={() => setActiveReel(reel)}
+                onClick={() => setActiveIndex(index)}
                 className="flex-none w-[75vw] max-w-[280px] sm:w-[calc(50%-12px)] sm:max-w-none md:w-[calc(33.333%-14px)] lg:w-[calc(25%-15px)] snap-start group relative aspect-[9/16] rounded-2xl overflow-hidden bg-neutral-950 border border-hairline hover:border-red-500/60 shadow-xl hover:shadow-2xl hover:shadow-red-600/20 transition-all duration-500 cursor-pointer flex flex-col justify-between p-4"
               >
                 {/* Background Thumbnail Image with Direct Fallback & No-Referrer */}
@@ -291,10 +323,39 @@ export function ReelsSectionClient() {
       {/* IN-PAGE REAL VIDEO MODAL / LIGHTBOX VIEWER */}
       <AnimatePresence>
         {activeReel && (
-          <div 
+          <div
             className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 backdrop-blur-md"
-            onClick={() => setActiveReel(null)}
+            onClick={closeReel}
+            onTouchStart={swipeHandlers.onTouchStart}
+            onTouchEnd={swipeHandlers.onTouchEnd}
           >
+            {unifiedReels.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToPrev();
+                  }}
+                  aria-label="Previous reel"
+                  className="hidden sm:flex absolute left-4 lg:left-10 text-white/70 hover:text-white transition-colors z-10"
+                >
+                  <ChevronLeft className="w-8 h-8" />
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToNext();
+                  }}
+                  aria-label="Next reel"
+                  className="hidden sm:flex absolute right-4 lg:right-10 text-white/70 hover:text-white transition-colors z-10"
+                >
+                  <ChevronRight className="w-8 h-8" />
+                </button>
+              </>
+            )}
+
             <motion.div
               initial={{ opacity: 0, scale: 0.92, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -349,16 +410,11 @@ export function ReelsSectionClient() {
                   <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white font-black text-xs border border-white/40 shadow-sm">
                     RM
                   </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-black text-white block leading-none">
-                        @revvmotiv
-                      </span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                    </div>
-                    <span className="text-[10px] text-neutral-300 font-mono">
-                      {activeReel.tag}
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs font-black text-white block leading-none">
+                      @revvmotiv
                     </span>
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                   </div>
                 </div>
 
@@ -380,7 +436,7 @@ export function ReelsSectionClient() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setActiveReel(null);
+                      closeReel();
                     }}
                     className="p-2 rounded-full bg-black/60 text-white hover:bg-red-600 transition-colors border border-white/20 cursor-pointer shadow-md"
                     title="Close"
@@ -402,13 +458,15 @@ export function ReelsSectionClient() {
                   </div>
                 )}
 
-                {/* Caption / Title */}
-                <div className="max-h-24 overflow-y-auto hide-scrollbar space-y-1">
+                {/* Caption / Title — only show caption as a second line when it
+                    actually adds something beyond the title (avoids the
+                    same text appearing twice, which read as cluttered) */}
+                <div className="max-h-20 overflow-y-auto hide-scrollbar space-y-1">
                   <h4 className="text-sm font-black text-white leading-snug">
                     {activeReel.title}
                   </h4>
-                  {activeReel.caption && (
-                    <p className="text-xs text-neutral-300 leading-relaxed line-clamp-3">
+                  {activeReel.caption && activeReel.caption !== activeReel.title && (
+                    <p className="text-xs text-neutral-300 leading-relaxed line-clamp-2">
                       {activeReel.caption}
                     </p>
                   )}
@@ -420,17 +478,17 @@ export function ReelsSectionClient() {
                     {activeReel.product ? (
                       <PrimaryCtaLink
                         href={`/products/${activeReel.product.slug}`}
-                        onClick={() => setActiveReel(null)}
+                        onClick={closeReel}
                         className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
                       >
                         <ShoppingBag className="w-3.5 h-3.5" />
-                        <span>Shop {activeReel.product.title.slice(0, 20)}...</span>
+                        <span>Shop This Product</span>
                         <ArrowRight className="w-4 h-4" />
                       </PrimaryCtaLink>
                     ) : (
                       <PrimaryCtaLink
                         href="/shop"
-                        onClick={() => setActiveReel(null)}
+                        onClick={closeReel}
                         className="flex-1 py-2.5 px-3 text-xs text-center flex items-center justify-center gap-1.5 shadow-lg"
                       >
                         <span>Shop Custom Parts</span>

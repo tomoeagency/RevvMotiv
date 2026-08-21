@@ -34,7 +34,7 @@
 
     <!-- 1. TABLE LIST VIEW -->
     <div id="galleryListView">
-        <x-admin.data-table :headers="['Preview', 'Type', 'Caption', 'Sort Order', 'Active', '']" :paginator="$items">
+        <x-admin.data-table :headers="['Preview', 'Type', 'Category', 'Caption', 'Sort Order', 'Active', '']" :paginator="$items">
             @foreach ($items as $item)
                 <tr>
                     <td class="px-4 py-2.5">
@@ -45,6 +45,7 @@
                         @endif
                     </td>
                     <td class="px-4 py-2.5 text-slate-600 capitalize font-medium">{{ $item->media_type }}</td>
+                    <td class="px-4 py-2.5 text-slate-600">{{ \App\Models\GalleryItem::CATEGORIES[$item->category] ?? '—' }}</td>
                     <td class="px-4 py-2.5 max-w-xs truncate text-slate-600">{{ $item->caption ?? '—' }}</td>
                     <td class="px-4 py-2.5 text-slate-600 tabular-nums">{{ $item->sort_order }}</td>
                     <td class="px-4 py-2.5"><x-admin.status-badge :status="$item->active ? 'active' : 'draft'" /></td>

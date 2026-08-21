@@ -1,6 +1,45 @@
 import './bootstrap';
 import { Chart } from 'chart.js/auto';
 
+// Mac/iPhone photos are usually saved as HEIC/HEIF — a format most browsers
+// can't display and this server can't decode (no Imagick/libheif on this
+// host), which is why uploads that work fine from Windows (JPEG/PNG) fail
+// from Mac. Converting client-side, the moment a HEIC file is picked, means
+// every upload form in the admin panel just works regardless of source
+// device — no per-form changes needed since this is delegated on document.
+document.addEventListener('change', async (event) => {
+    const input = event.target;
+    if (! (input instanceof HTMLInputElement) || input.type !== 'file' || ! input.files?.length) return;
+
+    const isHeic = (file) => file.type === 'image/heic' || file.type === 'image/heif' || /\.(heic|heif)$/i.test(file.name);
+    const files = Array.from(input.files);
+    if (! files.some(isHeic)) return;
+
+    input.disabled = true;
+
+    try {
+        const { default: heic2any } = await import('heic2any');
+
+        const converted = await Promise.all(files.map(async (file) => {
+            if (! isHeic(file)) return file;
+            const result = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
+            const jpegBlob = Array.isArray(result) ? result[0] : result;
+            const newName = file.name.replace(/\.(heic|heif)$/i, '.jpg');
+            return new File([jpegBlob], newName, { type: 'image/jpeg' });
+        }));
+
+        const dataTransfer = new DataTransfer();
+        converted.forEach((file) => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+    } catch (error) {
+        console.error('HEIC conversion failed:', error);
+        alert("This photo is in Apple's HEIC format and couldn't be converted automatically. In Photos, use Share → Export → JPEG, then upload that file instead.");
+        input.value = '';
+    } finally {
+        input.disabled = false;
+    }
+});
+
 // Admin panel: show/hide toggle for any <x-admin.password-input>. Delegated
 // on document so it works regardless of how many toggles are on a page.
 document.addEventListener('click', (event) => {
