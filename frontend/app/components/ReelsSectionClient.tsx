@@ -274,15 +274,11 @@ export function ReelsSectionClient({
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/60 z-10 pointer-events-none" />
                 <div className="absolute inset-0 bg-red-600/0 group-hover:bg-red-600/5 transition-colors duration-500 z-10 pointer-events-none" />
 
-                {/* TOP BAR: Tag & Live Views */}
+                {/* TOP BAR: Tag */}
                 <div className="relative z-20 flex items-center justify-between gap-2">
                   <span className="px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-black uppercase tracking-wider text-white">
                     {reel.tag}
                   </span>
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/60 backdrop-blur-md border border-white/15 text-[10px] font-bold text-neutral-200">
-                    <Eye className="w-3 h-3 text-red-400" />
-                    <span>{reel.views}</span>
-                  </div>
                 </div>
 
                 {/* CENTER: Floating Play Icon Button */}
@@ -292,7 +288,7 @@ export function ReelsSectionClient({
                   </div>
                 </div>
 
-                {/* BOTTOM INFO: Title, Category, Engagement */}
+                {/* BOTTOM INFO: Title & Category */}
                 <div className="relative z-20 space-y-2">
                   {/* Category */}
                   <div className="flex items-center gap-1 text-[11px] font-bold text-red-400 uppercase tracking-wide">
@@ -312,22 +308,6 @@ export function ReelsSectionClient({
                       <span className="truncate">{reel.audio}</span>
                     </div>
                   )}
-
-                  {/* Quick Action Counters */}
-                  <div className="flex items-center justify-between pt-1 text-[11px] text-neutral-300">
-                    <button
-                      type="button"
-                      onClick={(e) => toggleLike(reel.id, e)}
-                      className="flex items-center gap-1 hover:text-red-400 transition-colors cursor-pointer"
-                    >
-                      <Heart className={`w-3.5 h-3.5 ${isLiked[reel.id] ? "fill-red-500 text-red-500" : ""}`} />
-                      <span>{isLiked[reel.id] ? "Liked" : reel.likes}</span>
-                    </button>
-                    <div className="flex items-center gap-1">
-                      <MessageCircle className="w-3.5 h-3.5 text-neutral-400" />
-                      <span>{reel.comments}</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             ))}
@@ -434,43 +414,13 @@ export function ReelsSectionClient({
                   />
                 </div>
 
-                {/* Engagement Bar */}
-                <div className="flex items-center justify-between text-xs text-neutral-200">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike(activeReel.id);
-                    }}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full border transition-all cursor-pointer ${
-                      isLiked[activeReel.id] 
-                        ? "bg-red-600 border-red-500 text-white font-bold" 
-                        : "bg-black/60 border-white/20 text-neutral-300 hover:text-white"
-                    }`}
-                  >
-                    <Heart className={`w-3.5 h-3.5 ${isLiked[activeReel.id] ? "fill-white" : ""}`} />
-                    <span>{isLiked[activeReel.id] ? "Liked!" : activeReel.likes}</span>
-                  </button>
-                  
-                  <div className="flex items-center gap-4 text-[11px] font-mono text-neutral-300">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5 text-red-400" />
-                      {activeReel.views} views
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <MessageCircle className="w-3.5 h-3.5 text-neutral-400" />
-                      {activeReel.comments}
-                    </span>
-                  </div>
-                </div>
-
                 {/* Caption / Title */}
-                <div className="max-h-20 overflow-y-auto hide-scrollbar space-y-1">
+                <div className="max-h-24 overflow-y-auto hide-scrollbar space-y-1">
                   <h4 className="text-sm font-black text-white leading-snug">
                     {activeReel.title}
                   </h4>
                   {activeReel.caption && (
-                    <p className="text-xs text-neutral-300 leading-relaxed line-clamp-2">
+                    <p className="text-xs text-neutral-300 leading-relaxed line-clamp-3">
                       {activeReel.caption}
                     </p>
                   )}
