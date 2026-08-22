@@ -69,7 +69,7 @@
                     <td class="px-4 py-2.5 text-slate-600">{{ $product->is_featured ? 'Yes' : 'No' }}</td>
                     <td class="px-4 py-2.5"><x-admin.status-badge :status="$product->status" /></td>
                     <td class="px-4 py-2.5 text-right">
-                        <a href="{{ route('admin.products.edit', $product->id) }}" class="mr-3 inline-flex items-center gap-1 text-slate-600 hover:text-slate-900"><x-admin.icon name="edit" class="h-3.5 w-3.5" />Edit</a>
+                        <a href="{{ route('admin.products.edit', $product->id) . (request()->getQueryString() ? '?qs=' . urlencode(request()->getQueryString()) : '') }}" class="mr-3 inline-flex items-center gap-1 text-slate-600 hover:text-slate-900"><x-admin.icon name="edit" class="h-3.5 w-3.5" />Edit</a>
                         <x-admin.delete-button :action="route('admin.products.destroy', $product->id)" confirm="Delete this product? This cannot be undone." />
                     </td>
                 </tr>
@@ -134,7 +134,7 @@
                             <x-admin.status-badge :status="$product->status" />
 
                             <div class="flex items-center gap-2">
-                                <a href="{{ route('admin.products.edit', $product->id) }}" 
+                                <a href="{{ route('admin.products.edit', $product->id) . (request()->getQueryString() ? '?qs=' . urlencode(request()->getQueryString()) : '') }}" 
                                    class="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-1 font-semibold text-slate-700 hover:bg-slate-200">
                                     <x-admin.icon name="edit" class="h-3 w-3" />
                                     <span>Edit</span>

@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import type { ApiProduct, ProductVariant } from "@/lib/api";
+import { getProduct } from "@/lib/api";
 
 export interface CartItem {
   productId: number;
@@ -39,7 +40,8 @@ type CartAction =
   | { type: "CLEAR_CART" }
   | { type: "OPEN_DRAWER" }
   | { type: "CLOSE_DRAWER" }
-  | { type: "HYDRATE"; items: CartItem[] };
+  | { type: "HYDRATE"; items: CartItem[] }
+  | { type: "PRUNE_ITEMS"; keys: string[] };
 
 const STORAGE_KEY = "revvmotiv-cart";
 
@@ -130,6 +132,14 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "HYDRATE":
       return { ...state, items: action.items };
 
+    case "PRUNE_ITEMS": {
+      const keep = new Set(action.keys);
+      return {
+        ...state,
+        items: state.items.filter((i) => keep.has(getItemKey(i))),
+      };
+    }
+
     default:
       return state;
   }
@@ -147,6 +157,13 @@ interface CartContextValue {
   openDrawer: () => void;
   closeDrawer: () => void;
   closeDrawerForNavigation: () => void;
+  // Items sessionStorage remembered but that no longer exist/are no longer
+  // active (deleted or drafted since being added) — pruned from the real
+  // cart automatically so checkout never hits a cryptic "product_id is
+  // invalid" error at the final step; exposed here so a page can tell the
+  // visitor why their cart changed, if it wants to.
+  removedStaleItems: CartItem[];
+  dismissRemovedStaleItems: () => void;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -170,6 +187,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // made React Strict Mode's dev-only double-invoke of these effects
   // permanently wipe the cart on a hard navigation.
   const [isHydrated, setIsHydrated] = useState(false);
+  const [removedStaleItems, setRemovedStaleItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
     try {
@@ -183,6 +201,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setIsHydrated(true);
     }
   }, []);
+
+  // Validate remembered cart items against the live catalog once, right
+  // after hydration — a product can be deleted or drafted while sitting in
+  // someone's cart between visits. Without this, that surfaces for the
+  // first time as a generic "items.0.product_id is invalid" error at the
+  // very last step of checkout; here it's caught upfront and the item is
+  // quietly dropped with a reason the UI can show if it wants to.
+  useEffect(() => {
+    if (!isHydrated || state.items.length === 0) return;
+
+    let cancelled = false;
+    (async () => {
+      const uniqueIds = Array.from(new Set(state.items.map((i) => i.productId)));
+      const results = await Promise.all(
+        uniqueIds.map(async (id) => [id, await getProduct(String(id))] as const)
+      );
+      if (cancelled) return;
+
+      const invalidIds = new Set(results.filter(([, product]) => !product).map(([id]) => id));
+      if (invalidIds.size === 0) return;
+
+      const stale = state.items.filter((i) => invalidIds.has(i.productId));
+      const keep = state.items.filter((i) => !invalidIds.has(i.productId)).map(getItemKey);
+
+      setRemovedStaleItems(stale);
+      dispatch({ type: "PRUNE_ITEMS", keys: keep });
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // Only re-check when hydration completes — re-running on every items
+    // change would re-validate items we just added ourselves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated]);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -263,8 +316,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
         skipUrlRestoreRef.current = true;
         dispatch({ type: "CLOSE_DRAWER" });
       },
+      removedStaleItems,
+      dismissRemovedStaleItems: () => setRemovedStaleItems([]),
     };
-  }, [state]);
+  }, [state, removedStaleItems]);
 
   return (
     <CartContext.Provider value={value}>{children}</CartContext.Provider>

@@ -2,6 +2,9 @@
 <form method="POST" action="{{ $product ? route('admin.products.update', $product->id) : route('admin.products.store') }}" enctype="multipart/form-data" class="space-y-6 max-w-3xl">
     @csrf
     @if ($product) @method('PUT') @endif
+    {{-- Which listing page/filters the admin came from (via ?qs= on the Edit
+         link), so saving returns them there instead of resetting to page 1. --}}
+    <input type="hidden" name="_return_qs" value="{{ request('qs') }}">
 
     <!-- Card 1: Product Basics -->
     <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-4">
@@ -118,11 +121,18 @@
 
         @if ($product && ! empty($product->images))
             <div>
-                <p class="text-xs font-bold text-slate-700 mb-2">Current Photos</p>
-                <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-bold text-slate-700">Current Photos</p>
+                    <p class="text-[11px] text-slate-400">Drag to reorder — first photo is the cover image</p>
+                </div>
+                <div id="currentPhotosGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
                     @foreach ($product->images as $url)
-                        <div class="relative group rounded-lg border border-slate-200 bg-slate-50 p-1 overflow-hidden shadow-2xs">
-                            <img src="{{ $url }}" alt="" class="aspect-square w-full rounded object-cover">
+                        <div draggable="true" data-url="{{ $url }}"
+                             class="photo-card relative group rounded-lg border border-slate-200 bg-slate-50 p-1 overflow-hidden shadow-2xs cursor-grab active:cursor-grabbing">
+                            <span class="cover-badge absolute top-1.5 left-1.5 z-10 rounded bg-[#1e3a5f] px-1.5 py-0.5 text-[9px] font-bold uppercase text-white {{ $loop->first ? '' : 'hidden' }}">
+                                Cover
+                            </span>
+                            <img src="{{ $url }}" alt="" draggable="false" class="aspect-square w-full rounded object-cover pointer-events-none">
                             <label class="mt-1.5 flex items-center justify-center gap-1 text-[11px] font-semibold text-rose-600 hover:text-rose-800 cursor-pointer">
                                 <input type="checkbox" name="remove_images[]" value="{{ $url }}" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500">
                                 <span>Delete</span>
@@ -130,6 +140,7 @@
                         </div>
                     @endforeach
                 </div>
+                <input type="hidden" name="image_order" id="imageOrderInput">
             </div>
         @endif
 
@@ -386,5 +397,62 @@
             if (numSpan) numSpan.textContent = i + 1;
         });
     }
+
+    // Product photo reordering — native HTML5 drag-and-drop, no library.
+    // The dragged card's URL is stashed in dataTransfer; on drop, the DOM
+    // node is physically moved (simplest way to keep the visual order and
+    // the underlying array in sync automatically), then the hidden
+    // image_order input is refreshed from the resulting DOM order so the
+    // server knows the new sequence on submit.
+    (function () {
+        const grid = document.getElementById('currentPhotosGrid');
+        const orderInput = document.getElementById('imageOrderInput');
+        if (!grid || !orderInput) return;
+
+        let draggedCard = null;
+
+        function syncOrderInput() {
+            const urls = Array.from(grid.querySelectorAll('.photo-card')).map((el) => el.dataset.url);
+            orderInput.value = JSON.stringify(urls);
+            grid.querySelectorAll('.photo-card').forEach((el, i) => {
+                el.querySelector('.cover-badge')?.classList.toggle('hidden', i !== 0);
+            });
+        }
+
+        grid.addEventListener('dragstart', (e) => {
+            const card = e.target.closest('.photo-card');
+            if (!card) return;
+            draggedCard = card;
+            e.dataTransfer.effectAllowed = 'move';
+            setTimeout(() => card.classList.add('opacity-40'), 0);
+        });
+
+        grid.addEventListener('dragend', () => {
+            draggedCard?.classList.remove('opacity-40');
+            draggedCard = null;
+        });
+
+        grid.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const target = e.target.closest('.photo-card');
+            if (!target || target === draggedCard || !draggedCard) return;
+
+            const cards = Array.from(grid.querySelectorAll('.photo-card'));
+            const draggedIdx = cards.indexOf(draggedCard);
+            const targetIdx = cards.indexOf(target);
+            if (draggedIdx < targetIdx) {
+                target.after(draggedCard);
+            } else {
+                target.before(draggedCard);
+            }
+        });
+
+        grid.addEventListener('drop', (e) => {
+            e.preventDefault();
+            syncOrderInput();
+        });
+
+        syncOrderInput();
+    })();
 </script>
 

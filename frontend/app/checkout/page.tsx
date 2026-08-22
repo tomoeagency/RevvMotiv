@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import Image from "next/image";
@@ -60,8 +60,27 @@ type FormState = {
 const EMPTY_FORM: FormState = {
   customer_name: "",
   customer_email: "",
-  customer_phone: "",
+  customer_phone: "+91 ",
 };
+
+// Normalizes any pasted/typed input into "+91 " followed by up to 10
+// digits. Strips the literal "+91" prefix *first* — the value is always
+// "+91 " + digits to begin with, so extracting digits from the raw
+// string without doing this first double-counts the prefix's own "91" as
+// part of whatever the visitor just typed.
+function formatIndianPhoneInput(raw: string): string {
+  let working = raw;
+  if (working.startsWith("+91")) {
+    working = working.slice(3);
+  } else {
+    const allDigits = working.replace(/\D/g, "");
+    if (working.startsWith("91") && allDigits.length > 10) {
+      working = working.slice(2);
+    }
+  }
+  const digits = working.replace(/\D/g, "").slice(0, 10);
+  return `+91 ${digits}`;
+}
 
 export type AddressState = {
   house_no: string;
@@ -132,7 +151,7 @@ const INLINE_FIELD_KEYS: string[] = [...CUSTOMER_FIELD_KEYS, "coupon_code", "shi
 type Status = "idle" | "submitting" | "error";
 
 export default function CheckoutPage() {
-  const { items, subtotal, clearCart, openDrawer } = useCart();
+  const { items, subtotal, clearCart, openDrawer, removedStaleItems, dismissRemovedStaleItems } = useCart();
   const router = useRouter();
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -207,6 +226,13 @@ export default function CheckoutPage() {
         <h1 className="text-3xl md:text-4xl font-black text-ink uppercase tracking-tight mb-4">
           Your cart is empty
         </h1>
+        {removedStaleItems.length > 0 && (
+          <p className="text-sm text-amber-400 max-w-md mx-auto mb-6 leading-relaxed">
+            {removedStaleItems.map((i) => i.title).join(", ")}{" "}
+            {removedStaleItems.length === 1 ? "is" : "are"} no longer available and{" "}
+            {removedStaleItems.length === 1 ? "was" : "were"} removed from your cart.
+          </p>
+        )}
         <Link
           href="/shop"
           className="text-xs font-bold text-ink uppercase tracking-widest hover:text-[var(--brand-red)] transition-colors border-b border-[var(--brand-red)] pb-1"
@@ -382,6 +408,30 @@ export default function CheckoutPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          {removedStaleItems.length > 0 && (
+            <div className="border border-amber-500/40 bg-amber-500/10 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold text-amber-400 uppercase tracking-widest mb-1">
+                    {removedStaleItems.length === 1 ? "An item" : "Some items"} removed from your cart
+                  </p>
+                  <p className="text-sm text-ink-muted leading-relaxed">
+                    {removedStaleItems.map((i) => i.title).join(", ")}{" "}
+                    {removedStaleItems.length === 1 ? "is" : "are"} no longer available and{" "}
+                    {removedStaleItems.length === 1 ? "was" : "were"} removed automatically.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={dismissRemovedStaleItems}
+                  className="text-ink-subtle hover:text-ink transition-colors flex-none text-xs uppercase tracking-widest font-bold"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+
           {infraError && (
             <div className="border border-amber-500/40 bg-amber-500/10 p-4">
               <p className="text-sm font-bold text-amber-400 uppercase tracking-widest mb-1">
@@ -437,11 +487,7 @@ export default function CheckoutPage() {
             onChange={(v) => handleChange("customer_email", v)}
             errors={fieldErrors.customer_email}
           />
-          <Field
-            label="Phone"
-            type="tel"
-            inputMode="tel"
-            autoComplete="tel"
+          <PhoneField
             value={form.customer_phone}
             onChange={(v) => handleChange("customer_phone", v)}
             errors={fieldErrors.customer_phone}
@@ -900,6 +946,73 @@ function Field({
         autoComplete={autoComplete}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
+      />
+      {errors?.map((msg) => (
+        <p key={msg} className="text-xs text-red-400 mt-1">
+          {msg}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+// Dedicated (not the generic Field) because a plain controlled <input>
+// whose value gets transformed on every keystroke loses the cursor to the
+// end of the string on each React re-render — normal digit-by-digit typing
+// interleaved into the wrong position instead of appending. This
+// explicitly restores the cursor after the transformed value commits.
+function PhoneField({
+  value,
+  onChange,
+  errors,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  errors?: string[];
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const cursorToEndRef = useRef(false);
+
+  // Runs synchronously right after React commits the reformatted value to
+  // the DOM (before the browser paints or the next keystroke can land) —
+  // requestAnimationFrame was too late and let rapid typing interleave
+  // digits into the wrong position.
+  useLayoutEffect(() => {
+    if (cursorToEndRef.current && inputRef.current) {
+      inputRef.current.setSelectionRange(value.length, value.length);
+      cursorToEndRef.current = false;
+    }
+  }, [value]);
+
+  return (
+    <div>
+      <label
+        htmlFor="checkout-field-phone"
+        className="block text-[10px] font-bold text-ink-subtle uppercase tracking-widest mb-1.5"
+      >
+        Phone <span className="text-red-500">*</span>
+      </label>
+      <input
+        id="checkout-field-phone"
+        ref={inputRef}
+        required
+        type="tel"
+        inputMode="numeric"
+        autoComplete="tel"
+        value={value}
+        onFocus={(e) => {
+          // Some browsers place the cursor at position 0 on first focus of
+          // a pre-filled input — without this, the very first keystroke
+          // (before onChange has fired even once) can land before "+91 "
+          // instead of after it.
+          const el = e.currentTarget;
+          el.setSelectionRange(el.value.length, el.value.length);
+        }}
+        onChange={(e) => {
+          cursorToEndRef.current = true;
+          onChange(formatIndianPhoneInput(e.target.value));
+        }}
         className="w-full bg-surface-alt border border-hairline focus:border-[var(--brand-red)] outline-none px-3.5 py-2.5 text-sm text-ink transition-colors rounded"
       />
       {errors?.map((msg) => (

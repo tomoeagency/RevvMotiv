@@ -31,6 +31,7 @@ class ProductUpdateRequest extends FormRequest
             'images.*' => ['file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'remove_images' => ['nullable', 'array'],
             'remove_images.*' => ['string'],
+            'image_order' => ['nullable', 'string'],
             'video_file' => ['nullable', 'file', 'mimes:mp4,mov,webm', 'max:51200'],
             'video_url' => ['nullable', 'string', 'max:1000'],
             'remove_video' => ['nullable', 'boolean'],

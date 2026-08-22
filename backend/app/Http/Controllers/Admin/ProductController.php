@@ -127,6 +127,19 @@ class ProductController extends Controller
             ->values()
             ->all();
 
+        // Admin's drag-and-drop reorder, submitted as a JSON array of URLs
+        // in their new order. Re-sort the surviving images to match it;
+        // anything not in the decoded order (shouldn't happen, but a stale
+        // submit is possible) keeps its existing relative position at the end.
+        $order = json_decode($request->input('image_order', ''), true);
+        if (is_array($order) && ! empty($order)) {
+            $images = collect($order)
+                ->filter(fn ($url) => in_array($url, $images, true))
+                ->push(...array_diff($images, $order))
+                ->values()
+                ->all();
+        }
+
         try {
             $newImages = $uploader->uploadMany($request->file('images', []), 'revvmotiv/products');
         } catch (RuntimeException $e) {
@@ -202,7 +215,13 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('admin.products.index')->with('status', "Product \"{$product->title}\" updated.");
+        // Return to the exact listing page/filters the admin came from
+        // (threaded through via the Edit link -> hidden _return_qs field)
+        // instead of always resetting to page 1.
+        $returnQs = $request->input('_return_qs');
+        $redirectUrl = route('admin.products.index') . ($returnQs ? '?'.$returnQs : '');
+
+        return redirect()->to($redirectUrl)->with('status', "Product \"{$product->title}\" updated.");
     }
 
     public function destroy(int $product): RedirectResponse
@@ -216,10 +235,13 @@ class ProductController extends Controller
             // order_items.product_id has no cascade/null-on-delete — a
             // product that's been ordered can't be hard-deleted without
             // corrupting order history. Draft it out of the storefront instead.
-            return redirect()->route('admin.products.index')
+            return back()
                 ->with('status', "\"{$title}\" has past orders and can't be deleted — set its status to draft instead to hide it from the storefront.");
         }
 
-        return redirect()->route('admin.products.index')->with('status', "Product \"{$title}\" deleted.");
+        // back() rather than the index route — delete is submitted from the
+        // listing page itself, so this naturally returns to whatever page/
+        // filters were showing instead of resetting to page 1.
+        return back()->with('status', "Product \"{$title}\" deleted.");
     }
 }
