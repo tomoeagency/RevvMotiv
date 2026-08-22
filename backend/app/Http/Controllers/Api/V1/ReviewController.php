@@ -26,7 +26,12 @@ class ReviewController extends Controller
             'comment' => $validated['comment'],
             'media_urls' => $uploader->uploadMany($request->file('media', []), 'revvmotiv/reviews'),
             'verified_purchase' => $this->isVerifiedPurchase($validated),
-            'status' => 'approved',
+            // Goes to the admin moderation queue (Admin/ReviewController's
+            // approve/reject) instead of publishing immediately — forProduct()
+            // and featured() both already filter to status=approved, so a
+            // pending review simply doesn't show anywhere (product page or
+            // homepage) until an admin reviews it.
+            'status' => 'pending',
         ]);
 
         return response()->json([
