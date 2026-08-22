@@ -24,18 +24,26 @@ class ProductController extends Controller
     // behavior untouched.
     public function index(Request $request): View
     {
+        // Default to "active" when the status filter hasn't been touched at
+        // all (no `status` key in the URL) so the listing opens on live
+        // products rather than draft/discontinued clutter — but an explicit
+        // ?status= (including empty, from picking "All statuses") is
+        // respected as-is. has() distinguishes "not in the URL" from
+        // "present but empty", which filled() can't.
+        $statusFilter = $request->has('status') ? $request->string('status')->toString() : 'active';
+
         $products = Product::query()
             ->with('category')
             ->when($request->filled('search'), fn ($q) => $q->where('title', 'like', '%'.$request->string('search').'%'))
-            ->when($request->filled('status'), fn ($q) => $q->where('status', $request->string('status')))
+            ->when($statusFilter !== '', fn ($q) => $q->where('status', $statusFilter))
             ->when($request->filled('category'), fn ($q) => $q->where('category_id', $request->integer('category')))
             ->orderByDesc('created_at')
             ->paginate(16)
-            ->withQueryString();
+            ->appends(array_merge($request->query(), ['status' => $statusFilter]));
 
         $categories = Category::orderBy('name')->get();
 
-        return view('admin.products.index', compact('products', 'categories'));
+        return view('admin.products.index', compact('products', 'categories', 'statusFilter'));
     }
 
     public function create(): View

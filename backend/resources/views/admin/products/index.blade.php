@@ -5,9 +5,9 @@
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Search products..."
                    class="rounded-md border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
             <select name="status" class="rounded-md border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
-                <option value="">All statuses</option>
-                <option value="active" @selected(request('status') === 'active')>Active</option>
-                <option value="draft" @selected(request('status') === 'draft')>Draft</option>
+                <option value="" @selected($statusFilter === '')>All statuses</option>
+                <option value="active" @selected($statusFilter === 'active')>Active</option>
+                <option value="draft" @selected($statusFilter === 'draft')>Draft</option>
             </select>
             <select name="category" class="rounded-md border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500">
                 <option value="">All categories</option>
